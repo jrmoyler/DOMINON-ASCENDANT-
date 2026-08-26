@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "fixture.release.influence",
+  "route": "Influence",
+  "commitBoundary": "IMMEDIATELY_BEFORE_FINAL_ROUTE_COMMIT",
+  "brokerTag": "broker_influence",
+  "loyaltyAction": {
+    "system": "UDACaptureComponent",
+    "outcome": "Gift",
+    "targetDefinition": "forgeweave.infinite_foundry",
+    "recipient": "civilization.ironheart_workers",
+    "giftLoyaltyReward": 45
+  },
+  "relationship": {"trust": 70, "respect": 60, "grievance": 10},
+  "sourceAuthorities": [
+    "quest.workers_signal.completed",
+    "history.workers_protected",
+    "history.mara_numbers_worker_coalition",
+    "history.grand_forge_preserved",
+    "campaign.foundry_shortage.brokered_compact",
+    "campaign.faction.human_agency.support",
+    "conflict.capture.gift_loyalty"
+  ],
+  "daxtonOutcome": {
+    "leaderState": "Governor",
+    "saveGrandForge": false,
+    "evacuateWorkers": true,
+    "offerProductionUnion": true
+  },
+  "expectedAftermath": {
+    "loyalty": "PAIRWISE_DISTINCT",
+    "daxtonState": "PAIRWISE_DISTINCT",
+    "historyTags": "PAIRWISE_DISTINCT",
+    "damageFingerprint": "PAIRWISE_DISTINCT",
+    "relationship": "PAIRWISE_DISTINCT"
+  },
+  "generationContract": {
+    "tool": "Build/Tools/ReleaseCandidateTool.py",
+    "automationTest": "Dominion.Release.VerticalSlice",
+    "binaryAssetPolicy": "SOURCE_ONLY_NO_FABRICATED_UASSET"
+  }
+}

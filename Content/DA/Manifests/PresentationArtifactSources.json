@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "presentation.artifact_sources.v11",
+  "primary": {
+    "meshSourcePath": "ContentSource/Presentation/Geometry/PrimaryBlock.obj",
+    "meshSourceSha1": "eb3041add284cb8a62b81e3d2ce47a0c4a376432",
+    "meshClass": "StaticMesh",
+    "materialSourcePath": "ContentSource/Presentation/Materials/FactionPalettes.json",
+    "materialSourceSha1": "5584b6472d35fdd9ea2dd95d4af4404ddb590eb3",
+    "materialClass": "MaterialInstanceConstant"
+  },
+  "vfx": {
+    "systemSourcePath": "ContentSource/Presentation/VFX/NiagaraSystemTemplates.json",
+    "systemSourceSha1": "75478bfdc4fd948c66e131e062d89950245a53c0",
+    "systemClass": "NiagaraSystem"
+  },
+  "audio": {
+    "waveSourcePath": "ContentSource/Presentation/Audio/NeutralPulse.wav.b64",
+    "waveSourceSha1": "838db03bf8a100a4098c837fdf102d217b94885b",
+    "waveClass": "SoundWave",
+    "cueClass": "SoundCue"
+  },
+  "sequences": [
+    {
+      "id": "sequence.forgeweave.first_ascension",
+      "assetPath": "/Game/Cinematics/CS_ForgeweaveAscension",
+      "assetClass": "LevelSequence",
+      "sourcePath": "ContentSource/Cinematics/ForgeweaveAscension.shotlist.json",
+      "sourceSha1": "72e64f90b20215220f15eddd55378326615b544b",
+      "generatorOwner": "DAFirstAscensionContent"
+    }
+  ]
+}

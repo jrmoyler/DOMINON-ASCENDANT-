@@ -1,0 +1,20 @@
+.worktrees/
+.superpowers/sdd/
+
+# Unreal Engine generated files
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+*.sln
+*.VC.db
+*.VC.opendb
+*.opensdf
+*.sdf
+__pycache__/
+
+# Web slice
+web/node_modules/
+web/dist/
+web/.vite/

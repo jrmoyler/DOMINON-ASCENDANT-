@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "contentId": "encounter.daxton_rhe.final",
+  "fingerprint": "c752e7f2c882cc4acb0091c685009415c6e8d208",
+  "leaderAssetPath": "/Game/DA/Leaders/DA_Leader_DaxtonRhe",
+  "phases": [
+    {
+      "id": "phase.the_forge_lord",
+      "mechanics": ["powered_industrial_armor", "forge_guard_reinforcement", "hardened_cover", "grand_forge_production"]
+    },
+    {
+      "id": "phase.overdrive",
+      "mechanics": ["production_speed", "heat", "coolant_stability", "resource_hunger"]
+    },
+    {
+      "id": "phase.the_choice",
+      "mechanics": ["defeat_daxton", "save_grand_forge", "evacuate_workers", "stabilize_production_offer_union"]
+    }
+  ],
+  "leaderStates": ["Governor", "IndustrialAdvisor", "AlliedForgeLord", "Exile", "Prisoner", "Dead"],
+  "characterImports": [
+    {
+      "assetPath": "/Game/Characters/Daxton/Meshes/SK_DaxtonRhe",
+      "sourcePath": "ContentSource/Characters/Daxton/DaxtonRhe.fbx",
+      "assetClass": "SkeletalMesh"
+    },
+    {
+      "assetPath": "/Game/Characters/Daxton/Animations/A_Daxton_PoweredArmor",
+      "sourcePath": "ContentSource/Characters/Daxton/DaxtonRhe_PoweredArmor.fbx",
+      "assetClass": "AnimSequence"
+    },
+    {
+      "assetPath": "/Game/Characters/Daxton/Animations/A_Daxton_Overdrive",
+      "sourcePath": "ContentSource/Characters/Daxton/DaxtonRhe_Overdrive.fbx",
+      "assetClass": "AnimSequence"
+    },
+    {
+      "assetPath": "/Game/Characters/Daxton/Animations/A_Daxton_Choice",
+      "sourcePath": "ContentSource/Characters/Daxton/DaxtonRhe_Choice.fbx",
+      "assetClass": "AnimSequence"
+    }
+  ]
+}

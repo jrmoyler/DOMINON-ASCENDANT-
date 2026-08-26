@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "cinematicId": "cinematic.forgeweave.first_ascension",
+  "displayRate": 30,
+  "shots": [
+    {
+      "beat": "systems_halt_react",
+      "sequenceAssetPath": "/Game/Cinematics/ForgeweaveAscension/Shots/LS_01_SystemsHaltReact",
+      "durationFrames": 90,
+      "camera": {
+        "startLocation": [0, -1200, 300],
+        "endLocation": [0, -650, 240],
+        "startRotation": [-6, 0, 0],
+        "endRotation": [-3, 0, 0],
+        "fieldOfView": 55
+      },
+      "actions": [
+        {"frame": 0, "actionId": "systems.halt", "targetId": "world.city_systems", "payload": "halt_nonessential_systems"},
+        {"frame": 18, "actionId": "citizens.react", "targetId": "world.population", "payload": "look_toward_grand_forge"}
+      ],
+      "audioCues": [
+        {"frame": 0, "cueId": "audio.ascension.systems_halt"},
+        {"frame": 30, "cueId": "audio.ascension.crowd_reaction"}
+      ],
+      "vfxCues": [
+        {"frame": 0, "cueId": "vfx.ascension.grid_power_falloff"},
+        {"frame": 24, "cueId": "vfx.ascension.forge_glow_first_pulse"}
+      ]
+    },
+    {
+      "beat": "forge_relic_emerges",
+      "sequenceAssetPath": "/Game/Cinematics/ForgeweaveAscension/Shots/LS_02_ForgeRelicEmerges",
+      "durationFrames": 120,
+      "camera": {
+        "startLocation": [900, -450, 260],
+        "endLocation": [260, -240, 180],
+        "startRotation": [-8, 135, 0],
+        "endRotation": [-4, 155, 0],
+        "fieldOfView": 45
+      },
+      "actions": [
+        {"frame": 0, "actionId": "forge.freeze", "targetId": "forgeweave.grand_forge", "payload": "suspend_hammers_and_belts"},
+        {"frame": 24, "actionId": "relic.forge.emerge", "targetId": "relic.forge", "payload": "rise_from_forge_heart"},
+        {"frame": 90, "actionId": "relic.forge.lock", "targetId": "relic.forge", "payload": "hold_for_transit"}
+      ],
+      "audioCues": [
+        {"frame": 0, "cueId": "audio.ascension.forge_rumble"},
+        {"frame": 24, "cueId": "audio.ascension.relic_reveal"}
+      ],
+      "vfxCues": [
+        {"frame": 0, "cueId": "vfx.ascension.forge_embers_suspend"},
+        {"frame": 24, "cueId": "vfx.ascension.forge_relic_materialize"}
+      ]
+    },
+    {
+      "beat": "world_transit",
+      "sequenceAssetPath": "/Game/Cinematics/ForgeweaveAscension/Shots/LS_03_WorldTransit",
+      "durationFrames": 90,
+      "camera": {
+        "startLocation": [200, -200, 180],
+        "endLocation": [0, 1600, 500],
+        "startRotation": [-2, 170, 0],
+        "endRotation": [-12, 180, 0],
+        "fieldOfView": 60
+      },
+      "actions": [
+        {"frame": 0, "actionId": "world.transit.begin", "targetId": "relic.forge", "payload": "depart_ironheart"},
+        {"frame": 72, "actionId": "world.transit.arrive", "targetId": "special.founder_hall", "payload": "approach_founder_hall"}
+      ],
+      "audioCues": [
+        {"frame": 0, "cueId": "audio.ascension.transit_surge"},
+        {"frame": 72, "cueId": "audio.ascension.hall_approach"}
+      ],
+      "vfxCues": [
+        {"frame": 0, "cueId": "vfx.ascension.relic_transit_ribbon"},
+        {"frame": 72, "cueId": "vfx.ascension.founder_hall_portal"}
+      ]
+    },
+    {
+      "beat": "founder_hall_receives_relic",
+      "sequenceAssetPath": "/Game/Cinematics/ForgeweaveAscension/Shots/LS_04_FounderHallReceivesRelic",
+      "durationFrames": 120,
+      "camera": {
+        "startLocation": [0, -900, 260],
+        "endLocation": [0, -350, 190],
+        "startRotation": [-5, 0, 0],
+        "endRotation": [-2, 0, 0],
+        "fieldOfView": 48
+      },
+      "actions": [
+        {"frame": 30, "actionId": "founder_hall.receive_relic", "targetId": "founder_hall.slot.01", "payload": "occupy_with_forge_relic"},
+        {"frame": 78, "actionId": "founder_hall.open_hidden_chamber", "targetId": "special.founder_hall", "payload": "reveal_convergence_chamber"}
+      ],
+      "audioCues": [
+        {"frame": 30, "cueId": "audio.ascension.hall_resonance"},
+        {"frame": 78, "cueId": "audio.ascension.hidden_chamber_unlock"}
+      ],
+      "vfxCues": [
+        {"frame": 30, "cueId": "vfx.ascension.relic_plinth_ignite"},
+        {"frame": 78, "cueId": "vfx.ascension.hidden_chamber_reveal"}
+      ]
+    },
+    {
+      "beat": "unlocks",
+      "sequenceAssetPath": "/Game/Cinematics/ForgeweaveAscension/Shots/LS_05_Unlocks",
+      "durationFrames": 90,
+      "camera": {
+        "startLocation": [0, -500, 230],
+        "endLocation": [0, -700, 300],
+        "startRotation": [-3, 0, 0],
+        "endRotation": [-8, 0, 0],
+        "fieldOfView": 52
+      },
+      "actions": [
+        {"frame": 0, "actionId": "unlocks.forgeweave_cards", "targetId": "collection.forgeweave", "payload": "expose_fifteen_definitions"},
+        {"frame": 30, "actionId": "unlocks.replication_doctrine", "targetId": "doctrine.replication", "payload": "enable_twelve_cycle_replication"},
+        {"frame": 60, "actionId": "unlocks.convergence_authority", "targetId": "founder_hall.authority", "payload": "show_one_of_twenty"}
+      ],
+      "audioCues": [
+        {"frame": 0, "cueId": "audio.ascension.unlock_resolution"},
+        {"frame": 60, "cueId": "audio.ascension.convergence_sting"}
+      ],
+      "vfxCues": [
+        {"frame": 0, "cueId": "vfx.ascension.forgeweave_cards_unfurl"},
+        {"frame": 60, "cueId": "vfx.ascension.founder_hall_slot_one"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "fixture.release.economic",
+  "route": "Economic",
+  "commitBoundary": "IMMEDIATELY_BEFORE_FINAL_ROUTE_COMMIT",
+  "brokerTag": "broker_economic",
+  "loyaltyAction": {
+    "system": "UDACaptureComponent",
+    "outcome": "Gift",
+    "targetDefinition": "forgeweave.infinite_foundry",
+    "recipient": "civilization.ironheart_workers",
+    "giftLoyaltyReward": 30
+  },
+  "relationship": {"trust": 55, "respect": 70, "grievance": 20},
+  "sourceAuthorities": [
+    "trade.contract.forge.0.completed",
+    "trade.contract.forge.1.completed",
+    "trade.contract.forge.2.completed",
+    "trade.contract.forge.3.completed",
+    "region.freight_corridor.owner.synara",
+    "trade.relationship.component_dependence",
+    "campaign.foundry_shortage.market_exploitation",
+    "history.daxton_restructuring_resolved",
+    "quest.supply_noose.completed",
+    "conflict.capture.gift_loyalty"
+  ],
+  "daxtonOutcome": {
+    "leaderState": "IndustrialAdvisor",
+    "saveGrandForge": true,
+    "evacuateWorkers": false,
+    "offerProductionUnion": true
+  },
+  "expectedAftermath": {
+    "loyalty": "PAIRWISE_DISTINCT",
+    "daxtonState": "PAIRWISE_DISTINCT",
+    "historyTags": "PAIRWISE_DISTINCT",
+    "damageFingerprint": "PAIRWISE_DISTINCT",
+    "relationship": "PAIRWISE_DISTINCT"
+  },
+  "generationContract": {
+    "tool": "Build/Tools/ReleaseCandidateTool.py",
+    "automationTest": "Dominion.Release.VerticalSlice",
+    "binaryAssetPolicy": "SOURCE_ONLY_NO_FABRICATED_UASSET"
+  }
+}

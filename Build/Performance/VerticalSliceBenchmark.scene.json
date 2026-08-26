@@ -1,0 +1,23 @@
+{
+  "$schema": "VerticalSliceBenchmark.scene.schema.json",
+  "schemaVersion": 1,
+  "sceneId": "benchmark.vertical_slice.synara_capital",
+  "generatorVersion": 1,
+  "deterministicSeed": 1701,
+  "gameplayAssetCount": 50,
+  "gameplayAssetClass": "/Script/DominionGameplay.DAWorldAsset",
+  "citizensByLOD": [
+    {"lod": 0, "count": 30, "representation": "full"},
+    {"lod": 1, "count": 30, "representation": "detailed"},
+    {"lod": 2, "count": 40, "representation": "aggregated"},
+    {"lod": 3, "count": 20, "representation": "strategic"}
+  ],
+  "weatherActive": true,
+  "alliedSquadCount": 3,
+  "enemySquadCount": 3,
+  "vehicleCount": 1,
+  "constructionEffectCount": 1,
+  "constructionEffectAsset": "/Game/VFX/Synara/DA_VFX_Synara_Construction.DA_VFX_Synara_Construction",
+  "damagedBuildingCount": 1,
+  "modeTransition": ["City", "Command", "Founder"]
+}

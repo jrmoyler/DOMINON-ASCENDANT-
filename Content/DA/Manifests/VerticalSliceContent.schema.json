@@ -1,0 +1,419 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dominion-ascendant:vertical-slice-content:v1",
+  "title": "Dominion Ascendant frozen vertical-slice content manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "authority",
+    "expectedCounts",
+    "definitions",
+    "starterDeck"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    },
+    "expectedCounts": {
+      "$ref": "#/$defs/expectedCounts"
+    },
+    "definitions": {
+      "type": "array",
+      "minItems": 64,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/definition"
+      }
+    },
+    "starterDeck": {
+      "type": "array",
+      "minItems": 32,
+      "maxItems": 32,
+      "items": {
+        "$ref": "#/$defs/deckEntry"
+      }
+    }
+  },
+  "$defs": {
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definitionNamesAndCounts",
+        "starterDeck",
+        "gameplayValues",
+        "prefabPolicy"
+      ],
+      "properties": {
+        "definitionNamesAndCounts": {
+          "type": "string",
+          "minLength": 1
+        },
+        "starterDeck": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gameplayValues": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prefabPolicy": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "expectedCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Synara",
+        "Forgeweave",
+        "EdenCircuit",
+        "Universal",
+        "Fusion",
+        "Special",
+        "total",
+        "starterInstances"
+      ],
+      "properties": {
+        "Synara": {
+          "type": "integer",
+          "const": 15
+        },
+        "Forgeweave": {
+          "type": "integer",
+          "const": 15
+        },
+        "EdenCircuit": {
+          "type": "integer",
+          "const": 15
+        },
+        "Universal": {
+          "type": "integer",
+          "const": 17
+        },
+        "Fusion": {
+          "type": "integer",
+          "const": 1
+        },
+        "Special": {
+          "type": "integer",
+          "const": 1
+        },
+        "total": {
+          "type": "integer",
+          "const": 64
+        },
+        "starterInstances": {
+          "type": "integer",
+          "const": 60
+        }
+      }
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "faction",
+        "cardType",
+        "rarity",
+        "placeable",
+        "footprint",
+        "footprintAuthority",
+        "worldPrefab",
+        "randomCacheEligible",
+        "authoredValues",
+        "tags",
+        "upgradeBranchIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z_]+\\.[a-z0-9_]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "faction": {
+          "enum": [
+            "Synara",
+            "Forgeweave",
+            "EdenCircuit",
+            "Universal",
+            "Fusion",
+            "Special"
+          ]
+        },
+        "cardType": {
+          "enum": [
+            "Residential",
+            "Retail",
+            "Office",
+            "Research",
+            "Industrial",
+            "Infrastructure",
+            "Civic",
+            "Defense",
+            "Unit",
+            "Leader",
+            "Wonder",
+            "Special"
+          ]
+        },
+        "rarity": {
+          "enum": [
+            "Common",
+            "Specialized",
+            "Elite",
+            "Legendary",
+            "Mythic",
+            "Wonder",
+            "Leader",
+            "Dominion"
+          ]
+        },
+        "placeable": {
+          "type": "boolean"
+        },
+        "footprint": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "footprintAuthority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "worldPrefab": {
+          "type": "string",
+          "pattern": "^/Script/DominionGameplay\\.[A-Za-z0-9_]+$"
+        },
+        "randomCacheEligible": {
+          "type": "boolean"
+        },
+        "authoredValues": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "deploymentCapital",
+              "deploymentInsight",
+              "deploymentInfluence",
+              "craftCapital",
+              "craftInsight",
+              "craftProductionThroughput",
+              "requiredCraftingFacilityId",
+              "maintenanceCapitalPerCycle",
+              "baseCapitalPerCycle",
+              "baseInsightPerCycle",
+              "baseInfluencePerCycle",
+              "synaraDependencyPerCycle",
+              "forgeweaveResourceHungerPerCycle",
+              "workforceRequirementModifier",
+              "industrialThroughputModifier",
+              "adjacentIndustrialConstructionSpeedModifier",
+              "constructionCycles",
+              "utilityPower",
+              "utilityWater",
+              "utilityData",
+              "housingCapacity"
+            ]
+          }
+        },
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "upgradeBranchIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "combat": {
+          "$ref": "#/$defs/combat"
+        },
+        "valueAuthority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiredCraftingFacilityId": {
+          "type": "string",
+          "pattern": "^[a-z_]+\\.[a-z0-9_]+$"
+        },
+        "constructionCycles": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "deploymentCapital": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deploymentInsight": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deploymentInfluence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "craftCapital": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "craftInsight": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "craftProductionThroughput": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "utilityPower": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "utilityWater": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "utilityData": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "housingCapacity": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maintenanceCapitalPerCycle": {
+          "type": "number",
+          "minimum": 0
+        },
+        "baseCapitalPerCycle": {
+          "type": "number",
+          "minimum": 0
+        },
+        "baseInsightPerCycle": {
+          "type": "number",
+          "minimum": 0
+        },
+        "baseInfluencePerCycle": {
+          "type": "number",
+          "minimum": 0
+        },
+        "synaraDependencyPerCycle": {
+          "type": "number"
+        },
+        "forgeweaveResourceHungerPerCycle": {
+          "type": "number"
+        },
+        "workforceRequirementModifier": {
+          "type": "number"
+        },
+        "industrialThroughputModifier": {
+          "type": "number"
+        },
+        "adjacentIndustrialConstructionSpeedModifier": {
+          "type": "number"
+        }
+      }
+    },
+    "combat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "structuralIntegrity",
+        "armor",
+        "cyberIntegrity",
+        "capturable"
+      ],
+      "properties": {
+        "structuralIntegrity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "armor": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cyberIntegrity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "capturable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "deckEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definitionId",
+        "quantity"
+      ],
+      "properties": {
+        "definitionId": {
+          "type": "string",
+          "pattern": "^[a-z_]+\\.[a-z0-9_]+$"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        }
+      }
+    }
+  },
+  "x-dominion-exactFactionCounts": {
+    "Synara": 15,
+    "Forgeweave": 15,
+    "EdenCircuit": 15,
+    "Universal": 17,
+    "Fusion": 1,
+    "Special": 1
+  },
+  "x-dominion-exactStarterInstances": 60,
+  "x-dominion-authoredValueFields": [
+    "deploymentCapital",
+    "deploymentInsight",
+    "deploymentInfluence",
+    "craftCapital",
+    "craftInsight",
+    "craftProductionThroughput",
+    "requiredCraftingFacilityId",
+    "maintenanceCapitalPerCycle",
+    "baseCapitalPerCycle",
+    "baseInsightPerCycle",
+    "baseInfluencePerCycle",
+    "synaraDependencyPerCycle",
+    "forgeweaveResourceHungerPerCycle",
+    "workforceRequirementModifier",
+    "industrialThroughputModifier",
+    "adjacentIndustrialConstructionSpeedModifier",
+    "constructionCycles",
+    "utilityPower",
+    "utilityWater",
+    "utilityData",
+    "housingCapacity"
+  ]
+}

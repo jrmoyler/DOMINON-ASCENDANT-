@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dominion Ascendant Frozen First-Hour Quest Authority",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "campaignId", "fingerprint", "quests", "citizen"],
+  "properties": {
+    "schemaVersion": {"const": 2},
+    "campaignId": {"const": "campaign.vertical_slice.first_hour"},
+    "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "quests": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"$ref": "#/$defs/quest"}},
+    "citizen": {"$ref": "#/$defs/citizen"}
+  },
+  "$defs": {
+    "stableId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$"},
+    "historyTag": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "edge": {"type": "object", "additionalProperties": false, "required": ["branchTag", "targetNodeId"], "properties": {"branchTag": {"type": "string", "minLength": 1}, "targetNodeId": {"type": "string", "minLength": 1}}},
+    "node": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "type", "sourceDefinitionId", "condition", "edges"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"enum": ["Start", "Dialogue", "Objective", "Investigation", "Build", "Explore", "Combat", "Choice", "WorldCondition", "CitizenCondition", "Resolution"]},
+        "sourceDefinitionId": {"$ref": "#/$defs/stableId"},
+        "condition": {"enum": ["NewCampaign", "PrerequisitesMet", "FounderReached", "FounderHallPowered", "FounderHallOnline", "CustodianMarkingsInspected", "AdaptiveHabitatInspected", "AdaptiveHabitatPlaced", "HabitatConstructionComplete", "BoundAssetOperational", "NiaPresent", "HabitatOccupied", "UtilityExpansionAcknowledged", "HabitatPowerFullySupplied", "HabitatWaterFullySupplied", "NiaSpokenTo", "TowerHalfStaffed", "NiaAssignedToTower", "AutonomousExchangeAvailable", "ReplacementModelDiscovered", "ExplicitChoice", "DependencyAbove25", "WorkersRetrained", "AutomationCapEnacted", "WorldMapUnlocked", "ForgeweaveContact", "EnteredUtilityTunnel", "AncientNodeRestored", "MaintenanceDronesDefeated", "UnknownSymbolInspected", "EdenBasinReached", "WaterQualityInspected", "AmaraSpokenTo", "OriSpokenTo", "Resolved"]},
+        "bindingId": {"type": "string", "minLength": 1},
+        "edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}}
+      }
+    },
+    "binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bindingId", "definitionId", "bindWhen", "cityId", "ownerId", "requireOperational"],
+      "properties": {"bindingId": {"type": "string", "minLength": 1}, "definitionId": {"$ref": "#/$defs/stableId"}, "bindWhen": {"enum": ["Start", "Objective"]}, "cityId": {"const": "player_capital"}, "ownerId": {"const": "civilization.synara"}, "requireOperational": {"type": "boolean"}}
+    },
+    "reward": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actionId", "type", "quantity"],
+      "properties": {"actionId": {"$ref": "#/$defs/stableId"}, "type": {"enum": ["CityMode", "CardInstance", "Blueprint", "UtilitySystems", "OperatorXp", "InsightReward", "IntelligenceAuditorPath", "AxiomArchiveFragment", "DiplomacyContact", "EdenTradeAccess"]}, "definitionId": {"$ref": "#/$defs/stableId"}, "contentId": {"$ref": "#/$defs/stableId"}, "quantity": {"type": "integer", "minimum": 1, "maximum": 100}},
+      "oneOf": [{"required": ["definitionId"], "not": {"required": ["contentId"]}}, {"required": ["contentId"], "not": {"required": ["definitionId"]}}]
+    },
+    "outcome": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actionId", "historyTags", "semanticEffects", "eligibilityAny", "rewards"],
+      "properties": {"actionId": {"$ref": "#/$defs/stableId"}, "historyTags": {"type": "array", "items": {"$ref": "#/$defs/historyTag"}, "uniqueItems": true}, "storyState": {"$ref": "#/$defs/stableId"}, "semanticEffects": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/stableId"}, "uniqueItems": true}, "eligibilityAny": {"type": "array", "items": {"enum": ["Vision", "ResearchAction"]}, "uniqueItems": true}, "dependencyDelta": {"type": "integer", "minimum": -100, "maximum": 100}, "humanAgencySupportDelta": {"type": "integer", "minimum": -100, "maximum": 100}, "niaTrustDelta": {"type": "integer", "minimum": -100, "maximum": 100}, "rewards": {"type": "array", "items": {"$ref": "#/$defs/reward"}}}
+    },
+    "quest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "sourceDefinitionId", "assetPath", "prerequisiteQuestIds", "startCondition", "worldAssetBindings", "nodes", "completionHistoryTags", "rewards", "outcomes"],
+      "properties": {"id": {"$ref": "#/$defs/stableId"}, "title": {"type": "string", "minLength": 1}, "sourceDefinitionId": {"$ref": "#/$defs/stableId"}, "assetPath": {"type": "string", "pattern": "^/Game/DA/Quests/Q_[A-Za-z0-9]+$"}, "prerequisiteQuestIds": {"type": "array", "maxItems": 1, "items": {"$ref": "#/$defs/stableId"}, "uniqueItems": true}, "startCondition": {"enum": ["NewCampaign", "PrerequisitesMet", "HabitatOccupied", "AutonomousExchangeAvailable", "DependencyAbove25", "SixPlayerBuildings", "WorldMapUnlocked", "ForgeweaveContact"]}, "worldAssetBindings": {"type": "array", "items": {"$ref": "#/$defs/binding"}}, "nodes": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/node"}}, "completionHistoryTags": {"type": "array", "items": {"$ref": "#/$defs/historyTag"}, "uniqueItems": true}, "rewards": {"type": "array", "items": {"$ref": "#/$defs/reward"}}, "outcomes": {"type": "object", "propertyNames": {"enum": ["accept", "modify", "audit", "reject", "agency_forum", "retrain", "automation_cap", "refuse", "favorable_terms", "defer"]}, "additionalProperties": {"$ref": "#/$defs/outcome"}}}
+    },
+    "eligibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["requiredStoryState", "requiredCrisisQuestId", "requiredCrisisSourceDefinitionId", "requiredCrisisDefinitionFingerprint", "requiredCrisisCompletionActionId", "championDefinitionId"],
+      "properties": {"requiredStoryState": {"const": "story.nia.human_override.supported"}, "requiredCrisisQuestId": {"const": "quest.human_override"}, "requiredCrisisSourceDefinitionId": {"const": "quest.human_override.v1"}, "requiredCrisisDefinitionFingerprint": {"const": "433693a4a1332f736fc8e4a08a565fad"}, "requiredCrisisCompletionActionId": {"const": "action.quest.human_override.completed"}, "championDefinitionId": {"const": "champion.nia_vale.human_override"}}
+    },
+    "citizen": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "displayName", "assetPath", "origin", "occupation", "startingClass", "traits", "towerJobId", "championEligibility"],
+      "properties": {"id": {"const": "citizen.synara.nia_vale"}, "displayName": {"const": "Nia Vale"}, "assetPath": {"const": "/Game/DA/Citizens/DA_Citizen_NiaVale"}, "origin": {"const": "Synara"}, "occupation": {"const": "Junior Systems Technician"}, "startingClass": {"const": "Operator Initiate"}, "traits": {"const": ["Curious", "Automation Skeptic", "High Aptitude"]}, "towerJobId": {"const": "job.synara.cognitive_operations_tower.operator"}, "championEligibility": {"$ref": "#/$defs/eligibility"}}
+    }
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "presentation.bindings.v11",
+  "constructionSourceHook": "UDAConstructionComponent.OnStageChanged",
+  "damageSourceHook": "UDAStructuralDamageComponent.OnDamageStateChanged",
+  "constructionGrammars": [
+    {
+      "faction": "Synara",
+      "grammarId": "construction.synara.micro_drone_self_alignment",
+      "stages": [
+        {
+          "state": "Foundation",
+          "geometryHook": "micro_drone_survey",
+          "vfxId": "vfx.synara.placement",
+          "sfxId": "sfx.construction.synara_stage"
+        },
+        {
+          "state": "Frame",
+          "geometryHook": "micro_drone_frame",
+          "vfxId": "vfx.synara.construction",
+          "sfxId": "sfx.construction.synara_stage"
+        },
+        {
+          "state": "Shell",
+          "geometryHook": "smart_panels_unfold",
+          "vfxId": "vfx.synara.construction",
+          "sfxId": "sfx.construction.synara_stage"
+        },
+        {
+          "state": "Systems",
+          "geometryHook": "data_seams_online",
+          "vfxId": "vfx.synara.scan",
+          "sfxId": "sfx.utilities.data_pulse"
+        },
+        {
+          "state": "Operational",
+          "geometryHook": "adaptive_panels_release",
+          "vfxId": "vfx.synara.scan",
+          "sfxId": "sfx.construction.complete"
+        }
+      ]
+    },
+    {
+      "faction": "Forgeweave",
+      "grammarId": "construction.forgeweave.crane_cast_bolt",
+      "stages": [
+        {
+          "state": "Foundation",
+          "geometryHook": "tracked_platform_grade",
+          "vfxId": "vfx.forgeweave.construction",
+          "sfxId": "sfx.construction.forgeweave_stage"
+        },
+        {
+          "state": "Frame",
+          "geometryHook": "crane_frame_lift",
+          "vfxId": "vfx.forgeweave.construction",
+          "sfxId": "sfx.construction.forgeweave_stage"
+        },
+        {
+          "state": "Shell",
+          "geometryHook": "molten_plate_cast",
+          "vfxId": "vfx.forgeweave.furnace",
+          "sfxId": "sfx.construction.forgeweave_stage"
+        },
+        {
+          "state": "Systems",
+          "geometryHook": "weld_and_pressure_test",
+          "vfxId": "vfx.forgeweave.welding",
+          "sfxId": "sfx.construction.forgeweave_stage"
+        },
+        {
+          "state": "Operational",
+          "geometryHook": "gantries_begin_cycle",
+          "vfxId": "vfx.forgeweave.furnace",
+          "sfxId": "sfx.construction.complete"
+        }
+      ]
+    },
+    {
+      "faction": "EdenCircuit",
+      "grammarId": "construction.eden.root_lattice_growth",
+      "stages": [
+        {
+          "state": "Foundation",
+          "geometryHook": "root_lattice_anchor",
+          "vfxId": "vfx.eden.construction_growth",
+          "sfxId": "sfx.construction.eden_stage"
+        },
+        {
+          "state": "Frame",
+          "geometryHook": "timber_frame_branch",
+          "vfxId": "vfx.eden.construction_growth",
+          "sfxId": "sfx.construction.eden_stage"
+        },
+        {
+          "state": "Shell",
+          "geometryHook": "living_shell_grow",
+          "vfxId": "vfx.eden.construction_growth",
+          "sfxId": "sfx.construction.eden_stage"
+        },
+        {
+          "state": "Systems",
+          "geometryHook": "water_mycelium_connect",
+          "vfxId": "vfx.eden.water_restoration",
+          "sfxId": "sfx.utilities.water_flow"
+        },
+        {
+          "state": "Operational",
+          "geometryHook": "canopy_biome_balance",
+          "vfxId": "vfx.eden.regeneration",
+          "sfxId": "sfx.construction.complete"
+        }
+      ]
+    }
+  ],
+  "damageLanguages": [
+    {
+      "faction": "Synara",
+      "materialHook": "fractured_ceramic_exposed_lattice",
+      "vfxId": "vfx.universal.damage_sparks",
+      "sfxId": "sfx.damage.structure_impact"
+    },
+    {
+      "faction": "Forgeweave",
+      "materialHook": "soot_bent_steel_heat_damage",
+      "vfxId": "vfx.forgeweave.structural_breach",
+      "sfxId": "sfx.damage.breach"
+    },
+    {
+      "faction": "EdenCircuit",
+      "materialHook": "torn_fiber_scorched_living_material",
+      "vfxId": "vfx.universal.fire",
+      "sfxId": "sfx.damage.structure_impact"
+    }
+  ],
+  "capturePolicy": {
+    "sourceHook": "UDACaptureComponent.OnCaptureStateChanged",
+    "allowsInstantFactionRecolor": false,
+    "stages": [
+      "original_architecture",
+      "remove_old_signage",
+      "integration_scaffold",
+      "install_new_signage",
+      "integrated_operation"
+    ]
+  },
+  "daxton": {
+    "sourceAuthority": "FDADaxtonCampaignState",
+    "states": [
+      {
+        "phase": "PhaseOne",
+        "geometryHook": "production_floor_command",
+        "vfxId": "vfx.forgeweave.furnace",
+        "sfxId": "sfx.units.forgeweave_move"
+      },
+      {
+        "phase": "PhaseTwo",
+        "geometryHook": "powered_armor_overdrive",
+        "vfxId": "vfx.forgeweave.overdrive",
+        "sfxId": "sfx.damage.breach"
+      },
+      {
+        "phase": "PhaseThree",
+        "geometryHook": "systemic_choice_standoff",
+        "vfxId": "vfx.forgeweave.structural_breach",
+        "sfxId": "sfx.capture.progress"
+      },
+      {
+        "phase": "Resolved",
+        "geometryHook": "leader_resolution_in_functioning_forge",
+        "vfxId": "vfx.forgeweave.forge_relic_awakening",
+        "sfxId": "sfx.capture.complete"
+      }
+    ]
+  },
+  "ascension": {
+    "sourceAuthority": "FDAAscensionPresentationState",
+    "cinematicAssetPath": "/Game/Cinematics/CS_ForgeweaveAscension.CS_ForgeweaveAscension",
+    "gameplayGate": false,
+    "cinematicMayBeSkipped": true,
+    "beats": [
+      {
+        "beat": "SystemsHaltAndReact",
+        "vfxId": "vfx.ascension.transfer",
+        "sfxId": "sfx.damage.disabled"
+      },
+      {
+        "beat": "ForgeRelicEmerges",
+        "vfxId": "vfx.forgeweave.forge_relic_awakening",
+        "sfxId": "sfx.relic.forge_awaken"
+      },
+      {
+        "beat": "WorldTransit",
+        "vfxId": "vfx.ascension.transfer",
+        "sfxId": "sfx.relic.transit"
+      },
+      {
+        "beat": "FounderHallReceivesRelic",
+        "vfxId": "vfx.ascension.transfer",
+        "sfxId": "sfx.relic.install"
+      },
+      {
+        "beat": "Unlocks",
+        "vfxId": "vfx.ascension.transfer",
+        "sfxId": "sfx.relic.convergence_sting"
+      }
+    ]
+  }
+}

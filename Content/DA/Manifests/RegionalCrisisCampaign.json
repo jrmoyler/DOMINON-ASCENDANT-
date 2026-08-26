@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "campaign.vertical_slice.regional_crisis",
+  "fingerprint": "1bc31247330a8bc0af7103aaa8b70b51d8cd5d7a",
+  "events": [
+    {
+      "id": "event.foundry_shortage",
+      "title": "Foundry Shortage",
+      "assetPath": "/Game/DA/Events/E_FoundryShortage",
+      "scope": "regional",
+      "trigger": {"metric": "forgeweave.resource_hunger", "comparison": "greater_than", "threshold": 70},
+      "warningDurationWorldTicks": 2,
+      "initialStageId": "shortage_warning",
+      "ignoredResolutionId": "collapse",
+      "stages": [
+        {"id": "shortage_warning", "durationWorldTicks": 2, "priceModifier": 0.20, "nextStageIds": ["market_spike", "industrial_support", "eden_restriction", "brokered_compact", "market_exploitation"]},
+        {"id": "market_spike", "durationWorldTicks": 1, "priceModifier": 0.35, "nextStageIds": ["ecological_dispute", "industrial_support", "eden_restriction", "brokered_compact", "market_exploitation"]},
+        {"id": "ecological_dispute", "durationWorldTicks": 1, "priceModifier": 0.35, "nextStageIds": ["emergency_overdrive", "industrial_support", "eden_restriction", "brokered_compact", "market_exploitation"]},
+        {"id": "emergency_overdrive", "durationWorldTicks": 2, "priceModifier": 0.60, "nextStageIds": ["collapse", "industrial_support", "eden_restriction", "brokered_compact", "market_exploitation"]}
+      ],
+      "systems": ["market", "trade", "diplomacy", "ecology", "conquest"],
+      "resolutions": [
+        {
+          "id": "industrial_support", "recoveryWorldTicks": 4, "marketModifier": 0.20,
+          "tradeRouteCapacityDelta": 20, "ecologyDelta": -8,
+          "relationshipId": "relationship.synara.eden", "relationshipMetric": "grievance", "relationshipDelta": 8,
+          "resourceHungerDelta": -30, "historyTags": ["foundry_shortage_industrial_support"],
+          "citizenOutcomes": {
+            "citizen.neutral.tal_arden": "tal_forgeweave_pumps_installed",
+            "citizen.forgeweave.mara_kest": "mara_component_supply_secured",
+            "citizen.eden.ori_sen": "ori_watershed_warning_overruled"
+          }
+        },
+        {
+          "id": "eden_restriction", "recoveryWorldTicks": 4, "marketModifier": 0.20,
+          "tradeRouteCapacityDelta": -10, "ecologyDelta": 12,
+          "relationshipId": "relationship.synara.eden", "relationshipMetric": "trust", "relationshipDelta": 10,
+          "resourceHungerDelta": -10, "historyTags": ["foundry_shortage_eden_restriction"],
+          "citizenOutcomes": {
+            "citizen.neutral.tal_arden": "tal_eden_filtration_installed",
+            "citizen.forgeweave.mara_kest": "mara_emergency_shift_constrained",
+            "citizen.eden.ori_sen": "ori_watershed_boundary_protected"
+          }
+        },
+        {
+          "id": "brokered_compact", "recoveryWorldTicks": 6, "marketModifier": 0.20,
+          "tradeRouteCapacityDelta": 10, "ecologyDelta": 5,
+          "relationshipId": "relationship.synara.eden", "relationshipMetric": "compatibility", "relationshipDelta": 12,
+          "resourceHungerDelta": -20, "historyTags": ["foundry_shortage_brokered_compact"],
+          "citizenOutcomes": {
+            "citizen.neutral.tal_arden": "tal_shared_reservoir_plan",
+            "citizen.forgeweave.mara_kest": "mara_audited_transition",
+            "citizen.eden.ori_sen": "ori_engineered_mitigation"
+          }
+        },
+        {
+          "id": "market_exploitation", "recoveryWorldTicks": 8, "marketModifier": 0.60,
+          "tradeRouteCapacityDelta": 25, "ecologyDelta": -15,
+          "relationshipId": "relationship.synara.eden", "relationshipMetric": "grievance", "relationshipDelta": 15,
+          "resourceHungerDelta": 5, "historyTags": ["foundry_shortage_market_exploitation"],
+          "citizenOutcomes": {
+            "citizen.neutral.tal_arden": "tal_shortage_endured",
+            "citizen.forgeweave.mara_kest": "mara_numbers_suppressed",
+            "citizen.eden.ori_sen": "ori_warning_ignored"
+          }
+        },
+        {
+          "id": "collapse", "recoveryWorldTicks": 8, "marketModifier": 0.60,
+          "tradeRouteCapacityDelta": -10, "ecologyDelta": -20,
+          "relationshipId": "relationship.synara.eden", "relationshipMetric": "grievance", "relationshipDelta": 20,
+          "resourceHungerDelta": 10, "historyTags": ["foundry_shortage_ignored", "foundry_shortage_collapse"],
+          "citizenOutcomes": {
+            "citizen.neutral.tal_arden": "tal_reservoir_failed",
+            "citizen.forgeweave.mara_kest": "mara_empty_shift_recorded",
+            "citizen.eden.ori_sen": "ori_watershed_damaged"
+          }
+        }
+      ]
+    },
+    {
+      "id": "event.grid_strain", "title": "Grid Strain", "assetPath": "/Game/DA/Events/E_GridStrain", "scope": "city",
+      "trigger": {"metric": "city.power_reserve_percent", "comparison": "less_than", "threshold": 5}, "warningDurationWorldTicks": 3,
+      "initialStageId": "grid_warning", "ignoredResolutionId": "blackout",
+      "stages": [
+        {"id": "grid_warning", "durationWorldTicks": 3, "priceModifier": 0, "nextStageIds": ["brownouts", "emergency_generation", "demand_reduction", "import_power", "prioritize_districts"]},
+        {"id": "brownouts", "durationWorldTicks": 2, "priceModifier": 0, "nextStageIds": ["blackout", "emergency_generation", "demand_reduction", "import_power", "prioritize_districts"]}
+      ], "systems": ["power", "dependency"], "resolutions": [
+        {"id":"emergency_generation","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":-5,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":2,"resourceHungerDelta":0,"historyTags":["grid_emergency_generation"],"citizenOutcomes":{}},
+        {"id":"demand_reduction","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":2,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":1,"resourceHungerDelta":0,"historyTags":["grid_demand_reduction"],"citizenOutcomes":{}},
+        {"id":"import_power","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":-5,"ecologyDelta":0,"relationshipId":"relationship.synara.eden","relationshipMetric":"compatibility","relationshipDelta":2,"resourceHungerDelta":0,"historyTags":["grid_import_power"],"citizenOutcomes":{}},
+        {"id":"prioritize_districts","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":0,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":2,"resourceHungerDelta":0,"historyTags":["grid_prioritized_districts"],"citizenOutcomes":{}},
+        {"id":"blackout","recoveryWorldTicks":6,"marketModifier":0,"tradeRouteCapacityDelta":-10,"ecologyDelta":-3,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":6,"resourceHungerDelta":5,"historyTags":["grid_blackout"],"citizenOutcomes":{}}
+      ]
+    },
+    {
+      "id": "event.housing_surge", "title": "Housing Surge", "assetPath": "/Game/DA/Events/E_HousingSurge", "scope": "city",
+      "trigger": {"metric": "city.attractiveness_and_vacancy", "comparison": "greater_than", "threshold": 75}, "warningDurationWorldTicks": 1,
+      "initialStageId":"arrival_warning","ignoredResolutionId":"housing_crisis",
+      "stages":[{"id":"arrival_warning","durationWorldTicks":1,"priceModifier":0,"nextStageIds":["vacancy_exhausted","emergency_housing","vertical_growth","restrict_intake","subsidize_housing"]},{"id":"vacancy_exhausted","durationWorldTicks":2,"priceModifier":0,"nextStageIds":["housing_crisis","emergency_housing","vertical_growth","restrict_intake","subsidize_housing"]}], "systems": ["housing", "migration"], "resolutions": [
+        {"id":"emergency_housing","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":-3,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":1,"resourceHungerDelta":0,"historyTags":["housing_emergency_built"],"citizenOutcomes":{}},
+        {"id":"vertical_growth","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":-1,"relationshipId":"relationship.synara.eden","relationshipMetric":"compatibility","relationshipDelta":1,"resourceHungerDelta":0,"historyTags":["housing_vertical_growth"],"citizenOutcomes":{}},
+        {"id":"restrict_intake","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":1,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":4,"resourceHungerDelta":0,"historyTags":["housing_intake_restricted"],"citizenOutcomes":{}},
+        {"id":"subsidize_housing","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":0,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":2,"resourceHungerDelta":0,"historyTags":["housing_subsidized"],"citizenOutcomes":{}},
+        {"id":"housing_crisis","recoveryWorldTicks":6,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":-5,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":8,"resourceHungerDelta":5,"historyTags":["housing_crisis_ignored"],"citizenOutcomes":{}}
+      ]
+    },
+    {
+      "id": "event.green_line", "title": "Green Line", "assetPath": "/Game/DA/Events/E_GreenLine", "scope": "regional",
+      "trigger": {"metric": "eden.ecological_balance", "comparison": "less_than", "threshold": 70}, "warningDurationWorldTicks": 2,
+      "initialStageId":"watershed_warning","ignoredResolutionId":"boundary_failure",
+      "stages":[{"id":"watershed_warning","durationWorldTicks":2,"priceModifier":0,"nextStageIds":["treaty_dispute","full_boundary","industrial_exception","reject_boundary","engineered_mitigation"]},{"id":"treaty_dispute","durationWorldTicks":2,"priceModifier":0,"nextStageIds":["boundary_failure","full_boundary","industrial_exception","reject_boundary","engineered_mitigation"]}], "systems": ["ecology", "diplomacy", "border"], "resolutions": [
+        {"id":"full_boundary","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":-5,"ecologyDelta":10,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":8,"resourceHungerDelta":0,"historyTags":["green_line_full_boundary"],"citizenOutcomes":{}},
+        {"id":"industrial_exception","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":5,"ecologyDelta":2,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":3,"resourceHungerDelta":0,"historyTags":["green_line_industrial_exception"],"citizenOutcomes":{}},
+        {"id":"reject_boundary","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":10,"ecologyDelta":-8,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":10,"resourceHungerDelta":0,"historyTags":["green_line_rejected"],"citizenOutcomes":{}},
+        {"id":"engineered_mitigation","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":3,"ecologyDelta":7,"relationshipId":"relationship.synara.eden","relationshipMetric":"compatibility","relationshipDelta":8,"resourceHungerDelta":0,"historyTags":["green_line_engineered_mitigation"],"citizenOutcomes":{}},
+        {"id":"boundary_failure","recoveryWorldTicks":6,"marketModifier":0,"tradeRouteCapacityDelta":-10,"ecologyDelta":-12,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":12,"resourceHungerDelta":0,"historyTags":["green_line_ignored"],"citizenOutcomes":{}}
+      ]
+    },
+    {
+      "id": "event.corridor_failure", "title": "Corridor Failure", "assetPath": "/Game/DA/Events/E_CorridorFailure", "scope": "regional",
+      "trigger": {"metric": "route.transit_wear", "comparison": "greater_than", "threshold": 75}, "warningDurationWorldTicks": 2,
+      "initialStageId":"wear_warning","ignoredResolutionId":"corridor_collapse",
+      "stages":[{"id":"wear_warning","durationWorldTicks":2,"priceModifier":0,"nextStageIds":["delivery_failures","repair_corridor","reroute_contracts","airlift_essentials"]},{"id":"delivery_failures","durationWorldTicks":2,"priceModifier":0,"nextStageIds":["corridor_collapse","repair_corridor","reroute_contracts","airlift_essentials"]}], "systems": ["trade", "travel", "logistics"], "resolutions": [
+        {"id":"repair_corridor","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":20,"ecologyDelta":-2,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":2,"resourceHungerDelta":-5,"historyTags":["corridor_repaired"],"citizenOutcomes":{}},
+        {"id":"reroute_contracts","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":5,"ecologyDelta":-1,"relationshipId":"relationship.synara.eden","relationshipMetric":"compatibility","relationshipDelta":2,"resourceHungerDelta":0,"historyTags":["corridor_rerouted"],"citizenOutcomes":{}},
+        {"id":"airlift_essentials","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":-4,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":1,"resourceHungerDelta":-10,"historyTags":["corridor_airlift"],"citizenOutcomes":{}},
+        {"id":"corridor_collapse","recoveryWorldTicks":6,"marketModifier":0,"tradeRouteCapacityDelta":-25,"ecologyDelta":-5,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":8,"resourceHungerDelta":10,"historyTags":["corridor_failure_ignored"],"citizenOutcomes":{}}
+      ]
+    },
+    {
+      "id": "event.migration_wave", "title": "Migration Wave", "assetPath": "/Game/DA/Events/E_MigrationWave", "scope": "regional",
+      "trigger": {"metric": "region.neighbor_stability", "comparison": "less_than", "threshold": 30}, "warningDurationWorldTicks": 2,
+      "initialStageId":"border_arrivals","ignoredResolutionId":"humanitarian_failure",
+      "stages":[{"id":"border_arrivals","durationWorldTicks":2,"priceModifier":0,"nextStageIds":["shelter_pressure","accept_wave","partial_acceptance","support_elsewhere","refuse_entry"]},{"id":"shelter_pressure","durationWorldTicks":2,"priceModifier":0,"nextStageIds":["humanitarian_failure","accept_wave","partial_acceptance","support_elsewhere","refuse_entry"]}], "systems": ["migration", "housing", "diplomacy"], "resolutions": [
+        {"id":"accept_wave","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":-2,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":8,"resourceHungerDelta":4,"historyTags":["migration_accepted"],"citizenOutcomes":{}},
+        {"id":"partial_acceptance","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":-1,"relationshipId":"relationship.synara.eden","relationshipMetric":"compatibility","relationshipDelta":4,"resourceHungerDelta":2,"historyTags":["migration_partially_accepted"],"citizenOutcomes":{}},
+        {"id":"support_elsewhere","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":-5,"ecologyDelta":0,"relationshipId":"relationship.synara.eden","relationshipMetric":"trust","relationshipDelta":3,"resourceHungerDelta":0,"historyTags":["migration_supported_elsewhere"],"citizenOutcomes":{}},
+        {"id":"refuse_entry","recoveryWorldTicks":4,"marketModifier":0,"tradeRouteCapacityDelta":0,"ecologyDelta":0,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":10,"resourceHungerDelta":0,"historyTags":["migration_refused"],"citizenOutcomes":{}},
+        {"id":"humanitarian_failure","recoveryWorldTicks":6,"marketModifier":0,"tradeRouteCapacityDelta":-5,"ecologyDelta":-3,"relationshipId":"relationship.synara.eden","relationshipMetric":"grievance","relationshipDelta":15,"resourceHungerDelta":5,"historyTags":["migration_wave_ignored"],"citizenOutcomes":{}}
+      ]
+    }
+  ],
+  "quests": [
+    {
+      "id": "quest.tals_reservoir", "title": "Tal's Reservoir", "assetPath": "/Game/DA/Quests/Q_TalsReservoir",
+      "citizenIds": ["citizen.neutral.tal_arden"], "trigger": "reservoir_repair_requested",
+      "choices": ["capital_repair", "synara_optimization", "eden_filtration", "forgeweave_pumps", "ignore"],
+      "systems": ["diplomacy", "water"], "outcomeTags": ["tal_reservoir_resolved"], "choiceOutcomeTags":{"capital_repair":"tal_capital_repair","synara_optimization":"tal_synara_optimization","eden_filtration":"tal_eden_filtration","forgeweave_pumps":"tal_forgeweave_pumps","ignore":"tal_reservoir_ignored"}, "dialogueConditions": [],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"capital_repair","target":"resolution.capital_repair"},{"branch":"synara_optimization","target":"resolution.synara_optimization"},{"branch":"eden_filtration","target":"resolution.eden_filtration"},{"branch":"forgeweave_pumps","target":"resolution.forgeweave_pumps"},{"branch":"ignore","target":"resolution.ignore"}]},{"id":"resolution.capital_repair","type":"resolution","edges":[]},{"id":"resolution.synara_optimization","type":"resolution","edges":[]},{"id":"resolution.eden_filtration","type":"resolution","edges":[]},{"id":"resolution.forgeweave_pumps","type":"resolution","edges":[]},{"id":"resolution.ignore","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.frontier_claim", "title": "Frontier Claim", "assetPath": "/Game/DA/Quests/Q_FrontierClaim",
+      "citizenIds": [], "trigger": "unclaimed_resource_zone_discovered", "choices": ["claim_synara", "shared_zone", "future_negotiation"],
+      "systems": ["diplomacy", "conquest"], "outcomeTags": ["frontier_claim_resolved"], "choiceOutcomeTags":{"claim_synara":"frontier_claimed_synara","shared_zone":"frontier_shared_zone","future_negotiation":"frontier_future_negotiation"}, "dialogueConditions": [],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"claim_synara","target":"resolution.claim_synara"},{"branch":"shared_zone","target":"resolution.shared_zone"},{"branch":"future_negotiation","target":"resolution.future_negotiation"}]},{"id":"resolution.claim_synara","type":"resolution","edges":[]},{"id":"resolution.shared_zone","type":"resolution","edges":[]},{"id":"resolution.future_negotiation","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.hold_the_ridge", "title": "Hold the Ridge", "assetPath": "/Game/DA/Quests/Q_HoldTheRidge",
+      "citizenIds": [], "trigger": "frontier_claim_encounter_escalated", "choices": ["capture_two_control_zones", "defend_survey"],
+      "systems": ["conquest", "diplomacy"], "outcomeTags": ["ridge_held"], "choiceOutcomeTags":{"capture_two_control_zones":"ridge_zones_captured","defend_survey":"ridge_survey_defended"}, "dialogueConditions": [],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"capture_two_control_zones","target":"resolution.capture_two_control_zones"},{"branch":"defend_survey","target":"resolution.defend_survey"}]},{"id":"resolution.capture_two_control_zones","type":"resolution","edges":[]},{"id":"resolution.defend_survey","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.first_contract", "title": "First Contract", "assetPath": "/Game/DA/Quests/Q_FirstContract",
+      "citizenIds": ["citizen.forgeweave.mara_kest"], "trigger": "trade.active", "choices": ["forgeweave_components", "eden_materials"],
+      "systems": ["trade", "diplomacy"], "outcomeTags": ["first_contract_completed"], "choiceOutcomeTags":{"forgeweave_components":"first_contract_forgeweave_components","eden_materials":"first_contract_eden_materials"}, "dialogueConditions": [],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"forgeweave_components","target":"resolution.forgeweave_components"},{"branch":"eden_materials","target":"resolution.eden_materials"}]},{"id":"resolution.forgeweave_components","type":"resolution","edges":[]},{"id":"resolution.eden_materials","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.maras_numbers", "title": "Mara's Numbers", "assetPath": "/Game/DA/Quests/Q_MarasNumbers",
+      "citizenIds": ["citizen.forgeweave.mara_kest"], "trigger": "forgeweave.trust>30|trade.delivery_fulfilled",
+      "choices": ["deliver_to_daxton", "publish", "worker_coalition", "suppress"], "systems": ["diplomacy", "labor"],
+      "outcomeTags": ["mara_numbers_public", "mara_numbers_quiet"], "choiceOutcomeTags":{"deliver_to_daxton":"mara_numbers_delivered_to_daxton","publish":"mara_numbers_public","worker_coalition":"mara_numbers_worker_coalition","suppress":"mara_numbers_quiet"}, "dialogueConditions": ["dialogue.daxton.foundry_followup"],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"deliver_to_daxton","target":"resolution.deliver_to_daxton"},{"branch":"publish","target":"resolution.publish"},{"branch":"worker_coalition","target":"resolution.worker_coalition"},{"branch":"suppress","target":"resolution.suppress"}]},{"id":"resolution.deliver_to_daxton","type":"resolution","edges":[]},{"id":"resolution.publish","type":"resolution","edges":[]},{"id":"resolution.worker_coalition","type":"resolution","edges":[]},{"id":"resolution.suppress","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.green_line", "title": "Green Line", "assetPath": "/Game/DA/Quests/Q_GreenLine",
+      "citizenIds": ["citizen.eden.ori_sen"], "trigger": "event.green_line", "choices": ["full_boundary", "industrial_exception", "reject", "engineered_mitigation"],
+      "systems": ["ecology", "diplomacy"], "outcomeTags": ["green_line_resolved"], "choiceOutcomeTags":{"full_boundary":"green_line_full_boundary","industrial_exception":"green_line_industrial_exception","reject":"green_line_rejected","engineered_mitigation":"green_line_engineered_mitigation"}, "dialogueConditions": ["dialogue.amara.foundry_followup"],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"full_boundary","target":"resolution.full_boundary"},{"branch":"industrial_exception","target":"resolution.industrial_exception"},{"branch":"reject","target":"resolution.reject"},{"branch":"engineered_mitigation","target":"resolution.engineered_mitigation"}]},{"id":"resolution.full_boundary","type":"resolution","edges":[]},{"id":"resolution.industrial_exception","type":"resolution","edges":[]},{"id":"resolution.reject","type":"resolution","edges":[]},{"id":"resolution.engineered_mitigation","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.empty_shift", "title": "Empty Shift", "assetPath": "/Game/DA/Quests/Q_EmptyShift",
+      "citizenIds": ["citizen.forgeweave.mara_kest"], "trigger": "forgeweave.resource_hunger>60", "choices": ["emergency_supply", "stipend", "retraining", "market"],
+      "systems": ["labor", "market", "trade"], "outcomeTags": ["empty_shift_resolved"], "choiceOutcomeTags":{"emergency_supply":"empty_shift_emergency_supply","stipend":"empty_shift_stipend","retraining":"empty_shift_retraining","market":"empty_shift_market"}, "dialogueConditions": [],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"emergency_supply","target":"resolution.emergency_supply"},{"branch":"stipend","target":"resolution.stipend"},{"branch":"retraining","target":"resolution.retraining"},{"branch":"market","target":"resolution.market"}]},{"id":"resolution.emergency_supply","type":"resolution","edges":[]},{"id":"resolution.stipend","type":"resolution","edges":[]},{"id":"resolution.retraining","type":"resolution","edges":[]},{"id":"resolution.market","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.price_of_silence", "title": "The Price of Silence", "assetPath": "/Game/DA/Quests/Q_PriceOfSilence",
+      "citizenIds": ["citizen.forgeweave.mara_kest"], "trigger": "mara_numbers_quiet", "choices": ["daxton_admits", "daxton_denies", "attack_daxton", "private_help"],
+      "systems": ["diplomacy", "history"], "outcomeTags": ["price_of_silence_resolved"], "choiceOutcomeTags":{"daxton_admits":"price_silence_daxton_admits","daxton_denies":"price_silence_daxton_denies","attack_daxton":"price_silence_attack_daxton","private_help":"price_silence_private_help"}, "dialogueConditions": ["dialogue.daxton.foundry_followup"],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"daxton_admits","target":"resolution.daxton_admits"},{"branch":"daxton_denies","target":"resolution.daxton_denies"},{"branch":"attack_daxton","target":"resolution.attack_daxton"},{"branch":"private_help","target":"resolution.private_help"}]},{"id":"resolution.daxton_admits","type":"resolution","edges":[]},{"id":"resolution.daxton_denies","type":"resolution","edges":[]},{"id":"resolution.attack_daxton","type":"resolution","edges":[]},{"id":"resolution.private_help","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.human_override", "title": "Human Override", "assetPath": "/Game/DA/Quests/Q_HumanOverride",
+      "citizenIds": ["citizen.synara.nia_vale"], "trigger": "synara.dependency>50|automation_incident", "choices": ["manual_override", "modify_algorithm", "authorize_autonomous"],
+      "systems": ["citizen", "champion"], "outcomeTags": ["human_override_resolved"], "choiceOutcomeTags":{"manual_override":"human_override_manual","modify_algorithm":"human_override_modified","authorize_autonomous":"human_override_autonomous"}, "dialogueConditions": [],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"manual_override","target":"resolution.manual_override"},{"branch":"modify_algorithm","target":"resolution.modify_algorithm"},{"branch":"authorize_autonomous","target":"resolution.authorize_autonomous"}]},{"id":"resolution.manual_override","type":"resolution","edges":[]},{"id":"resolution.modify_algorithm","type":"resolution","edges":[]},{"id":"resolution.authorize_autonomous","type":"resolution","edges":[]}]
+    },
+    {
+      "id": "quest.foundry_shortage", "title": "Foundry Shortage", "assetPath": "/Game/DA/Quests/Q_FoundryShortage",
+      "citizenIds": ["citizen.neutral.tal_arden", "citizen.forgeweave.mara_kest", "citizen.eden.ori_sen"], "trigger": "event.foundry_shortage",
+      "choices": ["industrial_support", "eden_restriction", "brokered_compact", "market_exploitation"],
+      "systems": ["market", "trade", "ecology", "diplomacy", "resource_hunger"],
+      "outcomeTags": ["foundry_shortage_resolved"], "choiceOutcomeTags":{"industrial_support":"foundry_shortage_industrial_support","eden_restriction":"foundry_shortage_eden_restriction","brokered_compact":"foundry_shortage_brokered_compact","market_exploitation":"foundry_shortage_market_exploitation"}, "dialogueConditions": ["dialogue.daxton.foundry_followup", "dialogue.amara.foundry_followup"],
+      "nodes":[{"id":"start","type":"start","edges":[{"branch":"begin","target":"choice"}]},{"id":"choice","type":"choice","edges":[{"branch":"industrial_support","target":"resolution.industrial_support"},{"branch":"eden_restriction","target":"resolution.eden_restriction"},{"branch":"brokered_compact","target":"resolution.brokered_compact"},{"branch":"market_exploitation","target":"resolution.market_exploitation"}]},{"id":"resolution.industrial_support","type":"resolution","edges":[]},{"id":"resolution.eden_restriction","type":"resolution","edges":[]},{"id":"resolution.brokered_compact","type":"resolution","edges":[]},{"id":"resolution.market_exploitation","type":"resolution","edges":[]}]
+    }
+  ]
+}

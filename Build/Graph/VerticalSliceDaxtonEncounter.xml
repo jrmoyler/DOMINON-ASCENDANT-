@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BuildGraph xmlns="http://www.epicgames.com/BuildGraph">
+  <Option Name="ProjectFile" Restrict=".+\.uproject" DefaultValue="DominionAscendant.uproject" />
+  <Node Name="GenerateDaxtonEncounterAssets">
+    <Spawn Exe="bash" Arguments="Build/Scripts/PreCookDaxtonEncounter.sh &quot;$(ProjectFile)&quot;" />
+  </Node>
+  <Node Name="ValidateDaxtonEncounterAssets" Requires="GenerateDaxtonEncounterAssets">
+    <Log Message="Daxton source imports and generated Leader cache passed commandlet ValidateOnly." />
+  </Node>
+  <Aggregate Name="DaxtonEncounterPreCook" Requires="ValidateDaxtonEncounterAssets" />
+</BuildGraph>

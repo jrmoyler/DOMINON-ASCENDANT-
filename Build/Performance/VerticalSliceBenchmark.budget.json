@@ -1,0 +1,21 @@
+{
+  "$schema": "VerticalSliceBenchmark.budget.schema.json",
+  "schemaVersion": 1,
+  "resolution": {"width": 1920, "height": 1080},
+  "qualityPreset": "High",
+  "referenceHardware": {
+    "cpu": "Ryzen 5 5600 or equivalent",
+    "gpu": "RTX 3060 or RX 6700 XT class",
+    "systemMemoryGiB": 16,
+    "storage": "SSD"
+  },
+  "targetAverageFramesPerSecond": 60.0,
+  "minimumWorstCaseFramesPerSecond": 30.0,
+  "severeDevelopmentCycleHitchMilliseconds": 100.0,
+  "maximumModeTransitionSeconds": 1.5,
+  "minimumFrameSamples": 600,
+  "developmentCycles": 1000,
+  "enabledEventCount": 6,
+  "maximumSaveBytes": 8388608,
+  "maximumSaveGrowthBytes": 2097152
+}

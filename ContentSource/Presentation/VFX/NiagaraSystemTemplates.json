@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "systemTemplate": "simple_sprite_burst_asset_copy",
+  "emitter": {
+    "templateAssetPath": "/Niagara/DefaultAssets/Templates/System/NS_SimpleSpriteBurst.NS_SimpleSpriteBurst",
+    "expectedEmitterName": "SimpleSpriteBurst",
+    "simulationTarget": "CPUSim",
+    "rendererClass": "NiagaraSpriteRendererProperties",
+    "minimumEmitterCount": 1,
+    "burstCount": 32,
+    "lifetimeSeconds": 1.5,
+    "spriteSize": [24.0, 24.0],
+    "lifecycle": {
+      "mode": "Self",
+      "loopBehavior": "Once"
+    }
+  },
+  "parameters": [
+    {"name": "User.DA.GameplayRadiusMeters", "type": "float", "source": "recipe.gameplayRadiusMeters"},
+    {"name": "User.DA.BurstCount", "type": "int", "default": 32},
+    {"name": "User.DA.LifetimeSeconds", "type": "float", "default": 1.5},
+    {"name": "User.DA.SpriteSize", "type": "vec2", "default": [24.0, 24.0]}
+  ],
+  "bounds": [-1000, -1000, -1000, 1000, 1000, 1000],
+  "warmupSeconds": 0.15,
+  "autoDeactivate": true
+}

@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "presentation.core_vfx.v11",
+  "effects": [
+    {
+      "id": "vfx.synara.placement",
+      "faction": "Synara",
+      "family": "Placement",
+      "assetPath": "/Game/VFX/Synara/DA_VFX_Synara_Placement",
+      "recipe": {
+        "anticipation": "geometric footprint converges before placement",
+        "active": "micro-drones mark exact build boundary",
+        "resolution": "guides collapse into foundation",
+        "signature": "precise geometric scan volume",
+        "gameplayRadiusMeters": 8
+      }
+    },
+    {
+      "id": "vfx.synara.construction",
+      "faction": "Synara",
+      "family": "Construction",
+      "assetPath": "/Game/VFX/Synara/DA_VFX_Synara_Construction",
+      "recipe": {
+        "anticipation": "micro-drones arrive in ordered lanes",
+        "active": "frame and smart panels self-align",
+        "resolution": "drones clear and panels lock",
+        "signature": "controlled swarm choreography",
+        "gameplayRadiusMeters": 12
+      }
+    },
+    {
+      "id": "vfx.synara.scan",
+      "faction": "Synara",
+      "family": "Scan",
+      "assetPath": "/Game/VFX/Synara/DA_VFX_Synara_Scan",
+      "recipe": {
+        "anticipation": "thin edge markers bracket target",
+        "active": "clean scan plane traverses volume",
+        "resolution": "data seams settle",
+        "signature": "precise geometry without binary rain",
+        "gameplayRadiusMeters": 18
+      }
+    },
+    {
+      "id": "vfx.synara.shield_barrier",
+      "faction": "Synara",
+      "family": "ShieldBarrier",
+      "assetPath": "/Game/VFX/Synara/DA_VFX_Synara_ShieldBarrier",
+      "recipe": {
+        "anticipation": "nested arcs gather at emitter",
+        "active": "faceted barrier exposes gameplay radius",
+        "resolution": "arcs fold toward impact point",
+        "signature": "restrained clean energy pulse",
+        "gameplayRadiusMeters": 10
+      }
+    },
+    {
+      "id": "vfx.synara.drone_deployment",
+      "faction": "Synara",
+      "family": "DroneDeployment",
+      "assetPath": "/Game/VFX/Synara/DA_VFX_Synara_DroneDeployment",
+      "recipe": {
+        "anticipation": "launch apertures index targets",
+        "active": "coordinated drones fan into formation",
+        "resolution": "launch trails terminate cleanly",
+        "signature": "sensor-readable swarm vectors",
+        "gameplayRadiusMeters": 14
+      }
+    },
+    {
+      "id": "vfx.synara.network_disruption",
+      "faction": "Synara",
+      "family": "NetworkDisruption",
+      "assetPath": "/Game/VFX/Synara/DA_VFX_Synara_NetworkDisruption",
+      "recipe": {
+        "anticipation": "data seams desynchronize",
+        "active": "controlled geometric distortion interrupts links",
+        "resolution": "geometry relocks or powers down",
+        "signature": "localized data distortion",
+        "gameplayRadiusMeters": 16
+      }
+    },
+    {
+      "id": "vfx.forgeweave.construction",
+      "faction": "Forgeweave",
+      "family": "Construction",
+      "assetPath": "/Game/VFX/Forgeweave/DA_VFX_Forgeweave_Construction",
+      "recipe": {
+        "anticipation": "tracked platforms grade and cranes engage",
+        "active": "molten casting plates and bolted lifts assemble mass",
+        "resolution": "steam clears around locked structure",
+        "signature": "heavy dust and mechanical impact",
+        "gameplayRadiusMeters": 15
+      }
+    },
+    {
+      "id": "vfx.forgeweave.furnace",
+      "faction": "Forgeweave",
+      "family": "Furnace",
+      "assetPath": "/Game/VFX/Forgeweave/DA_VFX_Forgeweave_Furnace",
+      "recipe": {
+        "anticipation": "refractory channels heat visibly",
+        "active": "furnace roar couples to heat distortion",
+        "resolution": "channels cool with pressure release",
+        "signature": "molten heat with practical radius",
+        "gameplayRadiusMeters": 20
+      }
+    },
+    {
+      "id": "vfx.forgeweave.welding",
+      "faction": "Forgeweave",
+      "family": "Welding",
+      "assetPath": "/Game/VFX/Forgeweave/DA_VFX_Forgeweave_Welding",
+      "recipe": {
+        "anticipation": "weld head clamps to seam",
+        "active": "readable arc walks the structural joint",
+        "resolution": "hot seam dims under inspection",
+        "signature": "directional welding arc and sparks",
+        "gameplayRadiusMeters": 5
+      }
+    },
+    {
+      "id": "vfx.forgeweave.overdrive",
+      "faction": "Forgeweave",
+      "family": "Overdrive",
+      "assetPath": "/Game/VFX/Forgeweave/DA_VFX_Forgeweave_Overdrive",
+      "recipe": {
+        "anticipation": "armor vents and furnace nodes prime",
+        "active": "pressure jets and hot mechanisms accelerate",
+        "resolution": "vents dump pressure and cool",
+        "signature": "mechanical force rather than magic glow",
+        "gameplayRadiusMeters": 12
+      }
+    },
+    {
+      "id": "vfx.forgeweave.structural_breach",
+      "faction": "Forgeweave",
+      "family": "StructuralBreach",
+      "assetPath": "/Game/VFX/Forgeweave/DA_VFX_Forgeweave_StructuralBreach",
+      "recipe": {
+        "anticipation": "steel bows and pipe pressure spikes",
+        "active": "rupture emits steam sparks and debris along module",
+        "resolution": "dust reveals disabled module silhouette",
+        "signature": "heavy localized structural failure",
+        "gameplayRadiusMeters": 14
+      }
+    },
+    {
+      "id": "vfx.eden.construction_growth",
+      "faction": "EdenCircuit",
+      "family": "ConstructionGrowth",
+      "assetPath": "/Game/VFX/EdenCircuit/DA_VFX_Eden_ConstructionGrowth",
+      "recipe": {
+        "anticipation": "root anchors map water and soil",
+        "active": "root lattice and timber frame branch together",
+        "resolution": "living shell reaches stable canopy",
+        "signature": "natural physical growth",
+        "gameplayRadiusMeters": 14
+      }
+    },
+    {
+      "id": "vfx.eden.regeneration",
+      "faction": "EdenCircuit",
+      "family": "Regeneration",
+      "assetPath": "/Game/VFX/EdenCircuit/DA_VFX_Eden_Regeneration",
+      "recipe": {
+        "anticipation": "wilted tissue responds with subtle bioluminescence",
+        "active": "fibers knit as leaves and water redistribute",
+        "resolution": "growth settles into healthy motion",
+        "signature": "living response with readable duration",
+        "gameplayRadiusMeters": 10
+      }
+    },
+    {
+      "id": "vfx.eden.water_restoration",
+      "faction": "EdenCircuit",
+      "family": "WaterRestoration",
+      "assetPath": "/Game/VFX/EdenCircuit/DA_VFX_Eden_WaterRestoration",
+      "recipe": {
+        "anticipation": "sediment and flow markers gather",
+        "active": "clean water front advances through channel",
+        "resolution": "wetland motion reaches stable flow",
+        "signature": "water droplets and ecological motion",
+        "gameplayRadiusMeters": 22
+      }
+    },
+    {
+      "id": "vfx.universal.damage_sparks",
+      "faction": "Universal",
+      "family": "DamageSparks",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_DamageSparks",
+      "recipe": {
+        "anticipation": "surface flashes at impact location",
+        "active": "short directional sparks expose damage source",
+        "resolution": "embers decay at the hit module",
+        "signature": "brief readable impact",
+        "gameplayRadiusMeters": 4
+      }
+    },
+    {
+      "id": "vfx.universal.fire",
+      "faction": "Universal",
+      "family": "Fire",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_Fire",
+      "recipe": {
+        "anticipation": "heat shimmer and first ignition mark hazard",
+        "active": "flame occupies exact damaging area",
+        "resolution": "fuel burns out or suppression closes it",
+        "signature": "functional hazard volume",
+        "gameplayRadiusMeters": 9
+      }
+    },
+    {
+      "id": "vfx.universal.smoke",
+      "faction": "Universal",
+      "family": "Smoke",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_Smoke",
+      "recipe": {
+        "anticipation": "thin source plume identifies origin",
+        "active": "wind-shaped smoke communicates obscuration",
+        "resolution": "plume disperses along airflow",
+        "signature": "visibility-linked volume",
+        "gameplayRadiusMeters": 18
+      }
+    },
+    {
+      "id": "vfx.universal.arc_damage",
+      "faction": "Universal",
+      "family": "ArcDamage",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_ArcDamage",
+      "recipe": {
+        "anticipation": "charge crawls toward conductive target",
+        "active": "arc joins exact source and affected module",
+        "resolution": "residual charge grounds",
+        "signature": "conductive path readability",
+        "gameplayRadiusMeters": 11
+      }
+    },
+    {
+      "id": "vfx.universal.cyber_disruption",
+      "faction": "Universal",
+      "family": "CyberDisruption",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_CyberDisruption",
+      "recipe": {
+        "anticipation": "interface timing slips at affected system",
+        "active": "localized signal breakup marks disabled function",
+        "resolution": "signal restores or fails dark",
+        "signature": "no decorative hologram noise",
+        "gameplayRadiusMeters": 13
+      }
+    },
+    {
+      "id": "vfx.universal.capture",
+      "faction": "Universal",
+      "family": "Capture",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_Capture",
+      "recipe": {
+        "anticipation": "interaction radius and old signage highlight",
+        "active": "capture progress advances around facility anchors",
+        "resolution": "integration scaffolds replace progress ring",
+        "signature": "ownership process not recolor",
+        "gameplayRadiusMeters": 12
+      }
+    },
+    {
+      "id": "vfx.universal.building_disabled",
+      "faction": "Universal",
+      "family": "BuildingDisabled",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_BuildingDisabled",
+      "recipe": {
+        "anticipation": "utility indicators destabilize",
+        "active": "systems lock and operational lights fail",
+        "resolution": "persistent disabled marker remains",
+        "signature": "function loss readable at city altitude",
+        "gameplayRadiusMeters": 16
+      }
+    },
+    {
+      "id": "vfx.universal.ruin_transition",
+      "faction": "Universal",
+      "family": "RuinTransition",
+      "assetPath": "/Game/VFX/Universal/DA_VFX_Universal_RuinTransition",
+      "recipe": {
+        "anticipation": "critical supports expose failure lines",
+        "active": "modules collapse along authored break order",
+        "resolution": "dust clears to stable ruin silhouette",
+        "signature": "not generic rubble",
+        "gameplayRadiusMeters": 20
+      }
+    },
+    {
+      "id": "vfx.fusion.autonomous_factory_fusion",
+      "faction": "Fusion",
+      "family": "AutonomousFactoryFusion",
+      "assetPath": "/Game/VFX/Fusion/DA_VFX_Fusion_AutonomousFactoryFusion",
+      "recipe": {
+        "anticipation": "Forgeweave gantries and Synara guides align separately",
+        "active": "heavy mass interlocks with computational crown",
+        "resolution": "mixed systems synchronize into one cycle",
+        "signature": "two source technologies remain legible",
+        "gameplayRadiusMeters": 18
+      }
+    },
+    {
+      "id": "vfx.forgeweave.forge_relic_awakening",
+      "faction": "Forgeweave",
+      "family": "ForgeRelicAwakening",
+      "assetPath": "/Game/VFX/Forgeweave/DA_VFX_Forgeweave_ForgeRelicAwakening",
+      "recipe": {
+        "anticipation": "Grand Forge channels cool and embers suspend",
+        "active": "Forge Relic rises from replication heart",
+        "resolution": "industrial systems hold for transit",
+        "signature": "culturally specific monumental transfer",
+        "gameplayRadiusMeters": 25
+      }
+    },
+    {
+      "id": "vfx.ascension.transfer",
+      "faction": "Ascension",
+      "family": "AscensionTransfer",
+      "assetPath": "/Game/VFX/Ascension/DA_VFX_Ascension_Transfer",
+      "recipe": {
+        "anticipation": "civilization systems halt and Relic authority gathers",
+        "active": "Relic transits and Founder Hall annex interlocks",
+        "resolution": "slot one and hidden chamber stabilize",
+        "signature": "monumental authority transfer without generic sky beam",
+        "gameplayRadiusMeters": 30
+      }
+    }
+  ]
+}

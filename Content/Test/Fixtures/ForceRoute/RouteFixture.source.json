@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "fixture.release.force",
+  "route": "Force",
+  "commitBoundary": "IMMEDIATELY_BEFORE_FINAL_ROUTE_COMMIT",
+  "brokerTag": "broker_force",
+  "loyaltyAction": {
+    "system": "UDACaptureComponent",
+    "outcome": "Gift",
+    "targetDefinition": "forgeweave.infinite_foundry",
+    "recipient": "civilization.ironheart_workers",
+    "giftLoyaltyReward": 15
+  },
+  "relationship": {"trust": 20, "respect": 60, "grievance": 40},
+  "sourceAuthorities": [
+    "region.ironheart.owner.synara",
+    "conflict.control_zone.iron_gate",
+    "conflict.control_zone.grand_forge",
+    "conflict.capture.heavy_carrier",
+    "conflict.capture.command_bastion",
+    "conflict.damage.grand_forge",
+    "conflict.capture.gift_loyalty",
+    "history.forgeweave_elite_defeated",
+    "history.daxton_encounter_resolved",
+    "history.daxton_surrendered",
+    "quest.operation_iron_veil.completed"
+  ],
+  "daxtonOutcome": {
+    "leaderState": "Prisoner",
+    "saveGrandForge": false,
+    "evacuateWorkers": true,
+    "offerProductionUnion": false
+  },
+  "expectedAftermath": {
+    "loyalty": "PAIRWISE_DISTINCT",
+    "daxtonState": "PAIRWISE_DISTINCT",
+    "historyTags": "PAIRWISE_DISTINCT",
+    "damageFingerprint": "PAIRWISE_DISTINCT",
+    "relationship": "PAIRWISE_DISTINCT"
+  },
+  "generationContract": {
+    "tool": "Build/Tools/ReleaseCandidateTool.py",
+    "automationTest": "Dominion.Release.VerticalSlice",
+    "binaryAssetPolicy": "SOURCE_ONLY_NO_FABRICATED_UASSET"
+  }
+}

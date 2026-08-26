@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "authoritative gameplay-to-presentation bindings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sourceId",
+    "constructionSourceHook",
+    "damageSourceHook",
+    "constructionGrammars",
+    "damageLanguages",
+    "capturePolicy",
+    "daxton",
+    "ascension"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceId": {
+      "const": "presentation.bindings.v11"
+    },
+    "constructionSourceHook": {
+      "const": "UDAConstructionComponent.OnStageChanged"
+    },
+    "damageSourceHook": {
+      "const": "UDAStructuralDamageComponent.OnDamageStateChanged"
+    },
+    "constructionGrammars": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "faction",
+          "grammarId",
+          "stages"
+        ],
+        "properties": {
+          "faction": {
+            "enum": [
+              "Synara",
+              "Forgeweave",
+              "EdenCircuit"
+            ]
+          },
+          "grammarId": {
+            "type": "string",
+            "pattern": "^construction\\."
+          },
+          "stages": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "state",
+                "geometryHook",
+                "vfxId",
+                "sfxId"
+              ],
+              "properties": {
+                "state": {
+                  "enum": [
+                    "Foundation",
+                    "Frame",
+                    "Shell",
+                    "Systems",
+                    "Operational"
+                  ]
+                },
+                "geometryHook": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "vfxId": {
+                  "type": "string",
+                  "pattern": "^vfx\\."
+                },
+                "sfxId": {
+                  "type": "string",
+                  "pattern": "^sfx\\."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "damageLanguages": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "faction",
+          "materialHook",
+          "vfxId",
+          "sfxId"
+        ],
+        "properties": {
+          "faction": {
+            "enum": [
+              "Synara",
+              "Forgeweave",
+              "EdenCircuit"
+            ]
+          },
+          "materialHook": {
+            "type": "string",
+            "minLength": 1
+          },
+          "vfxId": {
+            "type": "string",
+            "pattern": "^vfx\\."
+          },
+          "sfxId": {
+            "type": "string",
+            "pattern": "^sfx\\."
+          }
+        }
+      }
+    },
+    "capturePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceHook",
+        "allowsInstantFactionRecolor",
+        "stages"
+      ],
+      "properties": {
+        "sourceHook": {
+          "const": "UDACaptureComponent.OnCaptureStateChanged"
+        },
+        "allowsInstantFactionRecolor": {
+          "const": false
+        },
+        "stages": {
+          "const": [
+            "original_architecture",
+            "remove_old_signage",
+            "integration_scaffold",
+            "install_new_signage",
+            "integrated_operation"
+          ]
+        }
+      }
+    },
+    "daxton": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceAuthority",
+        "states"
+      ],
+      "properties": {
+        "sourceAuthority": {
+          "const": "FDADaxtonCampaignState"
+        },
+        "states": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "phase",
+              "geometryHook",
+              "vfxId",
+              "sfxId"
+            ],
+            "properties": {
+              "phase": {
+                "enum": [
+                  "PhaseOne",
+                  "PhaseTwo",
+                  "PhaseThree",
+                  "Resolved"
+                ]
+              },
+              "geometryHook": {
+                "type": "string",
+                "minLength": 1
+              },
+              "vfxId": {
+                "type": "string",
+                "pattern": "^vfx\\."
+              },
+              "sfxId": {
+                "type": "string",
+                "pattern": "^sfx\\."
+              }
+            }
+          }
+        }
+      }
+    },
+    "ascension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceAuthority",
+        "cinematicAssetPath",
+        "gameplayGate",
+        "cinematicMayBeSkipped",
+        "beats"
+      ],
+      "properties": {
+        "sourceAuthority": {
+          "const": "FDAAscensionPresentationState"
+        },
+        "cinematicAssetPath": {
+          "const": "/Game/Cinematics/CS_ForgeweaveAscension.CS_ForgeweaveAscension"
+        },
+        "gameplayGate": {
+          "const": false
+        },
+        "cinematicMayBeSkipped": {
+          "const": true
+        },
+        "beats": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "beat",
+              "vfxId",
+              "sfxId"
+            ],
+            "properties": {
+              "beat": {
+                "enum": [
+                  "SystemsHaltAndReact",
+                  "ForgeRelicEmerges",
+                  "WorldTransit",
+                  "FounderHallReceivesRelic",
+                  "Unlocks"
+                ]
+              },
+              "vfxId": {
+                "type": "string",
+                "pattern": "^vfx\\."
+              },
+              "sfxId": {
+                "type": "string",
+                "pattern": "^sfx\\."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

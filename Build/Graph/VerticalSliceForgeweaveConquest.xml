@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BuildGraph xmlns="http://www.epicgames.com/BuildGraph">
+  <Option Name="ProjectFile" Restrict=".+\.uproject" DefaultValue="DominionAscendant.uproject" />
+  <Node Name="GenerateForgeweaveConquestAssets">
+    <Spawn Exe="bash" Arguments="Build/Scripts/PreCookForgeweaveConquest.sh &quot;$(ProjectFile)&quot;" />
+  </Node>
+  <Node Name="ValidateForgeweaveConquestAssets" Requires="GenerateForgeweaveConquestAssets">
+    <Log Message="Forgeweave conquest generated cache passed commandlet ValidateOnly." />
+  </Node>
+  <Node Name="ValidateDaxtonEncounterAssets" Requires="ValidateForgeweaveConquestAssets">
+    <Spawn Exe="bash" Arguments="Build/Scripts/PreCookDaxtonEncounter.sh &quot;$(ProjectFile)&quot;" />
+    <Log Message="Daxton Leader registry and exact character import cache passed commandlet ValidateOnly." />
+  </Node>
+  <Node Name="ValidateFirstAscensionAssets" Requires="ValidateDaxtonEncounterAssets">
+    <Spawn Exe="bash" Arguments="Build/Scripts/PreCookFirstAscension.sh &quot;$(ProjectFile)&quot;" />
+    <Log Message="First Ascension doctrine, building imports, Fusion card, quest and cinematic passed ValidateOnly." />
+  </Node>
+  <Node Name="ValidateVerticalSlicePresentation" Requires="ValidateFirstAscensionAssets">
+    <Spawn Exe="bash" Arguments="Build/Scripts/PreCookPresentation.sh &quot;$(ProjectFile)&quot;" />
+    <Log Message="All source-derived presentation definitions and mesh, material, Niagara, audio/cue, and sequence artifacts passed class/path/content Asset Registry ValidateOnly coverage." />
+  </Node>
+  <Aggregate Name="ForgeweaveConquestPreCook" Requires="ValidateVerticalSlicePresentation" />
+</BuildGraph>

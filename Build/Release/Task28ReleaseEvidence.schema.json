@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dominion-ascendant.invalid/schemas/task28-release-evidence.schema.json",
+  "title": "Task 28 Release Gate Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "state",
+    "runId",
+    "buildId",
+    "fixturePlanEvidence",
+    "task27PerformanceState",
+    "task27Evidence",
+    "task27EvidenceSha256",
+    "commands",
+    "automationEvidence",
+    "routeEvidence",
+    "saveCheckpointEvidence",
+    "controllerEvidence",
+    "onboardingEvidence",
+    "defectEvidence",
+    "claims",
+    "notReadyReasons"
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "state": {"enum": ["NOT_READY", "READY"]},
+    "runId": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9._:-]+$", "maxLength": 128},
+    "buildId": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9._:-]+$", "maxLength": 128},
+    "fixturePlanEvidence": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        }
+      ]
+    },
+    "task27PerformanceState": {"enum": ["NOT_READY", "CAPTURED"]},
+    "task27Evidence": {"const": "Build/Performance/Task27PerformanceEvidence.json"},
+    "task27EvidenceSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "commands": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["releaseAutomation"],
+      "properties": {
+        "releaseAutomation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["command", "exitCode", "log"],
+          "properties": {
+            "command": {"oneOf": [{"type": "null"}, {"type": "array", "items": {"type": "string"}}]},
+            "exitCode": {"type": ["integer", "null"]},
+            "log": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["path", "sha256"],
+                  "properties": {
+                    "path": {"type": "string", "minLength": 1},
+                    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "automationEvidence": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "exitCode"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "exitCode": {"const": 0}
+          }
+        }
+      ]
+    },
+    "routeEvidence": {"type": ["array", "null"]},
+    "saveCheckpointEvidence": {"type": ["array", "null"]},
+    "controllerEvidence": {"type": ["object", "null"]},
+    "onboardingEvidence": {"type": ["object", "null"]},
+    "defectEvidence": {"type": ["object", "null"]},
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseCandidateReady",
+        "fourRoutesPassed",
+        "saveRegressionPassed",
+        "controllerPassed",
+        "onboardingPassed",
+        "defectGatePassed",
+        "task27Passed",
+        "automationPassed"
+      ],
+      "properties": {
+        "releaseCandidateReady": {"type": "boolean"},
+        "fourRoutesPassed": {"type": "boolean"},
+        "saveRegressionPassed": {"type": "boolean"},
+        "controllerPassed": {"type": "boolean"},
+        "onboardingPassed": {"type": "boolean"},
+        "defectGatePassed": {"type": "boolean"},
+        "task27Passed": {"type": "boolean"},
+        "automationPassed": {"type": "boolean"}
+      }
+    },
+    "notReadyReasons": {"type": "array", "items": {"type": "string"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"const": "NOT_READY"}}},
+      "then": {
+        "properties": {
+          "controllerEvidence": {"type": "null"},
+          "onboardingEvidence": {"type": "null"},
+          "defectEvidence": {"type": "null"},
+          "claims": {
+            "properties": {
+              "releaseCandidateReady": {"const": false},
+              "controllerPassed": {"const": false},
+              "onboardingPassed": {"const": false},
+              "defectGatePassed": {"const": false}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "READY"}}},
+      "then": {
+        "properties": {
+          "runId": {"type": "string"},
+          "buildId": {"type": "string"},
+          "fixturePlanEvidence": {"type": "object"},
+          "automationEvidence": {"type": "object"},
+          "routeEvidence": {"type": "array"},
+          "saveCheckpointEvidence": {"type": "array"},
+          "controllerEvidence": {"type": "object"},
+          "onboardingEvidence": {"type": "object"},
+          "defectEvidence": {"type": "object"}
+        }
+      }
+    }
+  ]
+}

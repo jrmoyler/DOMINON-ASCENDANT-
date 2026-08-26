@@ -1,0 +1,1108 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "presentation.primary.buildings.v06",
+  "assets": [
+    {
+      "number": 1,
+      "id": "primary.01.adaptive_habitat",
+      "displayName": "Adaptive Habitat",
+      "faction": "Synara",
+      "kind": "Residential",
+      "assetPath": "/Game/Buildings/Synara/Primary01/DA_Presentation_AdaptiveHabitat",
+      "recipe": {
+        "silhouette": "mid-rise layered asymmetric shell",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "four facade variations",
+          "inhabited windows",
+          "roof utility module",
+          "entrance"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 2,
+      "id": "primary.02.civic_autonomy_pods",
+      "displayName": "Civic Autonomy Pods",
+      "faction": "Synara",
+      "kind": "Residential",
+      "assetPath": "/Game/Buildings/Synara/Primary02/DA_Presentation_CivicAutonomyPods",
+      "recipe": {
+        "silhouette": "warm low-density nested pods",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "personalized balconies",
+          "visible resident customization",
+          "human-scale entrances"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 3,
+      "id": "primary.03.cognitive_operations_tower",
+      "displayName": "Cognitive Operations Tower",
+      "faction": "Synara",
+      "kind": "Office",
+      "assetPath": "/Game/Buildings/Synara/Primary03/DA_Presentation_CognitiveOperationsTower",
+      "recipe": {
+        "silhouette": "tapered vertical computational tower",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "layered smart-glass facade",
+          "visible operations floors",
+          "sensor crown"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 4,
+      "id": "primary.04.predictive_bureau",
+      "displayName": "Predictive Bureau",
+      "faction": "Synara",
+      "kind": "Office",
+      "assetPath": "/Game/Buildings/Synara/Primary04/DA_Presentation_PredictiveBureau",
+      "recipe": {
+        "silhouette": "compact analytic block with split shell",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "directional sensor roof crown",
+          "recessed machine channels"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 5,
+      "id": "primary.05.autonomous_exchange",
+      "displayName": "Autonomous Exchange",
+      "faction": "Synara",
+      "kind": "Retail",
+      "assetPath": "/Game/Buildings/Synara/Primary05/DA_Presentation_AutonomousExchange",
+      "recipe": {
+        "silhouette": "automated market with open service edge",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "robotic service cells",
+          "adaptive customer lanes"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 6,
+      "id": "primary.06.algorithmic_market",
+      "displayName": "Algorithmic Market",
+      "faction": "Synara",
+      "kind": "Retail",
+      "assetPath": "/Game/Buildings/Synara/Primary06/DA_Presentation_AlgorithmicMarket",
+      "recipe": {
+        "silhouette": "public hall beneath nested arcs",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "adaptive storefronts",
+          "restrained data polymer signs"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 7,
+      "id": "primary.07.synthetic_fabrication_node",
+      "displayName": "Synthetic Fabrication Node",
+      "faction": "Synara",
+      "kind": "Industrial",
+      "assetPath": "/Game/Buildings/Synara/Primary07/DA_Presentation_SyntheticFabricationNode",
+      "recipe": {
+        "silhouette": "visible robotic fabrication cells in split shell",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "targetable power core",
+          "targetable fabrication line",
+          "targetable control center"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 8,
+      "id": "primary.08.swarm_foundry",
+      "displayName": "Swarm Foundry",
+      "faction": "Synara",
+      "kind": "Industrial",
+      "assetPath": "/Game/Buildings/Synara/Primary08/DA_Presentation_SwarmFoundry",
+      "recipe": {
+        "silhouette": "broad fabrication base with vertical launch crown",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "roof drone apertures",
+          "visible swarm circulation"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 9,
+      "id": "primary.09.neural_relay",
+      "displayName": "Neural Relay",
+      "faction": "Synara",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/Synara/Primary09/DA_Presentation_NeuralRelay",
+      "recipe": {
+        "silhouette": "slender directional network mast",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "articulated sensor vanes",
+          "readable data radius marker"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 10,
+      "id": "primary.10.orchestration_hub",
+      "displayName": "Orchestration Hub",
+      "faction": "Synara",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/Synara/Primary10/DA_Presentation_OrchestrationHub",
+      "recipe": {
+        "silhouette": "compact district automation node",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "distributed control panels",
+          "embedded sensor plinth"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 11,
+      "id": "primary.11.agency_forum",
+      "displayName": "Agency Forum",
+      "faction": "Synara",
+      "kind": "Civic",
+      "assetPath": "/Game/Buildings/Synara/Primary11/DA_Presentation_AgencyForum",
+      "recipe": {
+        "silhouette": "human-scale civic hall contrasting vertical automation",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "public entrance",
+          "civic assembly room",
+          "warm occupied frontage"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 16,
+      "id": "primary.16.the_thinking_spire",
+      "displayName": "The Thinking Spire",
+      "faction": "Synara",
+      "kind": "Wonder",
+      "assetPath": "/Game/Buildings/Synara/Primary16/DA_Presentation_TheThinkingSpire",
+      "recipe": {
+        "silhouette": "skyline-scale reorganizing vertical superstructure",
+        "materials": [
+          "ivory ceramic composite",
+          "brushed silver alloy",
+          "smoked glass",
+          "graphite internals"
+        ],
+        "signatureElements": [
+          "adaptive outer layers",
+          "activation transformation",
+          "custom HLOD silhouette"
+        ],
+        "constructionGrammar": "construction.synara.micro_drone_self_alignment",
+        "damageLanguage": "damage.synara.fractured_ceramic",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 17,
+      "id": "primary.17.worker_arcology",
+      "displayName": "Worker Arcology",
+      "faction": "Forgeweave",
+      "kind": "Residential",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary17/DA_Presentation_WorkerArcology",
+      "recipe": {
+        "silhouette": "dense heavy housing over freight spine",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "rail access",
+          "occupied worker decks",
+          "maintenance gantries"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 18,
+      "id": "primary.18.forge_quarters",
+      "displayName": "Forge Quarters",
+      "faction": "Forgeweave",
+      "kind": "Residential",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary18/DA_Presentation_ForgeQuarters",
+      "recipe": {
+        "silhouette": "low heavy utilitarian housing block",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "refractory entrances",
+          "practical work lights",
+          "exposed services"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 19,
+      "id": "primary.19.production_directorate",
+      "displayName": "Production Directorate",
+      "faction": "Forgeweave",
+      "kind": "Office",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary19/DA_Presentation_ProductionDirectorate",
+      "recipe": {
+        "silhouette": "broad command deck overlooking industry",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "production observation windows",
+          "route boards",
+          "heavy structural bays"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 20,
+      "id": "primary.20.industrial_exchange",
+      "displayName": "Industrial Exchange",
+      "faction": "Forgeweave",
+      "kind": "Retail",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary20/DA_Presentation_IndustrialExchange",
+      "recipe": {
+        "silhouette": "machine-parts hall under crane span",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "commodity bays",
+          "freight-scale entries",
+          "industrial signage"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 21,
+      "id": "primary.21.infinite_foundry",
+      "displayName": "Infinite Foundry",
+      "faction": "Forgeweave",
+      "kind": "Industrial",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary21/DA_Presentation_InfiniteFoundry",
+      "recipe": {
+        "silhouette": "city-block furnace mass with stacked production decks",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "targetable furnace",
+          "targetable coolant",
+          "targetable production line",
+          "targetable control center"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 22,
+      "id": "primary.22.replication_forge",
+      "displayName": "Replication Forge",
+      "faction": "Forgeweave",
+      "kind": "Industrial",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary22/DA_Presentation_ReplicationForge",
+      "recipe": {
+        "silhouette": "heavy forge wrapped around replication core",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "recognizable replication core",
+          "molten transfer channels",
+          "mechanical service arms"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 23,
+      "id": "primary.23.freight_furnace",
+      "displayName": "Freight Furnace",
+      "faction": "Forgeweave",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary23/DA_Presentation_FreightFurnace",
+      "recipe": {
+        "silhouette": "rail transfer yard fused to heating plant",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "freight gantries",
+          "heat exchangers",
+          "pressure vents"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 24,
+      "id": "primary.24.smog_reclaimer",
+      "displayName": "Smog Reclaimer",
+      "faction": "Forgeweave",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary24/DA_Presentation_SmogReclaimer",
+      "recipe": {
+        "silhouette": "large scrubber towers on reinforced base",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "responsive local haze volume",
+          "filter banks",
+          "exhaust stacks"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 29,
+      "id": "primary.29.the_grand_forge",
+      "displayName": "The Grand Forge",
+      "faction": "Forgeweave",
+      "kind": "Wonder",
+      "assetPath": "/Game/Buildings/Forgeweave/Primary29/DA_Presentation_TheGrandForge",
+      "recipe": {
+        "silhouette": "city-scale vertical furnace and replication structure",
+        "materials": [
+          "blackened steel",
+          "refractory brick",
+          "heat-stained alloy",
+          "reinforced concrete"
+        ],
+        "signatureElements": [
+          "boss encounter spaces",
+          "vertical furnace",
+          "replication heart",
+          "activation transformation"
+        ],
+        "constructionGrammar": "construction.forgeweave.crane_cast_bolt",
+        "damageLanguage": "damage.forgeweave.soot_bent_steel",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 30,
+      "id": "primary.30.garden_commune",
+      "displayName": "Garden Commune",
+      "faction": "EdenCircuit",
+      "kind": "Residential",
+      "assetPath": "/Game/Buildings/EdenCircuit/Primary30/DA_Presentation_GardenCommune",
+      "recipe": {
+        "silhouette": "terrain-following homes among water and canopy",
+        "materials": [
+          "engineered timber",
+          "living moss",
+          "stone",
+          "translucent bio-resin"
+        ],
+        "signatureElements": [
+          "living roofs",
+          "shared water court",
+          "productive vegetation"
+        ],
+        "constructionGrammar": "construction.eden.root_lattice_growth",
+        "damageLanguage": "damage.eden.torn_fiber_scorched_growth",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 31,
+      "id": "primary.31.ecological_design_house",
+      "displayName": "Ecological Design House",
+      "faction": "EdenCircuit",
+      "kind": "Office",
+      "assetPath": "/Game/Buildings/EdenCircuit/Primary31/DA_Presentation_EcologicalDesignHouse",
+      "recipe": {
+        "silhouette": "branching research pavilion over wetland",
+        "materials": [
+          "engineered timber",
+          "living moss",
+          "stone",
+          "translucent bio-resin"
+        ],
+        "signatureElements": [
+          "field laboratory",
+          "water-integrated foundations",
+          "canopy workspace"
+        ],
+        "constructionGrammar": "construction.eden.root_lattice_growth",
+        "damageLanguage": "damage.eden.torn_fiber_scorched_growth",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 32,
+      "id": "primary.32.harvest_market",
+      "displayName": "Harvest Market",
+      "faction": "EdenCircuit",
+      "kind": "Retail",
+      "assetPath": "/Game/Buildings/EdenCircuit/Primary32/DA_Presentation_HarvestMarket",
+      "recipe": {
+        "silhouette": "open covered market linked to ecological production",
+        "materials": [
+          "engineered timber",
+          "living moss",
+          "stone",
+          "translucent bio-resin"
+        ],
+        "signatureElements": [
+          "produce circulation",
+          "living shade canopy",
+          "water collection"
+        ],
+        "constructionGrammar": "construction.eden.root_lattice_growth",
+        "damageLanguage": "damage.eden.torn_fiber_scorched_growth",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 33,
+      "id": "primary.33.regenerative_bioworks",
+      "displayName": "Regenerative Bioworks",
+      "faction": "EdenCircuit",
+      "kind": "Industrial",
+      "assetPath": "/Game/Buildings/EdenCircuit/Primary33/DA_Presentation_RegenerativeBioworks",
+      "recipe": {
+        "silhouette": "clean biological production under translucent shell",
+        "materials": [
+          "engineered timber",
+          "living moss",
+          "stone",
+          "translucent bio-resin"
+        ],
+        "signatureElements": [
+          "visible culture vessels",
+          "mycelial utilities",
+          "closed water cycle"
+        ],
+        "constructionGrammar": "construction.eden.root_lattice_growth",
+        "damageLanguage": "damage.eden.torn_fiber_scorched_growth",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 34,
+      "id": "primary.34.living_waterway",
+      "displayName": "Living Waterway",
+      "faction": "EdenCircuit",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/EdenCircuit/Primary34/DA_Presentation_LivingWaterway",
+      "recipe": {
+        "silhouette": "linear modular ecological water channel",
+        "materials": [
+          "engineered timber",
+          "living moss",
+          "stone",
+          "translucent bio-resin"
+        ],
+        "signatureElements": [
+          "bank modules",
+          "flow junctions",
+          "restoration markers"
+        ],
+        "constructionGrammar": "construction.eden.root_lattice_growth",
+        "damageLanguage": "damage.eden.torn_fiber_scorched_growth",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 35,
+      "id": "primary.35.pollinator_corridor",
+      "displayName": "Pollinator Corridor",
+      "faction": "EdenCircuit",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/EdenCircuit/Primary35/DA_Presentation_PollinatorCorridor",
+      "recipe": {
+        "silhouette": "branching linear habitat connector",
+        "materials": [
+          "engineered timber",
+          "living moss",
+          "stone",
+          "translucent bio-resin"
+        ],
+        "signatureElements": [
+          "pollinator shelters",
+          "native planting modules",
+          "continuity markers"
+        ],
+        "constructionGrammar": "construction.eden.root_lattice_growth",
+        "damageLanguage": "damage.eden.torn_fiber_scorched_growth",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 39,
+      "id": "primary.39.the_worldgarden",
+      "displayName": "The Worldgarden",
+      "faction": "EdenCircuit",
+      "kind": "Wonder",
+      "assetPath": "/Game/Buildings/EdenCircuit/Primary39/DA_Presentation_TheWorldgarden",
+      "recipe": {
+        "silhouette": "skyline-scale integrated civic biome",
+        "materials": [
+          "engineered timber",
+          "living moss",
+          "stone",
+          "translucent bio-resin"
+        ],
+        "signatureElements": [
+          "self-sustaining water loop",
+          "public biome",
+          "activation transformation",
+          "custom HLOD silhouette"
+        ],
+        "constructionGrammar": "construction.eden.root_lattice_growth",
+        "damageLanguage": "damage.eden.torn_fiber_scorched_growth",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 40,
+      "id": "primary.40.compact_residence",
+      "displayName": "Compact Residence",
+      "faction": "Universal",
+      "kind": "Residential",
+      "assetPath": "/Game/Buildings/Universal/Primary40/DA_Presentation_CompactResidence",
+      "recipe": {
+        "silhouette": "neutral compact starter housing",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "faction trim anchors",
+          "occupied windows",
+          "plausible entrance"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 41,
+      "id": "primary.41.corner_exchange",
+      "displayName": "Corner Exchange",
+      "faction": "Universal",
+      "kind": "Retail",
+      "assetPath": "/Game/Buildings/Universal/Primary41/DA_Presentation_CornerExchange",
+      "recipe": {
+        "silhouette": "small corner-facing commercial block",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "corner entrance",
+          "service access",
+          "faction signage anchors"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 42,
+      "id": "primary.42.research_annex",
+      "displayName": "Research Annex",
+      "faction": "Universal",
+      "kind": "Research",
+      "assetPath": "/Game/Buildings/Universal/Primary42/DA_Presentation_ResearchAnnex",
+      "recipe": {
+        "silhouette": "compact generic laboratory annex",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "service core",
+          "research glazing",
+          "faction trim anchors"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 43,
+      "id": "primary.43.microgrid_station",
+      "displayName": "Microgrid Station",
+      "faction": "Universal",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/Universal/Primary43/DA_Presentation_MicrogridStation",
+      "recipe": {
+        "silhouette": "small local power utility",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "transformer modules",
+          "service fence",
+          "power-state indicators"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 44,
+      "id": "primary.44.water_reclaimer",
+      "displayName": "Water Reclaimer",
+      "faction": "Universal",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/Universal/Primary44/DA_Presentation_WaterReclaimer",
+      "recipe": {
+        "silhouette": "compact water treatment plant",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "settling vessels",
+          "pipe manifold",
+          "water-state indicators"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 45,
+      "id": "primary.45.transit_stop_kit",
+      "displayName": "Transit Stop Kit",
+      "faction": "Universal",
+      "kind": "Infrastructure",
+      "assetPath": "/Game/Buildings/Universal/Primary45/DA_Presentation_TransitStopKit",
+      "recipe": {
+        "silhouette": "modular stop and shelter family",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "road modules",
+          "shelter",
+          "signage",
+          "accessible platform"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 46,
+      "id": "primary.46.watch_post",
+      "displayName": "Watch Post",
+      "faction": "Universal",
+      "kind": "Defense",
+      "assetPath": "/Game/Buildings/Universal/Primary46/DA_Presentation_WatchPost",
+      "recipe": {
+        "silhouette": "small readable observation structure",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "observation deck",
+          "defensive cover",
+          "faction signage anchors"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 47,
+      "id": "primary.47.barrier_hub",
+      "displayName": "Barrier Hub",
+      "faction": "Universal",
+      "kind": "Defense",
+      "assetPath": "/Game/Buildings/Universal/Primary47/DA_Presentation_BarrierHub",
+      "recipe": {
+        "silhouette": "deployable barrier source with radial hub",
+        "materials": [
+          "structural concrete",
+          "shared trim alloy",
+          "clear glass"
+        ],
+        "signatureElements": [
+          "straight barrier",
+          "corner barrier",
+          "destroyed versions"
+        ],
+        "constructionGrammar": "construction.universal.modular",
+        "damageLanguage": "damage.universal.structural",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    },
+    {
+      "number": 50,
+      "id": "primary.50.autonomous_factory",
+      "displayName": "Autonomous Factory",
+      "faction": "Fusion",
+      "kind": "FusionBuilding",
+      "assetPath": "/Game/Buildings/Fusion/Primary50/DA_Presentation_AutonomousFactory",
+      "recipe": {
+        "silhouette": "heavy Forgeweave base with Synara control crown",
+        "materials": [
+          "blackened steel",
+          "ivory ceramic composite",
+          "graphite machine lattice"
+        ],
+        "signatureElements": [
+          "autonomous gantries",
+          "white computational crown",
+          "visible drone production",
+          "mixed construction animation",
+          "runaway-production damage state"
+        ],
+        "constructionGrammar": "construction.fusion.interlock",
+        "damageLanguage": "damage.fusion.runaway_production",
+        "requiredStates": [
+          "construction",
+          "operational",
+          "damaged",
+          "ruined"
+        ]
+      }
+    }
+  ]
+}

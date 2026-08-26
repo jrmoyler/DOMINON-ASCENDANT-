@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "v0.6 primary character recipes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sourceId",
+    "assets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceId": {
+      "const": "presentation.primary.characters.v06"
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "number",
+          "id",
+          "displayName",
+          "faction",
+          "kind",
+          "assetPath",
+          "recipe"
+        ],
+        "properties": {
+          "number": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^primary\\.[0-9]{2}\\.[a-z0-9_]+$"
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "faction": {
+            "enum": [
+              "Synara",
+              "Forgeweave",
+              "EdenCircuit",
+              "Universal",
+              "Player",
+              "Fusion"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetPath": {
+            "type": "string",
+            "pattern": "^/Game/Characters/"
+          },
+          "recipe": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "silhouette",
+              "materials",
+              "requiredVariants",
+              "readabilityHook",
+              "rigProfile"
+            ],
+            "properties": {
+              "silhouette": {
+                "type": "string",
+                "minLength": 1
+              },
+              "materials": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "requiredVariants": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "readabilityHook": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rigProfile": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

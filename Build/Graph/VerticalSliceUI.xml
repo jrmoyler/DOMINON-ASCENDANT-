@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BuildGraph xmlns="http://www.epicgames.com/BuildGraph">
+  <!-- Optional cache generation. Cook/package remains valid when this node is not selected. -->
+  <Option Name="ProjectFile" Restrict=".+\.uproject" DefaultValue="DominionAscendant.uproject" />
+  <Node Name="GenerateUIOptionalCache">
+    <Spawn Exe="bash" Arguments="Build/Scripts/PreCookUI.sh &quot;$(ProjectFile)&quot;" />
+  </Node>
+  <Aggregate Name="UIOptionalPreCook" Requires="GenerateUIOptionalCache" />
+</BuildGraph>

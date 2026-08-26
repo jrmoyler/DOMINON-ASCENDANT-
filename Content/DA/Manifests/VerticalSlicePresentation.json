@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "contentId": "presentation.vertical_slice.v11",
+  "fingerprint": "04c0a65f011c0a2d9a60b26b890debc7efe1c478",
+  "authority": {
+    "frozenScope": "Vertical Slice Production Spec v1.1 sections 73-75",
+    "primaryAssetsAndFactionLanguage": "Content Production Bible v0.6 sections 8, 33-41, 45, 53-55, 60, 63-67, and 73",
+    "gameplayOwnership": "Presentation consumes committed gameplay state and owns no gameplay outcome",
+    "cachePolicy": "Canonical JSON is packaged runtime fallback; only complete fingerprint-matched generated DataAssets are generated-cache evidence"
+  },
+  "sources": {
+    "buildings": "Buildings/Presentation/PrimaryAssets.json",
+    "characters": "Characters/Presentation/PrimaryAssets.json",
+    "vfx": "VFX/Presentation/CoreVFX.json",
+    "audio": "Audio/Presentation/VerticalSliceAudio.json",
+    "bindings": "Buildings/Presentation/FactionBindings.json",
+    "artifacts": "DA/Manifests/PresentationArtifactSources.json"
+  },
+  "expectedCounts": {
+    "primaryAssets": 50,
+    "coreVfx": 25,
+    "musicCues": 9,
+    "ambientLoops": 12,
+    "minimumSfxEvents": 60,
+    "constructionGrammars": 3,
+    "minimumGeneratedDefinitions": 156
+  }
+}

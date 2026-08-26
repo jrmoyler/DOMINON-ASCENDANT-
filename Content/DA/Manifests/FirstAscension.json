@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "contentId": "ascension.forgeweave.first",
+  "fingerprint": "a179ed0ed1e9735624dfb0aceb90c30216586c3a",
+  "quest": {
+    "id": "quest.convergence_authority",
+    "title": "Convergence Authority",
+    "assetPath": "/Game/DA/Quests/Q_ConvergenceAuthority",
+    "completionHistory": "convergence_authority_1_of_20"
+  },
+  "doctrine": {
+    "id": "doctrine.replication",
+    "assetPath": "/Game/DA/Doctrines/DA_Doctrine_Replication",
+    "cadenceDevelopmentCycles": 12
+  },
+  "fusion": {
+    "definitionId": "fusion.autonomous_factory",
+    "assetPath": "/Game/DA/Cards/Fusion/DA_Card_AutonomousFactory",
+    "constructionCycles": 8,
+    "craftCapital": 80,
+    "craftInsight": 0,
+    "requiredCraftingFacilityId": "forgeweave.replication_forge",
+    "utilityPower": 24,
+    "utilityData": 24,
+    "workforceRequirementModifier": -0.8,
+    "industrialThroughputModifier": 0.25,
+    "adjacentIndustrialConstructionSpeedModifier": 0.15,
+    "dependencyPerCycle": 0.2,
+    "resourceHungerPerCycle": 0.15
+  },
+  "forgeweaveDefinitionIds": [
+    "forgeweave.worker_arcology",
+    "forgeweave.forge_quarters",
+    "forgeweave.production_directorate",
+    "forgeweave.industrial_design_bureau",
+    "forgeweave.industrial_exchange",
+    "forgeweave.machine_parts_market",
+    "forgeweave.infinite_foundry",
+    "forgeweave.replication_forge",
+    "forgeweave.freight_furnace",
+    "forgeweave.smog_reclaimer",
+    "forgeweave.forge_guard",
+    "forgeweave.mechanist_crew",
+    "forgeweave.workers_canteen",
+    "forgeweave.forge_lord_daxton_rhe",
+    "forgeweave.the_grand_forge"
+  ],
+  "buildingImports": [
+    {
+      "assetPath": "/Game/Buildings/Fusion/AutonomousFactory/Meshes/SM_AutonomousFactory",
+      "sourcePath": "ContentSource/Buildings/Fusion/AutonomousFactory/SM_AutonomousFactory.fbx",
+      "assetClass": "StaticMesh"
+    },
+    {
+      "assetPath": "/Game/Buildings/Fusion/AutonomousFactory/Textures/T_AutonomousFactory",
+      "sourcePath": "ContentSource/Buildings/Fusion/AutonomousFactory/T_AutonomousFactory.png",
+      "assetClass": "Texture2D"
+    }
+  ],
+  "cinematic": {
+    "assetPath": "/Game/Cinematics/CS_ForgeweaveAscension",
+    "shotSourcePath": "ContentSource/Cinematics/ForgeweaveAscension.shotlist.json",
+    "gameplayGate": false
+  }
+}
