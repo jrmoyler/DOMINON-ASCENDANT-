@@ -17,6 +17,7 @@ import { Hud } from '@/ui/Hud'
 import { CardHand } from '@/ui/CardHand'
 import { InspectPanel, LogPanel, OverlayPanel, QuestPanel } from '@/ui/SidePanels'
 import { Intro } from '@/ui/Intro'
+import { announceToast, revealCommandInterface } from '@/ui/motion'
 
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -50,7 +51,7 @@ export default function App() {
   // ---- scene lifecycle ---------------------------------------------------
 
   useEffect(() => {
-    if (!started || !canvasRef.current) return
+    if (!canvasRef.current) return
 
     const scene = new CityScene(canvasRef.current, {
       onCellClick: (x, y) => {
@@ -88,7 +89,19 @@ export default function App() {
       scene.dispose()
       sceneRef.current = null
     }
-  }, [started, bump, flash])
+  }, [bump, flash])
+
+  useEffect(() => {
+    if (!started) return
+    const frame = requestAnimationFrame(revealCommandInterface)
+    return () => cancelAnimationFrame(frame)
+  }, [started])
+
+  useEffect(() => {
+    if (!toast) return
+    const frame = requestAnimationFrame(announceToast)
+    return () => cancelAnimationFrame(frame)
+  }, [toast])
 
   // ---- simulation clock --------------------------------------------------
 
@@ -215,13 +228,17 @@ export default function App() {
     bump()
   }
 
-  if (!started) {
-    return <Intro onStart={() => setStarted(true)} onContinue={hasSave ? () => { handleLoad(); setStarted(true) } : undefined} />
-  }
-
   return (
     <div className="app">
       <canvas ref={canvasRef} className="viewport" />
+
+      {!started ? (
+        <Intro
+          onStart={() => setStarted(true)}
+          onContinue={hasSave ? () => { handleLoad(); setStarted(true) } : undefined}
+        />
+      ) : (
+        <>
 
       <Hud
         state={state}
@@ -290,6 +307,8 @@ export default function App() {
       )}
 
       {toast && <div className="toast">{toast}</div>}
+        </>
+      )}
     </div>
   )
 }

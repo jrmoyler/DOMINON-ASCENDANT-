@@ -52,21 +52,21 @@ export function CardHand({ state, onSelect, onCycleCard, onRotate, rotation }: P
               <div className="card-name">{def.displayName}</div>
 
               <div className="card-stats">
-                {def.housingCapacity > 0 && <span>🏠 {def.housingCapacity}</span>}
-                {def.jobCapacity > 0 && <span>👷 {def.jobCapacity}</span>}
+                {def.housingCapacity > 0 && <span>HSG {def.housingCapacity}</span>}
+                {def.jobCapacity > 0 && <span>JOBS {def.jobCapacity}</span>}
                 {def.baseCapitalPerCycle > 0 && (
-                  <span>💠 {def.baseCapitalPerCycle.toFixed(1)}</span>
+                  <span>CAP +{def.baseCapitalPerCycle.toFixed(1)}</span>
                 )}
-                {def.baseInsightPerCycle > 0 && <span>◈ {def.baseInsightPerCycle.toFixed(2)}</span>}
-                {def.powerProduced > 0 && <span>⚡ +{Math.round(def.powerProduced)}</span>}
-                {def.waterProduced > 0 && <span>💧 +{Math.round(def.waterProduced)}</span>}
-                {def.utilityPower > 0 && <span className="dim">⚡ −{Math.round(def.utilityPower)}</span>}
+                {def.baseInsightPerCycle > 0 && <span>INS +{def.baseInsightPerCycle.toFixed(2)}</span>}
+                {def.powerProduced > 0 && <span>PWR +{Math.round(def.powerProduced)}</span>}
+                {def.waterProduced > 0 && <span>H2O +{Math.round(def.waterProduced)}</span>}
+                {def.utilityPower > 0 && <span className="dim">PWR −{Math.round(def.utilityPower)}</span>}
               </div>
 
               <div className="card-foot">
                 <span className={`card-cost ${affordable ? '' : 'bad'}`}>
-                  {def.deploymentCapital} ⬢
-                  {def.deploymentInsight > 0 && ` · ${def.deploymentInsight} ◈`}
+                  {def.deploymentCapital} CAP
+                  {def.deploymentInsight > 0 && ` · ${def.deploymentInsight} INS`}
                 </span>
                 <button
                   className="card-discard"

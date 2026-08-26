@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { EXPECTED_COUNTS } from '@/game/content'
 import { STARTING_POPULATION, STARTING_RESOURCES } from '@/game/economy'
+import { revealIntro } from './motion'
 
 export function Intro({
   onStart,
@@ -8,14 +10,18 @@ export function Intro({
   onStart: () => void
   onContinue?: () => void
 }) {
+  useEffect(() => {
+    revealIntro()
+  }, [])
+
   return (
     <div className="intro">
       <div className="intro-inner">
-        <div className="intro-kicker">SYNARA FRONTIER CAPITAL · ASHCROFT BASIN</div>
+        <div className="intro-kicker">SYNARA COMMAND AUTHORITY · ASHCROFT BASIN</div>
         <h1 className="intro-title">
           DOMINION <span className="slash">//</span> ASCENDANT
         </h1>
-        <p className="intro-sub">Vertical slice — browser build</p>
+        <p className="intro-sub">Frontier Capital Command Simulation</p>
 
         <p className="intro-body">
           The Founder Hall has woken after a long dark. You hold a {EXPECTED_COUNTS.starterInstances}
@@ -25,21 +31,21 @@ export function Intro({
         </p>
 
         <div className="intro-rules">
-          <div>
+          <div className="intro-rule">
             <h3>Build</h3>
             <p>
               Pick a card, click a cell. Utilities only reach six cells — put power and water where
               the city actually is.
             </p>
           </div>
-          <div>
+          <div className="intro-rule">
             <h3>Balance</h3>
             <p>
               Housing draws migrants, jobs employ them, commerce and industry pay for all of it.
               Approval falls when any of the three is missing.
             </p>
           </div>
-          <div>
+          <div className="intro-rule">
             <h3>Ascend</h3>
             <p>
               Nine first-hour quests gate the run. Close them all to reach CONVERGENCE AUTHORITY
@@ -50,7 +56,7 @@ export function Intro({
 
         <div className="intro-actions">
           <button className="primary" onClick={onStart}>
-            Begin campaign
+            Assume command
           </button>
           {onContinue && (
             <button className="secondary" onClick={onContinue}>

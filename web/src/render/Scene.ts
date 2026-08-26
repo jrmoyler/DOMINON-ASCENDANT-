@@ -1,10 +1,34 @@
-import * as THREE from 'three'
+import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
+import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
+import { Vector3 } from '@babylonjs/core/Maths/math.vector'
+import { Engine } from '@babylonjs/core/Engines/engine'
+import { Scene } from '@babylonjs/core/scene'
+import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight'
+import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
+import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator'
+import { Mesh } from '@babylonjs/core/Meshes/mesh'
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode'
+import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
+import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial'
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { ImageProcessingConfiguration } from '@babylonjs/core/Materials/imageProcessingConfiguration'
+import { GlowLayer } from '@babylonjs/core/Layers/glowLayer'
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline'
+import { GradientMaterial } from '@babylonjs/materials/gradient/gradientMaterial'
 import { CELL_METRES, GRID_SIZE, cellsOf, rotatedFootprint } from '@/game/grid'
 import { UTILITY_RADIUS, computeServices } from '@/game/economy'
 import { definition } from '@/game/content'
 import type { GameState, WorldAsset } from '@/game/types'
 import { PALETTE } from './palette'
-import { createBuildingMesh, createGhostMesh } from './buildings'
+import {
+  createBuildingVisual,
+  createPlacementGhost,
+  createSelectionSignal,
+  setSignalColor,
+  tagAsPickable,
+  type BuildingVisual,
+} from './buildings'
+import { createStrategicAtmosphere } from './strategicAtmosphere'
 
 const WORLD = GRID_SIZE * CELL_METRES
 
@@ -14,37 +38,228 @@ export interface SceneCallbacks {
   onHover: (cell: { x: number; y: number } | null) => void
 }
 
-/** Grid cell -> world-space centre. */
-function cellCentre(x: number, y: number): THREE.Vector3 {
-  return new THREE.Vector3(
+function color(value: number): Color3 {
+  return Color3.FromHexString(`#${value.toString(16).padStart(6, '0')}`)
+}
+
+function cellCentre(x: number, y: number): Vector3 {
+  return new Vector3(
     (x + 0.5) * CELL_METRES - WORLD / 2,
     0,
     (y + 0.5) * CELL_METRES - WORLD / 2,
   )
 }
 
+function applyMeshData(mesh: Mesh, positions: number[], indices: number[]) {
+  const normals: number[] = []
+  VertexData.ComputeNormals(positions, indices, normals)
+  const data = new VertexData()
+  data.positions = positions
+  data.indices = indices
+  data.normals = normals
+  data.applyToMesh(mesh, true)
+}
+
+function terrainHeight(x: number, z: number): number {
+  const cityDistance = Math.max(Math.abs(x), Math.abs(z))
+  if (cityDistance <= WORLD * 0.53) return 0
+  const edge = Math.min(1, (cityDistance - WORLD * 0.53) / (WORLD * 0.55))
+  const ridges = Math.sin(x * 0.035) * 8 + Math.cos(z * 0.027) * 10 + Math.sin((x + z) * 0.014) * 14
+  const river = Math.exp(-Math.pow((z + x * 0.18 - 178) / 22, 2)) * -22
+  return edge * (ridges + river - 1.5)
+}
+
+function createTerrain(scene: Scene): Mesh {
+  const mesh = new Mesh('authored-terrain', scene)
+  const size = WORLD * 4.4
+  const subdivisions = 84
+  const positions: number[] = []
+  const indices: number[] = []
+  const uvs: number[] = []
+  for (let zIndex = 0; zIndex <= subdivisions; zIndex += 1) {
+    for (let xIndex = 0; xIndex <= subdivisions; xIndex += 1) {
+      const x = (xIndex / subdivisions - 0.5) * size
+      const z = (zIndex / subdivisions - 0.5) * size
+      positions.push(x, terrainHeight(x, z), z)
+      uvs.push(xIndex / subdivisions, zIndex / subdivisions)
+    }
+  }
+  for (let zIndex = 0; zIndex < subdivisions; zIndex += 1) {
+    for (let xIndex = 0; xIndex < subdivisions; xIndex += 1) {
+      const row = subdivisions + 1
+      const a = zIndex * row + xIndex
+      indices.push(a, a + row, a + 1, a + 1, a + row, a + row + 1)
+    }
+  }
+  const normals: number[] = []
+  VertexData.ComputeNormals(positions, indices, normals)
+  const data = new VertexData()
+  data.positions = positions
+  data.indices = indices
+  data.normals = normals
+  data.uvs = uvs
+  data.applyToMesh(mesh, true)
+
+  const material = new PBRMaterial('terrain-strata', scene)
+  material.albedoColor = color(PALETTE.ground)
+  material.metallic = 0.08
+  material.roughness = 0.91
+  material.environmentIntensity = 0.42
+  mesh.material = material
+  mesh.receiveShadows = true
+  mesh.isPickable = true
+  mesh.metadata = { terrain: true }
+  return mesh
+}
+
+function appendRoadQuad(
+  positions: number[],
+  indices: number[],
+  x1: number,
+  z1: number,
+  x2: number,
+  z2: number,
+  width: number,
+) {
+  const dx = x2 - x1
+  const dz = z2 - z1
+  const length = Math.hypot(dx, dz) || 1
+  const px = (-dz / length) * width
+  const pz = (dx / length) * width
+  const start = positions.length / 3
+  positions.push(x1 + px, 0.09, z1 + pz, x1 - px, 0.09, z1 - pz)
+  positions.push(x2 + px, 0.09, z2 + pz, x2 - px, 0.09, z2 - pz)
+  indices.push(start, start + 2, start + 1, start + 2, start + 3, start + 1)
+}
+
+function createCivicLattice(scene: Scene): Mesh {
+  const mesh = new Mesh('civic-lattice', scene)
+  const positions: number[] = []
+  const indices: number[] = []
+  const half = WORLD / 2
+  for (let index = 0; index <= GRID_SIZE; index += 1) {
+    const p = index * CELL_METRES - half
+    const width = index % 8 === 0 ? 0.1 : 0.035
+    appendRoadQuad(positions, indices, p, -half, p, half, width)
+    appendRoadQuad(positions, indices, -half, p, half, p, width)
+  }
+  applyMeshData(mesh, positions, indices)
+  const material = new PBRMaterial('lattice-signal', scene)
+  material.albedoColor = color(PALETTE.gridLine)
+  material.emissiveColor = color(PALETTE.gridMajor)
+  material.emissiveIntensity = 0.55
+  material.metallic = 0.72
+  material.roughness = 0.3
+  mesh.material = material
+  mesh.isPickable = false
+  return mesh
+}
+
+function createSkyVault(scene: Scene): Mesh {
+  const mesh = new Mesh('sky-vault', scene)
+  const radius = WORLD * 4
+  const rings = 18
+  const segments = 56
+  const positions: number[] = []
+  const indices: number[] = []
+  for (let ring = 0; ring <= rings; ring += 1) {
+    const polar = (ring / rings) * Math.PI * 0.54
+    const y = Math.cos(polar) * radius - radius * 0.08
+    const spread = Math.sin(polar) * radius
+    for (let segment = 0; segment < segments; segment += 1) {
+      const angle = (segment / segments) * Math.PI * 2
+      positions.push(Math.cos(angle) * spread, y, Math.sin(angle) * spread)
+    }
+  }
+  for (let ring = 0; ring < rings; ring += 1) {
+    for (let segment = 0; segment < segments; segment += 1) {
+      const next = (segment + 1) % segments
+      const a = ring * segments + segment
+      const b = ring * segments + next
+      const c = (ring + 1) * segments + segment
+      const d = (ring + 1) * segments + next
+      indices.push(a, b, c, b, d, c)
+    }
+  }
+  applyMeshData(mesh, positions, indices)
+  const material = new GradientMaterial('sky-gradient', scene)
+  material.topColor = Color3.FromHexString('#101f42')
+  material.bottomColor = Color3.FromHexString('#02050d')
+  material.offset = 0.15
+  material.scale = 0.92
+  material.backFaceCulling = false
+  material.disableLighting = true
+  mesh.material = material
+  mesh.infiniteDistance = true
+  mesh.isPickable = false
+  return mesh
+}
+
+function createAtmosphere(scene: Scene): TransformNode {
+  const root = new TransformNode('strategic-atmosphere', scene)
+  createStrategicAtmosphere('synara-dawn').forEach((band, bandIndex) => {
+    const mesh = new Mesh(`atmosphere-band:${bandIndex}`, scene)
+    const positions: number[] = []
+    const indices: number[] = []
+    band.points.forEach((point, index) => {
+      const rhythm = 2.5 + Math.sin(index * 0.55 + bandIndex) * 1.2
+      positions.push(point.x, point.y - rhythm, point.z, point.x, point.y + rhythm, point.z)
+    })
+    for (let index = 0; index < band.points.length - 1; index += 1) {
+      const a = index * 2
+      indices.push(a, a + 2, a + 1, a + 2, a + 3, a + 1)
+    }
+    applyMeshData(mesh, positions, indices)
+    const material = new StandardMaterial(`atmosphere-material:${bandIndex}`, scene)
+    material.emissiveColor = Color3.FromHexString(band.color)
+    material.alpha = band.alpha
+    material.disableLighting = true
+    material.backFaceCulling = false
+    mesh.material = material
+    mesh.parent = root
+    mesh.isPickable = false
+  })
+  return root
+}
+
+function createCellSignal(scene: Scene, name: string, value: number, alpha: number): Mesh {
+  const mesh = new Mesh(name, scene)
+  const positions: number[] = [0, 0, 0]
+  const indices: number[] = []
+  const points = 10
+  for (let index = 0; index < points; index += 1) {
+    const angle = (index / points) * Math.PI * 2
+    const radius = CELL_METRES * (index % 2 === 0 ? 0.45 : 0.39)
+    positions.push(Math.cos(angle) * radius, 0, Math.sin(angle) * radius)
+  }
+  for (let index = 0; index < points; index += 1) indices.push(0, index + 1, ((index + 1) % points) + 1)
+  applyMeshData(mesh, positions, indices)
+  const material = new PBRMaterial(`${name}:material`, scene)
+  material.albedoColor = color(value)
+  material.emissiveColor = color(value)
+  material.emissiveIntensity = 0.7
+  material.alpha = alpha
+  material.transparencyMode = PBRMaterial.PBRMATERIAL_ALPHABLEND
+  material.disableLighting = true
+  mesh.material = material
+  mesh.isPickable = false
+  return mesh
+}
+
 export class CityScene {
-  private renderer: THREE.WebGLRenderer
-  private scene = new THREE.Scene()
-  private camera: THREE.PerspectiveCamera
-  private raycaster = new THREE.Raycaster()
-  private pointer = new THREE.Vector2()
-  private ground: THREE.Mesh
-  private buildingRoot = new THREE.Group()
-  private overlayRoot = new THREE.Group()
-  private ghost: THREE.Mesh
-  private selectionRing: THREE.Mesh
-  private meshes = new Map<string, THREE.Group>()
-  private frame = 0
+  private engine: Engine
+  private scene: Scene
+  private camera: ArcRotateCamera
+  private ground: Mesh
+  private shadow: ShadowGenerator
+  private buildingRoot: TransformNode
+  private overlayRoot: TransformNode
+  private ghost: BuildingVisual
+  private selectionSignal: Mesh
+  private meshes = new Map<string, BuildingVisual>()
   private disposed = false
-
-  // Camera rig: orbit around a target on the ground plane.
-  private target = new THREE.Vector3(0, 0, 0)
-  private orbit = { azimuth: Math.PI * 0.25, polar: Math.PI * 0.34, distance: 140 }
-  private dragging: 'none' | 'orbit' | 'pan' = 'none'
-  private lastPointer = { x: 0, y: 0 }
+  private pointerDown = { x: 0, y: 0 }
   private movedWhileDown = false
-
   private hoverCell: { x: number; y: number } | null = null
   private ghostFootprint: [number, number] = [1, 1]
   private ghostValid = true
@@ -54,237 +269,154 @@ export class CityScene {
     private canvas: HTMLCanvasElement,
     private callbacks: SceneCallbacks,
   ) {
-    this.renderer = new THREE.WebGLRenderer({
-      canvas,
+    this.engine = new Engine(canvas, true, {
+      adaptToDeviceRatio: true,
       antialias: true,
+      preserveDrawingBuffer: false,
+      stencil: true,
       powerPreference: 'high-performance',
     })
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    this.renderer.shadowMap.enabled = true
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    this.scene = new Scene(this.engine)
+    this.scene.clearColor = new Color4(0.018, 0.03, 0.064, 1)
+    this.scene.fogMode = Scene.FOGMODE_EXP2
+    this.scene.fogDensity = 0.00165
+    this.scene.fogColor = color(PALETTE.fog)
+    this.scene.ambientColor = new Color3(0.08, 0.12, 0.2)
 
-    this.scene.background = new THREE.Color(PALETTE.background)
-    this.scene.fog = new THREE.Fog(PALETTE.fog, WORLD * 0.9, WORLD * 2.4)
-
-    this.camera = new THREE.PerspectiveCamera(45, 1, 1, 3000)
-
-    // Ground plate.
-    this.ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(WORLD, WORLD),
-      new THREE.MeshStandardMaterial({ color: PALETTE.ground, roughness: 0.96, metalness: 0.02 }),
+    this.camera = new ArcRotateCamera(
+      'command-camera',
+      Math.PI * 0.25,
+      Math.PI * 0.34,
+      140,
+      Vector3.Zero(),
+      this.scene,
     )
-    this.ground.rotation.x = -Math.PI / 2
-    this.ground.receiveShadow = true
-    this.scene.add(this.ground)
+    this.camera.lowerRadiusLimit = 32
+    this.camera.upperRadiusLimit = 620
+    this.camera.lowerBetaLimit = 0.18
+    this.camera.upperBetaLimit = Math.PI / 2.08
+    this.camera.wheelDeltaPercentage = 0.012
+    this.camera.panningSensibility = 115
+    this.camera.panningAxis = new Vector3(1, 0, 1)
+    this.camera.inertia = 0.78
+    this.camera.attachControl(canvas, true)
 
-    // Surrounding terrain so the city does not float in the void.
-    const apron = new THREE.Mesh(
-      new THREE.PlaneGeometry(WORLD * 4, WORLD * 4),
-      new THREE.MeshStandardMaterial({ color: PALETTE.groundEdge, roughness: 1 }),
-    )
-    apron.rotation.x = -Math.PI / 2
-    apron.position.y = -0.4
-    this.scene.add(apron)
+    const hemi = new HemisphericLight('dawn-fill', new Vector3(0.18, 1, 0.32), this.scene)
+    hemi.intensity = 0.78
+    hemi.diffuse = color(PALETTE.keyLight)
+    hemi.groundColor = color(PALETTE.fillLight)
 
-    this.scene.add(this.buildGrid())
-    this.scene.add(this.buildingRoot)
-    this.scene.add(this.overlayRoot)
+    const key = new DirectionalLight('synara-sun', new Vector3(-0.48, -0.82, -0.34), this.scene)
+    key.position = new Vector3(WORLD * 0.6, WORLD, WORLD * 0.5)
+    key.intensity = 2.35
+    key.diffuse = Color3.FromHexString('#dce9ff')
+    this.shadow = new ShadowGenerator(2048, key)
+    this.shadow.useBlurExponentialShadowMap = true
+    this.shadow.blurKernel = 24
+    this.shadow.bias = 0.0007
 
-    this.ghost = createGhostMesh()
-    this.ghost.visible = false
-    this.scene.add(this.ghost)
+    this.ground = createTerrain(this.scene)
+    createCivicLattice(this.scene)
+    createSkyVault(this.scene)
+    createAtmosphere(this.scene)
 
-    this.selectionRing = new THREE.Mesh(
-      new THREE.RingGeometry(CELL_METRES * 0.55, CELL_METRES * 0.72, 32),
-      new THREE.MeshBasicMaterial({
-        color: PALETTE.selection,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.9,
-      }),
-    )
-    this.selectionRing.rotation.x = -Math.PI / 2
-    this.selectionRing.position.y = 0.3
-    this.selectionRing.visible = false
-    this.scene.add(this.selectionRing)
+    this.buildingRoot = new TransformNode('city-assets', this.scene)
+    this.overlayRoot = new TransformNode('analysis-signals', this.scene)
+    this.ghost = createPlacementGhost(this.scene)
+    this.selectionSignal = createSelectionSignal(this.scene)
 
-    this.addLights()
+    const glow = new GlowLayer('signal-bloom', this.scene, { blurKernelSize: 42 })
+    glow.intensity = 0.62
+    const pipeline = new DefaultRenderingPipeline('cinematic-pipeline', true, this.scene, [this.camera])
+    pipeline.fxaaEnabled = true
+    pipeline.bloomEnabled = true
+    pipeline.bloomThreshold = 0.76
+    pipeline.bloomWeight = 0.22
+    pipeline.bloomKernel = 48
+    pipeline.samples = 2
+
+    const processing = this.scene.imageProcessingConfiguration
+    processing.toneMappingEnabled = true
+    processing.toneMappingType = ImageProcessingConfiguration.TONEMAPPING_ACES
+    processing.exposure = 1.16
+    processing.contrast = 1.18
+
     this.attachEvents()
     this.resize()
-    this.updateCamera()
   }
 
-  private addLights() {
-    this.scene.add(new THREE.HemisphereLight(PALETTE.keyLight, PALETTE.fillLight, 0.55))
-
-    const key = new THREE.DirectionalLight(PALETTE.keyLight, 1.35)
-    key.position.set(WORLD * 0.5, WORLD * 0.85, WORLD * 0.35)
-    key.castShadow = true
-    key.shadow.mapSize.set(2048, 2048)
-    const extent = WORLD * 0.75
-    key.shadow.camera.left = -extent
-    key.shadow.camera.right = extent
-    key.shadow.camera.top = extent
-    key.shadow.camera.bottom = -extent
-    key.shadow.camera.near = 10
-    key.shadow.camera.far = WORLD * 3
-    key.shadow.bias = -0.0009
-    this.scene.add(key)
-
-    const rim = new THREE.DirectionalLight(PALETTE.rim, 0.35)
-    rim.position.set(-WORLD * 0.4, WORLD * 0.3, -WORLD * 0.5)
-    this.scene.add(rim)
-  }
-
-  private buildGrid(): THREE.Group {
-    const group = new THREE.Group()
-    const minor: number[] = []
-    const major: number[] = []
-    const half = WORLD / 2
-
-    for (let i = 0; i <= GRID_SIZE; i++) {
-      const p = i * CELL_METRES - half
-      const target = i % 8 === 0 ? major : minor
-      target.push(p, 0, -half, p, 0, half)
-      target.push(-half, 0, p, half, 0, p)
+  private eventCoordinates(event: PointerEvent) {
+    const rect = this.canvas.getBoundingClientRect()
+    return {
+      x: ((event.clientX - rect.left) / Math.max(1, rect.width)) * this.engine.getRenderWidth(),
+      y: ((event.clientY - rect.top) / Math.max(1, rect.height)) * this.engine.getRenderHeight(),
     }
-
-    const make = (points: number[], color: number, opacity: number) => {
-      const geometry = new THREE.BufferGeometry()
-      geometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3))
-      const line = new THREE.LineSegments(
-        geometry,
-        new THREE.LineBasicMaterial({ color, transparent: true, opacity }),
-      )
-      line.position.y = 0.06
-      return line
-    }
-
-    group.add(make(minor, PALETTE.gridLine, 0.5))
-    group.add(make(major, PALETTE.gridMajor, 0.85))
-    return group
   }
-
-  // ---- interaction -------------------------------------------------------
 
   private attachEvents() {
-    const c = this.canvas
-    c.addEventListener('pointerdown', this.onPointerDown)
-    c.addEventListener('pointermove', this.onPointerMove)
+    this.canvas.addEventListener('pointerdown', this.onPointerDown)
+    this.canvas.addEventListener('pointermove', this.onPointerMove)
     window.addEventListener('pointerup', this.onPointerUp)
-    c.addEventListener('wheel', this.onWheel, { passive: false })
-    c.addEventListener('contextmenu', (e) => e.preventDefault())
-    c.addEventListener('pointerleave', () => {
-      this.hoverCell = null
-      this.ghost.visible = false
-      this.callbacks.onHover(null)
-    })
+    this.canvas.addEventListener('contextmenu', this.preventContextMenu)
+    this.canvas.addEventListener('pointerleave', this.onPointerLeave)
+  }
+
+  private preventContextMenu = (event: Event) => event.preventDefault()
+
+  private onPointerLeave = () => {
+    this.hoverCell = null
+    this.ghost.root.setEnabled(false)
+    this.callbacks.onHover(null)
   }
 
   private onPointerDown = (event: PointerEvent) => {
-    this.canvas.setPointerCapture?.(event.pointerId)
+    this.pointerDown = { x: event.clientX, y: event.clientY }
     this.movedWhileDown = false
-    this.lastPointer = { x: event.clientX, y: event.clientY }
-    // Right button or Shift pans; anything else orbits while dragging.
-    // A left press that never moves is treated as a click on pointer-up.
-    this.dragging = event.button === 2 || event.shiftKey ? 'pan' : 'orbit'
   }
 
   private onPointerMove = (event: PointerEvent) => {
-    const dx = event.clientX - this.lastPointer.x
-    const dy = event.clientY - this.lastPointer.y
-    if (Math.abs(dx) + Math.abs(dy) > 3) this.movedWhileDown = true
-
-    if (this.dragging === 'orbit') {
-      this.orbit.azimuth -= dx * 0.005
-      this.orbit.polar = THREE.MathUtils.clamp(this.orbit.polar - dy * 0.005, 0.12, Math.PI / 2.15)
-      this.updateCamera()
-    } else if (this.dragging === 'pan') {
-      const scale = this.orbit.distance * 0.0016
-      const forward = new THREE.Vector3(-Math.sin(this.orbit.azimuth), 0, -Math.cos(this.orbit.azimuth))
-      const right = new THREE.Vector3(forward.z, 0, -forward.x)
-      this.target.addScaledVector(right, -dx * scale)
-      this.target.addScaledVector(forward, -dy * scale)
-      const limit = WORLD * 0.75
-      this.target.x = THREE.MathUtils.clamp(this.target.x, -limit, limit)
-      this.target.z = THREE.MathUtils.clamp(this.target.z, -limit, limit)
-      this.updateCamera()
+    if (Math.abs(event.clientX - this.pointerDown.x) + Math.abs(event.clientY - this.pointerDown.y) > 4) {
+      this.movedWhileDown = true
     }
-
-    this.lastPointer = { x: event.clientX, y: event.clientY }
     this.updateHover(event)
   }
 
   private onPointerUp = (event: PointerEvent) => {
-    this.dragging = 'none'
-    // A drag was a camera move, not a click.
-    if (this.movedWhileDown) return
-    if (event.button !== 0) return
-
-    // While a card is held, the ghost on the ground is what the player is
-    // aiming at — a tall building's silhouette must not steal the click.
+    if (this.movedWhileDown || event.button !== 0) return
     if (this.ghostVisible) {
       if (this.hoverCell) this.callbacks.onCellClick(this.hoverCell.x, this.hoverCell.y)
       return
     }
-
-    const hit = this.pickAsset(event)
-    if (hit) {
-      this.callbacks.onAssetClick(hit)
-      return
-    }
-    if (this.hoverCell) this.callbacks.onCellClick(this.hoverCell.x, this.hoverCell.y)
-  }
-
-  private onWheel = (event: WheelEvent) => {
-    event.preventDefault()
-    const factor = Math.exp(event.deltaY * 0.0011)
-    this.orbit.distance = THREE.MathUtils.clamp(this.orbit.distance * factor, 30, 620)
-    this.updateCamera()
-  }
-
-  private setPointerFrom(event: PointerEvent | WheelEvent) {
-    const rect = this.canvas.getBoundingClientRect()
-    this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-    this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
-    this.raycaster.setFromCamera(this.pointer, this.camera)
-  }
-
-  private pickAsset(event: PointerEvent): string | null {
-    this.setPointerFrom(event)
-    const hits = this.raycaster.intersectObjects(this.buildingRoot.children, true)
-    for (const hit of hits) {
-      let object: THREE.Object3D | null = hit.object
-      while (object && !object.userData.assetId) object = object.parent
-      if (object?.userData.assetId) return object.userData.assetId as string
-    }
-    return null
+    const { x, y } = this.eventCoordinates(event)
+    const hit = this.scene.pick(x, y, (mesh) => Boolean(mesh.metadata?.assetId), false, this.camera)
+    const assetId = hit?.pickedMesh?.metadata?.assetId as string | undefined
+    if (assetId) this.callbacks.onAssetClick(assetId)
+    else if (this.hoverCell) this.callbacks.onCellClick(this.hoverCell.x, this.hoverCell.y)
   }
 
   private updateHover(event: PointerEvent) {
-    this.setPointerFrom(event)
-    const hit = this.raycaster.intersectObject(this.ground, false)[0]
-    if (!hit) {
+    const { x, y } = this.eventCoordinates(event)
+    const hit = this.scene.pick(x, y, (mesh) => mesh === this.ground, false, this.camera)
+    const point = hit?.pickedPoint
+    if (!point) {
       this.hoverCell = null
-      this.ghost.visible = false
+      this.ghost.root.setEnabled(false)
       this.callbacks.onHover(null)
       return
     }
-    const x = Math.floor((hit.point.x + WORLD / 2) / CELL_METRES)
-    const y = Math.floor((hit.point.z + WORLD / 2) / CELL_METRES)
-    if (x < 0 || y < 0 || x >= GRID_SIZE || y >= GRID_SIZE) {
+    const cellX = Math.floor((point.x + WORLD / 2) / CELL_METRES)
+    const cellY = Math.floor((point.z + WORLD / 2) / CELL_METRES)
+    if (cellX < 0 || cellY < 0 || cellX >= GRID_SIZE || cellY >= GRID_SIZE) {
       this.hoverCell = null
-      this.ghost.visible = false
+      this.ghost.root.setEnabled(false)
       this.callbacks.onHover(null)
       return
     }
-    const changed = !this.hoverCell || this.hoverCell.x !== x || this.hoverCell.y !== y
-    this.hoverCell = { x, y }
-    if (changed) this.callbacks.onHover({ x, y })
+    const changed = !this.hoverCell || this.hoverCell.x !== cellX || this.hoverCell.y !== cellY
+    this.hoverCell = { x: cellX, y: cellY }
+    if (changed) this.callbacks.onHover(this.hoverCell)
     this.refreshGhost()
   }
-
-  // ---- public API --------------------------------------------------------
 
   setGhost(footprint: [number, number], rotation: 0 | 1 | 2 | 3, visible: boolean, valid: boolean) {
     this.ghostFootprint = rotatedFootprint(footprint, rotation)
@@ -295,97 +427,89 @@ export class CityScene {
 
   private refreshGhost() {
     if (!this.ghostVisible || !this.hoverCell) {
-      this.ghost.visible = false
+      this.ghost.root.setEnabled(false)
       return
     }
     const [w, d] = this.ghostFootprint
     const centre = cellCentre(this.hoverCell.x, this.hoverCell.y)
-    this.ghost.position.set(
+    this.ghost.root.position.set(
       centre.x + ((w - 1) * CELL_METRES) / 2,
-      0.2,
+      0.18,
       centre.z + ((d - 1) * CELL_METRES) / 2,
     )
-    this.ghost.scale.set(w * CELL_METRES * 0.94, 6, d * CELL_METRES * 0.94)
-    ;(this.ghost.material as THREE.MeshBasicMaterial).color.setHex(
+    this.ghost.root.scaling.set(w, 1, d)
+    setSignalColor(
+      this.ghost.accents,
       this.ghostValid ? PALETTE.hoverValid : PALETTE.hoverInvalid,
+      this.ghostValid ? 1.45 : 1.8,
     )
-    this.ghost.visible = true
+    this.ghost.root.setEnabled(true)
   }
 
-  /** Reconcile scene meshes with game state. */
   sync(state: GameState) {
     const seen = new Set<string>()
-
     for (const asset of state.assets) {
       seen.add(asset.id)
-      let mesh = this.meshes.get(asset.id)
-      if (!mesh) {
-        mesh = createBuildingMesh(asset, definition(asset.definitionId))
+      let visual = this.meshes.get(asset.id)
+      if (!visual) {
+        visual = createBuildingVisual(this.scene, asset, definition(asset.definitionId))
         const [w, d] = rotatedFootprint(asset.footprint, asset.rotation)
         const centre = cellCentre(asset.x, asset.y)
-        mesh.position.set(
+        visual.root.position.set(
           centre.x + ((w - 1) * CELL_METRES) / 2,
           0,
           centre.z + ((d - 1) * CELL_METRES) / 2,
         )
-        this.buildingRoot.add(mesh)
-        this.meshes.set(asset.id, mesh)
+        visual.root.parent = this.buildingRoot
+        tagAsPickable(visual.root, asset.id)
+        visual.root.getChildMeshes().forEach((mesh) => this.shadow.addShadowCaster(mesh))
+        this.meshes.set(asset.id, visual)
       }
 
-      // Under-construction assets sit low and dim.
-      const accent = mesh.userData.accent as THREE.Mesh | undefined
-      if (accent) {
-        const material = accent.material as THREE.MeshStandardMaterial
-        material.emissiveIntensity = asset.operational ? (asset.brownout ? 0.15 : 1.0) : 0.05
-      }
       const def = definition(asset.definitionId)
       const progress = def.constructionCycles
         ? 1 - asset.cyclesRemaining / def.constructionCycles
         : 1
-      mesh.scale.y = asset.operational ? 1 : Math.max(0.12, progress)
+      visual.root.scaling.y = asset.operational ? 1 : Math.max(0.14, progress)
+      setSignalColor(
+        visual.accents,
+        visual.signalColor,
+        asset.operational ? (asset.brownout ? 0.12 : 1.15) : 0.04,
+      )
     }
 
-    for (const [id, mesh] of this.meshes) {
+    for (const [id, visual] of this.meshes) {
       if (seen.has(id)) continue
-      this.buildingRoot.remove(mesh)
-      mesh.traverse((child) => {
-        if (child instanceof THREE.Mesh) child.geometry.dispose()
-      })
+      visual.root.dispose(false, true)
       this.meshes.delete(id)
     }
 
     const selected = state.selectedAssetId
-      ? state.assets.find((a) => a.id === state.selectedAssetId)
+      ? state.assets.find((asset) => asset.id === state.selectedAssetId)
       : undefined
     if (selected) {
       const [w, d] = rotatedFootprint(selected.footprint, selected.rotation)
       const centre = cellCentre(selected.x, selected.y)
-      this.selectionRing.position.set(
+      this.selectionSignal.position.set(
         centre.x + ((w - 1) * CELL_METRES) / 2,
-        0.35,
+        0.32,
         centre.z + ((d - 1) * CELL_METRES) / 2,
       )
-      const radius = Math.max(w, d)
-      this.selectionRing.scale.setScalar(radius)
-      this.selectionRing.visible = true
+      this.selectionSignal.scaling.set(w, 1, d)
+      this.selectionSignal.setEnabled(true)
     } else {
-      this.selectionRing.visible = false
+      this.selectionSignal.setEnabled(false)
     }
 
     this.syncOverlay(state)
     this.refreshGhost()
   }
 
-  /** Paint per-cell overlay tiles for the active analysis mode. */
   private syncOverlay(state: GameState) {
-    this.overlayRoot.clear()
+    this.overlayRoot.getChildren().forEach((node) => node.dispose(false, true))
     if (state.overlay === 'none') return
 
     const services = computeServices(state.assets)
-    const geometry = new THREE.PlaneGeometry(CELL_METRES * 0.9, CELL_METRES * 0.9)
-
-    // For the utility overlays, first wash in the ground actually covered by a
-    // supplier, so the player can see reach before committing to a placement.
     const utility = state.overlay === 'power' || state.overlay === 'water' || state.overlay === 'data'
     if (utility) {
       const supplies = (id: string) => {
@@ -398,120 +522,75 @@ export class CityScene {
       for (const asset of state.assets) {
         if (!asset.operational || !supplies(asset.definitionId)) continue
         for (const cell of cellsOf(asset)) {
-          const ox = cell % GRID_SIZE
-          const oy = Math.floor(cell / GRID_SIZE)
-          for (let dx = -UTILITY_RADIUS; dx <= UTILITY_RADIUS; dx++) {
-            for (let dy = -UTILITY_RADIUS; dy <= UTILITY_RADIUS; dy++) {
-              const nx = ox + dx
-              const ny = oy + dy
-              if (nx < 0 || ny < 0 || nx >= GRID_SIZE || ny >= GRID_SIZE) continue
-              covered.add(ny * GRID_SIZE + nx)
+          const originX = cell % GRID_SIZE
+          const originY = Math.floor(cell / GRID_SIZE)
+          for (let dx = -UTILITY_RADIUS; dx <= UTILITY_RADIUS; dx += 1) {
+            for (let dy = -UTILITY_RADIUS; dy <= UTILITY_RADIUS; dy += 1) {
+              const x = originX + dx
+              const y = originY + dy
+              if (x >= 0 && y >= 0 && x < GRID_SIZE && y < GRID_SIZE) covered.add(y * GRID_SIZE + x)
             }
           }
         }
       }
-      const washMaterial = new THREE.MeshBasicMaterial({
-        color: 0x4dd8e6,
-        transparent: true,
-        opacity: 0.12,
-        depthWrite: false,
-      })
       for (const cell of covered) {
-        const tile = new THREE.Mesh(geometry, washMaterial)
-        tile.rotation.x = -Math.PI / 2
-        const centre = cellCentre(cell % GRID_SIZE, Math.floor(cell / GRID_SIZE))
-        tile.position.set(centre.x, 0.14, centre.z)
-        this.overlayRoot.add(tile)
+        const signal = createCellSignal(this.scene, `coverage:${cell}`, PALETTE.rim, 0.08)
+        signal.position = cellCentre(cell % GRID_SIZE, Math.floor(cell / GRID_SIZE))
+        signal.position.y = 0.14
+        signal.parent = this.overlayRoot
       }
     }
 
     for (const asset of state.assets) {
       const def = definition(asset.definitionId)
-      const svc = services.get(asset.id)
-      let color: number | null = null
-
+      const service = services.get(asset.id)
+      let value: number | null = null
       switch (state.overlay) {
-        case 'power':
-          color = def.powerProduced > 0 ? 0x4dd8e6 : svc?.power ? 0x4ade80 : 0xf05252
-          break
-        case 'water':
-          color = def.waterProduced > 0 ? 0x4dd8e6 : svc?.water ? 0x4ade80 : 0xf05252
-          break
-        case 'data':
-          color = def.dataProduced > 0 ? 0x4dd8e6 : svc?.data ? 0x4ade80 : 0xe8913a
-          break
-        case 'housing':
-          color = def.housingCapacity > 0 ? 0x4ade80 : null
-          break
-        case 'employment':
-          color = def.jobCapacity > 0 ? (asset.staffed > 0 ? 0x4ade80 : 0xe8913a) : null
-          break
-        case 'happiness':
-          color = def.happiness > 0 ? 0x4ade80 : def.happiness < 0 ? 0xf05252 : null
-          break
-        default:
-          color = null
+        case 'power': value = def.powerProduced > 0 ? PALETTE.rim : service?.power ? PALETTE.hoverValid : PALETTE.hoverInvalid; break
+        case 'water': value = def.waterProduced > 0 ? PALETTE.rim : service?.water ? PALETTE.hoverValid : PALETTE.hoverInvalid; break
+        case 'data': value = def.dataProduced > 0 ? PALETTE.rim : service?.data ? PALETTE.hoverValid : 0xe8913a; break
+        case 'housing': value = def.housingCapacity > 0 ? PALETTE.hoverValid : null; break
+        case 'employment': value = def.jobCapacity > 0 ? (asset.staffed > 0 ? PALETTE.hoverValid : 0xe8913a) : null; break
+        case 'happiness': value = def.happiness > 0 ? PALETTE.hoverValid : def.happiness < 0 ? PALETTE.hoverInvalid : null; break
       }
-      if (color === null) continue
-
-      const material = new THREE.MeshBasicMaterial({
-        color,
-        transparent: true,
-        opacity: 0.4,
-        depthWrite: false,
-      })
+      if (value === null) continue
       for (const cell of cellsOf(asset)) {
-        const cx = cell % GRID_SIZE
-        const cy = Math.floor(cell / GRID_SIZE)
-        const tile = new THREE.Mesh(geometry, material)
-        tile.rotation.x = -Math.PI / 2
-        const centre = cellCentre(cx, cy)
-        tile.position.set(centre.x, 0.25, centre.z)
-        this.overlayRoot.add(tile)
+        const signal = createCellSignal(this.scene, `asset-signal:${asset.id}:${cell}`, value, 0.34)
+        signal.position = cellCentre(cell % GRID_SIZE, Math.floor(cell / GRID_SIZE))
+        signal.position.y = 0.24
+        signal.parent = this.overlayRoot
       }
     }
   }
 
   focusOn(asset: WorldAsset) {
     const centre = cellCentre(asset.x, asset.y)
-    this.target.set(centre.x, 0, centre.z)
-    this.updateCamera()
-  }
-
-  private updateCamera() {
-    const { azimuth, polar, distance } = this.orbit
-    this.camera.position.set(
-      this.target.x + distance * Math.sin(polar) * Math.sin(azimuth),
-      this.target.y + distance * Math.cos(polar),
-      this.target.z + distance * Math.sin(polar) * Math.cos(azimuth),
-    )
-    this.camera.lookAt(this.target)
+    this.camera.setTarget(new Vector3(centre.x, 0, centre.z))
   }
 
   resize() {
-    const width = this.canvas.clientWidth || window.innerWidth
-    const height = this.canvas.clientHeight || window.innerHeight
-    this.renderer.setSize(width, height, false)
-    this.camera.aspect = width / Math.max(1, height)
-    this.camera.updateProjectionMatrix()
+    this.engine.resize()
   }
 
   start() {
-    const loop = () => {
-      if (this.disposed) return
-      this.frame = requestAnimationFrame(loop)
-      this.renderer.render(this.scene, this.camera)
-    }
-    loop()
+    this.engine.runRenderLoop(() => {
+      if (!this.disposed) {
+        const pulse = 1 + Math.sin(performance.now() * 0.0022) * 0.04
+        this.selectionSignal.scaling.y = pulse
+        this.scene.render()
+      }
+    })
   }
 
   dispose() {
     this.disposed = true
-    cancelAnimationFrame(this.frame)
     this.canvas.removeEventListener('pointerdown', this.onPointerDown)
     this.canvas.removeEventListener('pointermove', this.onPointerMove)
     window.removeEventListener('pointerup', this.onPointerUp)
-    this.canvas.removeEventListener('wheel', this.onWheel)
-    this.renderer.dispose()
+    this.canvas.removeEventListener('contextmenu', this.preventContextMenu)
+    this.canvas.removeEventListener('pointerleave', this.onPointerLeave)
+    this.camera.detachControl()
+    this.scene.dispose()
+    this.engine.dispose()
   }
 }
