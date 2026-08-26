@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CityScene } from '@/render/Scene'
+import { createSceneSafely } from '@/render/createSceneSafely'
 import { definition } from '@/game/content'
 import { CYCLE_SECONDS, resolveCycle } from '@/game/economy'
 import { canPlace } from '@/game/grid'
@@ -35,6 +36,9 @@ export default function App() {
   const [toast, setToast] = useState<string | null>(null)
   const [started, setStarted] = useState(false)
   const [hasSave, setHasSave] = useState(false)
+  const [rendererStatus, setRendererStatus] = useState<
+    { kind: 'loading' | 'ready' | 'unavailable'; message?: string }
+  >({ kind: 'loading' })
 
   const rotationRef = useRef(rotation)
   rotationRef.current = rotation
@@ -53,7 +57,8 @@ export default function App() {
   useEffect(() => {
     if (!canvasRef.current) return
 
-    const scene = new CityScene(canvasRef.current, {
+    const canvas = canvasRef.current
+    const scene = createSceneSafely(() => new CityScene(canvas, {
       onCellClick: (x, y) => {
         const state = stateRef.current
         if (!state.selectedInstanceId) {
@@ -75,7 +80,10 @@ export default function App() {
         bump()
       },
       onHover: (cell) => setHover(cell),
-    })
+    }), (message) => setRendererStatus({ kind: 'unavailable', message }))
+
+    if (!scene) return
+    setRendererStatus({ kind: 'ready' })
 
     sceneRef.current = scene
     scene.sync(stateRef.current)
@@ -236,6 +244,7 @@ export default function App() {
         <Intro
           onStart={() => setStarted(true)}
           onContinue={hasSave ? () => { handleLoad(); setStarted(true) } : undefined}
+          rendererStatus={rendererStatus}
         />
       ) : (
         <>

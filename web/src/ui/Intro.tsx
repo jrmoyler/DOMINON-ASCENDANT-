@@ -6,9 +6,11 @@ import { revealIntro } from './motion'
 export function Intro({
   onStart,
   onContinue,
+  rendererStatus,
 }: {
   onStart: () => void
   onContinue?: () => void
+  rendererStatus: { kind: 'loading' | 'ready' | 'unavailable'; message?: string }
 }) {
   useEffect(() => {
     revealIntro()
@@ -55,14 +57,25 @@ export function Intro({
         </div>
 
         <div className="intro-actions">
-          <button className="primary" onClick={onStart}>
-            Assume command
+          <button
+            className="primary"
+            onClick={onStart}
+            disabled={rendererStatus.kind !== 'ready'}
+          >
+            {rendererStatus.kind === 'loading' ? 'Initializing world' : rendererStatus.kind === 'ready' ? 'Assume command' : 'Renderer unavailable'}
           </button>
           {onContinue && (
             <button className="secondary" onClick={onContinue}>
               Continue saved campaign
             </button>
           )}
+        </div>
+
+        <div className={`intro-system ${rendererStatus.kind}`} role="status">
+          <span className="system-indicator" />
+          {rendererStatus.kind === 'loading' && 'Babylon command world initializing'}
+          {rendererStatus.kind === 'ready' && 'Command world online · Babylon.js 9'}
+          {rendererStatus.kind === 'unavailable' && rendererStatus.message}
         </div>
 
         <div className="intro-controls">

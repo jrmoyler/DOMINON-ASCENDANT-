@@ -235,6 +235,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; }
 .intro-actions .primary { background: linear-gradient(135deg, #7cf0f7, #35b6c8); color: #03161d; border-color: #8ef7ff; font-weight: 780; font-size: 13px; padding: 13px 34px; letter-spacing: 0.1em; box-shadow: 0 0 34px rgba(77,216,230,.16); }
 .intro-actions .primary:hover { background: #6ee6f2; }
 .intro-actions .secondary { font-size: 13px; padding: 11px 22px; }
+.intro-system { display: flex; align-items: center; gap: 8px; margin: -9px 0 18px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.07em; color: var(--text-faint); }
+.system-indicator { width: 7px; height: 7px; clip-path: polygon(50% 0, 100% 38%, 81% 100%, 19% 100%, 0 38%); background: var(--text-faint); }
+.intro-system.ready { color: var(--good); }
+.intro-system.ready .system-indicator { background: var(--good); box-shadow: 0 0 12px rgba(74,222,128,.55); }
+.intro-system.unavailable { color: #ff9a9a; max-width: 590px; }
+.intro-system.unavailable .system-indicator { background: var(--bad); }
 .intro-controls { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: flex-start; font-size: 10px; color: var(--text-faint); max-width: 650px; }
 kbd {
   font-family: var(--mono); font-size: 10px; background: rgba(93, 122, 163, 0.16);
