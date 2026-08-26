@@ -1,0 +1,54 @@
+{
+  "assetType": "DAFounderAbilityDefinitions",
+  "civilization": "synara",
+  "definitions": [
+    {
+      "abilityId": "synara.precision_scan",
+      "displayName": "Precision Scan",
+      "kind": "Active",
+      "tacticalChargeCost": 0,
+      "cooldownSeconds": 8,
+      "durationSeconds": 8,
+      "targetScope": "ViewTarget",
+      "rangeMeters": 40,
+      "effectId": "effect.synara.precision_scan.reveal",
+      "grantedStatusTag": "Status.Marked"
+    },
+    {
+      "abilityId": "synara.drone_barrier",
+      "displayName": "Drone Barrier",
+      "kind": "Active",
+      "tacticalChargeCost": 20,
+      "cooldownSeconds": 18,
+      "durationSeconds": 10,
+      "targetScope": "Self",
+      "rangeMeters": 0,
+      "effectId": "effect.synara.drone_barrier.cover",
+      "grantedStatusTag": "Status.Shielded"
+    },
+    {
+      "abilityId": "synara.orchestration_mark",
+      "displayName": "Orchestration Mark",
+      "kind": "Active",
+      "tacticalChargeCost": 15,
+      "cooldownSeconds": 12,
+      "durationSeconds": 12,
+      "targetScope": "ViewTarget",
+      "rangeMeters": 30,
+      "effectId": "effect.synara.orchestration_mark.focus",
+      "grantedStatusTag": "Status.Marked"
+    },
+    {
+      "abilityId": "synara.coordinated_override",
+      "displayName": "Coordinated Override",
+      "kind": "Ultimate",
+      "tacticalChargeCost": 100,
+      "cooldownSeconds": 60,
+      "durationSeconds": 15,
+      "targetScope": "AlliesInRadius",
+      "rangeMeters": 15,
+      "effectId": "effect.synara.coordinated_override.inspire",
+      "grantedStatusTag": "Status.Inspired"
+    }
+  ]
+}

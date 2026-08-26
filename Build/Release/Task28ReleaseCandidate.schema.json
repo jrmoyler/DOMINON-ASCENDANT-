@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dominion-ascendant.invalid/schemas/task28-release-candidate.schema.json",
+  "title": "Task 28 Fully Reconciled Release Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "runId", "buildId", "fixturePlanSha256", "task27Evidence", "automationEvidence",
+    "routes", "saveCheckpoints", "controller", "onboarding", "defects"
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "runId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9._:-]+$"},
+    "buildId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9._:-]+$"},
+    "fixturePlanSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "task27Evidence": {"$ref": "#/$defs/capturedArtifact"},
+    "automationEvidence": {"$ref": "#/$defs/successfulArtifact"},
+    "routes": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": {"$ref": "#/$defs/route"}
+    },
+    "saveCheckpoints": {
+      "type": "array", "minItems": 6, "maxItems": 6,
+      "items": {"$ref": "#/$defs/saveCheckpoint"}
+    },
+    "controller": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observedByHuman", "mouseUsed", "actions", "checklist", "video"],
+      "properties": {
+        "observedByHuman": {"const": true},
+        "mouseUsed": {"const": false},
+        "actions": {"$ref": "#/$defs/controllerActions"},
+        "checklist": {"$ref": "#/$defs/artifact"},
+        "video": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "onboarding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["uncoachedFirstTimeTesters", "developerCoaching", "actions", "observationLog"],
+      "properties": {
+        "uncoachedFirstTimeTesters": {"type": "integer", "minimum": 1},
+        "developerCoaching": {"const": false},
+        "actions": {"$ref": "#/$defs/onboardingActions"},
+        "observationLog": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "defects": {
+      "type": "object", "additionalProperties": false,
+      "required": ["Blocker", "Critical", "High", "Medium", "Low", "acceptedMedium", "lowWithinPolishTolerance", "report"],
+      "properties": {
+        "Blocker": {"const": 0}, "Critical": {"const": 0}, "High": {"const": 0},
+        "Medium": {"type": "integer", "minimum": 0},
+        "Low": {"type": "integer", "minimum": 0},
+        "acceptedMedium": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "lowWithinPolishTolerance": {"const": true},
+        "report": {"$ref": "#/$defs/artifact"}
+      }
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "capturedArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "state"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "state": {"const": "CAPTURED"}
+      }
+    },
+    "successfulArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "exitCode"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "exitCode": {"const": 0}
+      }
+    },
+    "aftermath": {
+      "type": "object", "additionalProperties": false,
+      "required": ["loyaltyBefore", "loyalty", "loyaltyActionSha256", "daxtonState", "historySha256", "damageSha256", "relationshipSha256"],
+      "properties": {
+        "loyaltyBefore": {"type": "number", "minimum": 0, "maximum": 100},
+        "loyalty": {"type": "number", "minimum": 0, "maximum": 100},
+        "loyaltyActionSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "daxtonState": {"enum": ["Prisoner", "IndustrialAdvisor", "Governor", "AlliedForgeLord"]},
+        "historySha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "damageSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "relationshipSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "route": {
+      "type": "object", "additionalProperties": false,
+      "required": ["route", "sourceSha256", "reachedFirstAscension", "log", "video", "aftermath"],
+      "properties": {
+        "route": {"enum": ["Force", "Economic", "Influence", "Alliance"]},
+        "sourceSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "reachedFirstAscension": {"const": true},
+        "log": {"$ref": "#/$defs/artifact"},
+        "video": {"$ref": "#/$defs/artifact"},
+        "aftermath": {"$ref": "#/$defs/aftermath"}
+      }
+    },
+    "saveCheckpoint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["checkpoint", "passed", "snapshotSha256", "log"],
+      "properties": {
+        "checkpoint": {"enum": ["first_city_built", "mid_nia_quest", "active_foundry_shortage", "mid_iron_veil", "daxton_phase_transition", "immediately_after_ascension"]},
+        "passed": {"const": true},
+        "snapshotSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "log": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "controllerActions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["build", "card_inspect", "combat", "command", "diplomacy", "conquest", "save_load"],
+      "properties": {
+        "build": {"const": true}, "card_inspect": {"const": true}, "combat": {"const": true},
+        "command": {"const": true}, "diplomacy": {"const": true}, "conquest": {"const": true},
+        "save_load": {"const": true}
+      }
+    },
+    "onboardingActions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["move_founder", "activate_founder_hall", "place_adaptive_habitat", "understand_utilities", "house_residents", "employ_nia", "generate_capital", "encounter_dependency", "research_with_insight", "understand_influence", "meet_forgeweave_eden", "complete_first_combat", "command_guardian_drones"],
+      "properties": {
+        "move_founder": {"const": true}, "activate_founder_hall": {"const": true},
+        "place_adaptive_habitat": {"const": true}, "understand_utilities": {"const": true},
+        "house_residents": {"const": true}, "employ_nia": {"const": true},
+        "generate_capital": {"const": true}, "encounter_dependency": {"const": true},
+        "research_with_insight": {"const": true}, "understand_influence": {"const": true},
+        "meet_forgeweave_eden": {"const": true}, "complete_first_combat": {"const": true},
+        "command_guardian_drones": {"const": true}
+      }
+    }
+  }
+}

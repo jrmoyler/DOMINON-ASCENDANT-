@@ -1,0 +1,58 @@
+{
+  "$schema": "PerformanceEvidence.schema.json",
+  "claims": {
+    "cookPassed": false,
+    "performanceTargetsPassed": false,
+    "soakPassed": false
+  },
+  "commands": {
+    "automation": {
+      "argv": [
+        "UnrealEditor-Cmd",
+        "DominionAscendant.uproject",
+        "-unattended",
+        "-nop4",
+        "-ResX=1920",
+        "-ResY=1080",
+        "-windowed",
+        "-ExecCmds=Automation RunTests Dominion.Performance;Quit",
+        "-TestExit=Automation Test Queue Empty",
+        "-DABenchmarkPlan=Intermediate/Performance/VerticalSliceBenchmark.plan.json",
+        "-DABenchmarkBudget=Build/Performance/VerticalSliceBenchmark.budget.json",
+        "-DABenchmarkEvidenceCandidate=Build/Performance/Task27PerformanceEvidence.json.candidate"
+      ],
+      "exitCode": 127
+    },
+    "cook": {
+      "argv": [
+        "UnrealEditor-Cmd",
+        "DominionAscendant.uproject",
+        "-run=cook",
+        "-targetplatform=Windows",
+        "-unattended",
+        "-nop4"
+      ],
+      "exitCode": 127
+    },
+    "prepare": {
+      "argv": [
+        "UnrealEditor-Cmd",
+        "DominionAscendant.uproject",
+        "-run=DAPresentationContent",
+        "-unattended",
+        "-nop4"
+      ],
+      "exitCode": 127
+    }
+  },
+  "hardware": null,
+  "measurements": null,
+  "planSha256": "9a1595ac790d97b6c9c812b9471daca78437c7a52f6fcf7ecc33459db3eb73af",
+  "readinessReasons": [
+    "UE5.8 UnrealEditor-Cmd is unavailable; preparation, Automation, and cook were not executable.",
+    "No FPS, hitch, transition, soak, save-size, cook, or hardware claim was produced."
+  ],
+  "sceneId": "benchmark.vertical_slice.synara_capital",
+  "schemaVersion": 1,
+  "state": "NOT_READY"
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "cinematicId", "displayRate", "shots"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "cinematicId": {"const": "cinematic.forgeweave.first_ascension"},
+    "displayRate": {"const": 30},
+    "shots": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/shot"}
+    }
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"type": "number", "minimum": -100000, "maximum": 100000}
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startLocation", "endLocation", "startRotation", "endRotation", "fieldOfView"],
+      "properties": {
+        "startLocation": {"$ref": "#/$defs/vector3"},
+        "endLocation": {"$ref": "#/$defs/vector3"},
+        "startRotation": {"$ref": "#/$defs/vector3"},
+        "endRotation": {"$ref": "#/$defs/vector3"},
+        "fieldOfView": {"type": "number", "minimum": 20, "maximum": 120}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "actionId", "targetId", "payload"],
+      "properties": {
+        "frame": {"type": "integer", "minimum": 0},
+        "actionId": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+        "targetId": {"type": "string", "pattern": "^[a-z0-9_.]+$"},
+        "payload": {"type": "string", "pattern": "^[a-z0-9_]+$"}
+      }
+    },
+    "cue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "cueId"],
+      "properties": {
+        "frame": {"type": "integer", "minimum": 0},
+        "cueId": {"type": "string", "pattern": "^(audio|vfx)\\.ascension\\.[a-z0-9_]+$"}
+      }
+    },
+    "shot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beat", "sequenceAssetPath", "durationFrames", "camera", "actions", "audioCues", "vfxCues"],
+      "properties": {
+        "beat": {"enum": ["systems_halt_react", "forge_relic_emerges", "world_transit", "founder_hall_receives_relic", "unlocks"]},
+        "sequenceAssetPath": {"type": "string", "pattern": "^/Game/Cinematics/ForgeweaveAscension/Shots/LS_[0-9]{2}_[A-Za-z0-9]+$"},
+        "durationFrames": {"type": "integer", "minimum": 1, "maximum": 900},
+        "camera": {"$ref": "#/$defs/camera"},
+        "actions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/action"}},
+        "audioCues": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/cue"}},
+        "vfxCues": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/cue"}}
+      }
+    }
+  },
+  "x-dominion-orderedBeats": ["systems_halt_react", "forge_relic_emerges", "world_transit", "founder_hall_receives_relic", "unlocks"],
+  "x-dominion-totalFrames": 510
+}

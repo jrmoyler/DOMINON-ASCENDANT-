@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "campaignId", "fingerprint", "events", "quests"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "campaignId": {"const": "campaign.vertical_slice.regional_crisis"},
+    "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "events": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/event"}},
+    "quests": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/quest"}}
+  },
+  "$defs": {
+    "trigger": {
+      "type": "object", "additionalProperties": false,
+      "required": ["metric", "comparison", "threshold"],
+      "properties": {"metric": {"type": "string"}, "comparison": {"type": "string"}, "threshold": {"type": "number"}}
+    },
+    "stage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "durationWorldTicks", "priceModifier", "nextStageIds"],
+      "properties": {"id": {"type": "string"}, "durationWorldTicks": {"type": "integer", "minimum": 1}, "priceModifier": {"type": "number", "minimum": 0}, "nextStageIds": {"type": "array", "minItems": 1, "items": {"type": "string"}}}
+    },
+    "resolution": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "recoveryWorldTicks", "marketModifier", "tradeRouteCapacityDelta", "ecologyDelta", "relationshipId", "relationshipMetric", "relationshipDelta", "resourceHungerDelta", "historyTags", "citizenOutcomes"],
+      "properties": {
+        "id": {"type": "string"}, "recoveryWorldTicks": {"type": "integer", "minimum": 4, "maximum": 8},
+        "marketModifier": {"type": "number"}, "tradeRouteCapacityDelta": {"type": "integer"}, "ecologyDelta": {"type": "number"},
+        "relationshipId": {"type": "string"}, "relationshipMetric": {"type": "string"}, "relationshipDelta": {"type": "number"},
+        "resourceHungerDelta": {"type": "number"}, "historyTags": {"type": "array", "items": {"type": "string"}},
+        "citizenOutcomes": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    },
+    "event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "assetPath", "scope", "trigger", "warningDurationWorldTicks", "initialStageId", "ignoredResolutionId", "stages", "systems", "resolutions"],
+      "properties": {
+        "id": {"type": "string"}, "title": {"type": "string"}, "assetPath": {"type": "string"}, "scope": {"type": "string"},
+        "trigger": {"$ref": "#/$defs/trigger"}, "warningDurationWorldTicks": {"type": "integer", "minimum": 0},
+        "initialStageId": {"type": "string"}, "ignoredResolutionId": {"type": "string"},
+        "stages": {"type": "array", "items": {"$ref": "#/$defs/stage"}}, "systems": {"type": "array", "items": {"type": "string"}},
+        "resolutions": {"type": "array", "items": {"$ref": "#/$defs/resolution"}}
+      }
+    },
+    "questEdge": {
+      "type": "object", "additionalProperties": false,
+      "required": ["branch", "target"],
+      "properties": {"branch": {"type": "string"}, "target": {"type": "string"}}
+    },
+    "questNode": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "type", "edges"],
+      "properties": {"id": {"type": "string"}, "type": {"enum": ["start", "choice", "resolution"]}, "edges": {"type": "array", "items": {"$ref": "#/$defs/questEdge"}}}
+    },
+    "quest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "assetPath", "citizenIds", "trigger", "choices", "systems", "outcomeTags", "choiceOutcomeTags", "dialogueConditions", "nodes"],
+      "properties": {
+        "id": {"type": "string"}, "title": {"type": "string"}, "assetPath": {"type": "string"},
+        "citizenIds": {"type": "array", "items": {"type": "string"}}, "trigger": {"type": "string"},
+        "choices": {"type": "array", "items": {"type": "string"}}, "systems": {"type": "array", "items": {"type": "string"}},
+        "outcomeTags": {"type": "array", "items": {"type": "string"}}, "choiceOutcomeTags": {"type": "object", "additionalProperties": {"type": "string"}}, "dialogueConditions": {"type": "array", "items": {"type": "string"}},
+        "nodes": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/questNode"}}
+      }
+    }
+  }
+}

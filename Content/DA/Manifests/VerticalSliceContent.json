@@ -1,0 +1,1399 @@
+{
+  "schemaVersion": 1,
+  "authority": {
+    "definitionNamesAndCounts": "Vertical Slice Production Spec v1.1 sections 15-21",
+    "starterDeck": "Vertical Slice Production Spec v1.1 section 22",
+    "gameplayValues": "Economy Balance Progression Bible v0.8; absent per-card values remain explicitly unauthored",
+    "prefabPolicy": "C++ graybox classes are temporary source-resolvable representations"
+  },
+  "expectedCounts": {
+    "Synara": 15,
+    "Forgeweave": 15,
+    "EdenCircuit": 15,
+    "Universal": 17,
+    "Fusion": 1,
+    "Special": 1,
+    "total": 64,
+    "starterInstances": 60
+  },
+  "definitions": [
+    {
+      "id": "synara.adaptive_habitat",
+      "displayName": "Adaptive Habitat",
+      "faction": "Synara",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 sections 24 and 51",
+      "authoredValues": [
+        "deploymentCapital",
+        "craftCapital",
+        "maintenanceCapitalPerCycle"
+      ],
+      "deploymentCapital": 8,
+      "craftCapital": 4,
+      "maintenanceCapitalPerCycle": 0.04,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.civic_autonomy_pods",
+      "displayName": "Civic Autonomy Pods",
+      "faction": "Synara",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.cognitive_operations_tower",
+      "displayName": "Cognitive Operations Tower",
+      "faction": "Synara",
+      "cardType": "Office",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.predictive_bureau",
+      "displayName": "Predictive Bureau",
+      "faction": "Synara",
+      "cardType": "Office",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.autonomous_exchange",
+      "displayName": "Autonomous Exchange",
+      "faction": "Synara",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 section 47",
+      "authoredValues": [
+        "synaraDependencyPerCycle"
+      ],
+      "synaraDependencyPerCycle": 0.1,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.algorithmic_market",
+      "displayName": "Algorithmic Market",
+      "faction": "Synara",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.synthetic_fabrication_node",
+      "displayName": "Synthetic Fabrication Node",
+      "faction": "Synara",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        3
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.swarm_foundry",
+      "displayName": "Swarm Foundry",
+      "faction": "Synara",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        3,
+        3
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.neural_relay",
+      "displayName": "Neural Relay",
+      "faction": "Synara",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.orchestration_hub",
+      "displayName": "Orchestration Hub",
+      "faction": "Synara",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.guardian_drone_cohort",
+      "displayName": "Guardian Drone Cohort",
+      "faction": "Synara",
+      "cardType": "Unit",
+      "rarity": "Common",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxUnitActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 section 52",
+      "authoredValues": [
+        "craftCapital",
+        "craftInsight",
+        "craftProductionThroughput",
+        "requiredCraftingFacilityId",
+        "constructionCycles"
+      ],
+      "craftCapital": 8,
+      "craftInsight": 2,
+      "craftProductionThroughput": 5,
+      "requiredCraftingFacilityId": "synara.synthetic_fabrication_node",
+      "constructionCycles": 2,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.audit_sentinel",
+      "displayName": "Audit Sentinel",
+      "faction": "Synara",
+      "cardType": "Unit",
+      "rarity": "Common",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxUnitActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.agency_forum",
+      "displayName": "Agency Forum",
+      "faction": "Synara",
+      "cardType": "Civic",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 section 47",
+      "authoredValues": [
+        "synaraDependencyPerCycle"
+      ],
+      "synaraDependencyPerCycle": -0.2,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.archon_mira_vey",
+      "displayName": "Archon Mira Vey",
+      "faction": "Synara",
+      "cardType": "Leader",
+      "rarity": "Leader",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxLeaderActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "synara.the_thinking_spire",
+      "displayName": "The Thinking Spire",
+      "faction": "Synara",
+      "cardType": "Wonder",
+      "rarity": "Wonder",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxWonderActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 sections 47 and 136",
+      "authoredValues": [
+        "deploymentCapital",
+        "deploymentInsight",
+        "deploymentInfluence",
+        "synaraDependencyPerCycle",
+        "constructionCycles"
+      ],
+      "deploymentCapital": 220,
+      "deploymentInsight": 30,
+      "deploymentInfluence": 25,
+      "synaraDependencyPerCycle": 0.35,
+      "constructionCycles": 12,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.worker_arcology",
+      "displayName": "Worker Arcology",
+      "faction": "Forgeweave",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.forge_quarters",
+      "displayName": "Forge Quarters",
+      "faction": "Forgeweave",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.production_directorate",
+      "displayName": "Production Directorate",
+      "faction": "Forgeweave",
+      "cardType": "Office",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.industrial_design_bureau",
+      "displayName": "Industrial Design Bureau",
+      "faction": "Forgeweave",
+      "cardType": "Office",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.industrial_exchange",
+      "displayName": "Industrial Exchange",
+      "faction": "Forgeweave",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.machine_parts_market",
+      "displayName": "Machine Parts Market",
+      "faction": "Forgeweave",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.infinite_foundry",
+      "displayName": "Infinite Foundry",
+      "faction": "Forgeweave",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        3,
+        3
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.replication_forge",
+      "displayName": "Replication Forge",
+      "faction": "Forgeweave",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        3,
+        3
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.freight_furnace",
+      "displayName": "Freight Furnace",
+      "faction": "Forgeweave",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.smog_reclaimer",
+      "displayName": "Smog Reclaimer",
+      "faction": "Forgeweave",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.forge_guard",
+      "displayName": "Forge Guard",
+      "faction": "Forgeweave",
+      "cardType": "Unit",
+      "rarity": "Common",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxUnitActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.mechanist_crew",
+      "displayName": "Mechanist Crew",
+      "faction": "Forgeweave",
+      "cardType": "Unit",
+      "rarity": "Common",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxUnitActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.workers_canteen",
+      "displayName": "Workers' Canteen",
+      "faction": "Forgeweave",
+      "cardType": "Civic",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.forge_lord_daxton_rhe",
+      "displayName": "Forge Lord Daxton Rhe",
+      "faction": "Forgeweave",
+      "cardType": "Leader",
+      "rarity": "Leader",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxLeaderActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "forgeweave.the_grand_forge",
+      "displayName": "The Grand Forge",
+      "faction": "Forgeweave",
+      "cardType": "Wonder",
+      "rarity": "Wonder",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxWonderActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 section 137",
+      "authoredValues": [
+        "deploymentCapital",
+        "deploymentInsight",
+        "deploymentInfluence",
+        "constructionCycles"
+      ],
+      "deploymentCapital": 240,
+      "deploymentInsight": 20,
+      "deploymentInfluence": 20,
+      "constructionCycles": 14,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.garden_commune",
+      "displayName": "Garden Commune",
+      "faction": "EdenCircuit",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.canopy_habitat",
+      "displayName": "Canopy Habitat",
+      "faction": "EdenCircuit",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.ecological_design_house",
+      "displayName": "Ecological Design House",
+      "faction": "EdenCircuit",
+      "cardType": "Office",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.restoration_bureau",
+      "displayName": "Restoration Bureau",
+      "faction": "EdenCircuit",
+      "cardType": "Office",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.harvest_market",
+      "displayName": "Harvest Market",
+      "faction": "EdenCircuit",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        2
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.seed_exchange",
+      "displayName": "Seed Exchange",
+      "faction": "EdenCircuit",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.regenerative_bioworks",
+      "displayName": "Regenerative Bioworks",
+      "faction": "EdenCircuit",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        2,
+        3
+      ],
+      "footprintAuthority": "Content Production Bible v0.6",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.mycelium_works",
+      "displayName": "Mycelium Works",
+      "faction": "EdenCircuit",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.living_waterway",
+      "displayName": "Living Waterway",
+      "faction": "EdenCircuit",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.pollinator_corridor",
+      "displayName": "Pollinator Corridor",
+      "faction": "EdenCircuit",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.ranger_circle",
+      "displayName": "Ranger Circle",
+      "faction": "EdenCircuit",
+      "cardType": "Unit",
+      "rarity": "Common",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxUnitActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.symbiosis_keepers",
+      "displayName": "Symbiosis Keepers",
+      "faction": "EdenCircuit",
+      "cardType": "Unit",
+      "rarity": "Common",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxUnitActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.balance_grove",
+      "displayName": "Balance Grove",
+      "faction": "EdenCircuit",
+      "cardType": "Civic",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.caretaker_amara_venn",
+      "displayName": "Caretaker Amara Venn",
+      "faction": "EdenCircuit",
+      "cardType": "Leader",
+      "rarity": "Leader",
+      "placeable": false,
+      "footprint": [
+        0,
+        0
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxLeaderActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "eden.the_worldgarden",
+      "displayName": "The Worldgarden",
+      "faction": "EdenCircuit",
+      "cardType": "Wonder",
+      "rarity": "Wonder",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxWonderActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 section 138",
+      "authoredValues": [
+        "deploymentCapital",
+        "deploymentInsight",
+        "deploymentInfluence",
+        "constructionCycles"
+      ],
+      "deploymentCapital": 200,
+      "deploymentInsight": 28,
+      "deploymentInfluence": 30,
+      "constructionCycles": 14,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.compact_residence",
+      "displayName": "Compact Residence",
+      "faction": "Universal",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.civic_apartments",
+      "displayName": "Civic Apartments",
+      "faction": "Universal",
+      "cardType": "Residential",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.corner_exchange",
+      "displayName": "Corner Exchange",
+      "faction": "Universal",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.district_market",
+      "displayName": "District Market",
+      "faction": "Universal",
+      "cardType": "Retail",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.field_workshop",
+      "displayName": "Field Workshop",
+      "faction": "Universal",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.utility_fabricator",
+      "displayName": "Utility Fabricator",
+      "faction": "Universal",
+      "cardType": "Industrial",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.administrative_office",
+      "displayName": "Administrative Office",
+      "faction": "Universal",
+      "cardType": "Office",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.research_annex",
+      "displayName": "Research Annex",
+      "faction": "Universal",
+      "cardType": "Research",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.public_clinic",
+      "displayName": "Public Clinic",
+      "faction": "Universal",
+      "cardType": "Civic",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.community_plaza",
+      "displayName": "Community Plaza",
+      "faction": "Universal",
+      "cardType": "Civic",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.microgrid_station",
+      "displayName": "Microgrid Station",
+      "faction": "Universal",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.water_reclaimer",
+      "displayName": "Water Reclaimer",
+      "faction": "Universal",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.transit_stop",
+      "displayName": "Transit Stop",
+      "faction": "Universal",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.warehouse",
+      "displayName": "Warehouse",
+      "faction": "Universal",
+      "cardType": "Infrastructure",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.founder_monument",
+      "displayName": "Founder Monument",
+      "faction": "Universal",
+      "cardType": "Civic",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.watch_post",
+      "displayName": "Watch Post",
+      "faction": "Universal",
+      "cardType": "Defense",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "universal.barrier_hub",
+      "displayName": "Barrier Hub",
+      "faction": "Universal",
+      "cardType": "Defense",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "authoredValues": [],
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "fusion.autonomous_factory",
+      "displayName": "Autonomous Factory",
+      "faction": "Fusion",
+      "cardType": "Industrial",
+      "rarity": "Elite",
+      "placeable": true,
+      "footprint": [
+        3,
+        3
+      ],
+      "footprintAuthority": "Content Production Bible v0.6 asset 50",
+      "worldPrefab": "/Script/DominionGameplay.DAGrayboxBuildingActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 section 135",
+      "authoredValues": [
+        "deploymentInsight",
+        "craftCapital",
+        "craftInsight",
+        "requiredCraftingFacilityId",
+        "synaraDependencyPerCycle",
+        "forgeweaveResourceHungerPerCycle",
+        "workforceRequirementModifier",
+        "industrialThroughputModifier",
+        "adjacentIndustrialConstructionSpeedModifier",
+        "constructionCycles",
+        "utilityPower",
+        "utilityData"
+      ],
+      "deploymentInsight": 24,
+      "craftCapital": 80,
+      "craftInsight": 0,
+      "requiredCraftingFacilityId": "forgeweave.replication_forge",
+      "synaraDependencyPerCycle": 0.2,
+      "forgeweaveResourceHungerPerCycle": 0.15,
+      "workforceRequirementModifier": -0.8,
+      "industrialThroughputModifier": 0.25,
+      "adjacentIndustrialConstructionSpeedModifier": 0.15,
+      "constructionCycles": 8,
+      "utilityPower": 24,
+      "utilityData": 24,
+      "tags": [],
+      "upgradeBranchIds": []
+    },
+    {
+      "id": "special.founder_hall",
+      "displayName": "Founder Hall",
+      "faction": "Special",
+      "cardType": "Special",
+      "rarity": "Common",
+      "placeable": true,
+      "footprint": [
+        1,
+        1
+      ],
+      "footprintAuthority": "graybox placeholder; not balance authority",
+      "worldPrefab": "/Script/DominionGameplay.DAFounderHallGrayboxActor",
+      "randomCacheEligible": false,
+      "valueAuthority": "Economy Balance Progression Bible v0.8 section 6",
+      "authoredValues": [
+        "baseCapitalPerCycle",
+        "baseInsightPerCycle",
+        "baseInfluencePerCycle",
+        "housingCapacity"
+      ],
+      "baseCapitalPerCycle": 1,
+      "baseInsightPerCycle": 0.15,
+      "baseInfluencePerCycle": 0.1,
+      "housingCapacity": 24,
+      "tags": [],
+      "upgradeBranchIds": []
+    }
+  ],
+  "starterDeck": [
+    {
+      "definitionId": "synara.adaptive_habitat",
+      "quantity": 3
+    },
+    {
+      "definitionId": "synara.civic_autonomy_pods",
+      "quantity": 3
+    },
+    {
+      "definitionId": "universal.compact_residence",
+      "quantity": 3
+    },
+    {
+      "definitionId": "universal.civic_apartments",
+      "quantity": 3
+    },
+    {
+      "definitionId": "synara.autonomous_exchange",
+      "quantity": 3
+    },
+    {
+      "definitionId": "synara.algorithmic_market",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.corner_exchange",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.district_market",
+      "quantity": 2
+    },
+    {
+      "definitionId": "synara.cognitive_operations_tower",
+      "quantity": 3
+    },
+    {
+      "definitionId": "synara.predictive_bureau",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.research_annex",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.administrative_office",
+      "quantity": 1
+    },
+    {
+      "definitionId": "synara.synthetic_fabrication_node",
+      "quantity": 3
+    },
+    {
+      "definitionId": "synara.swarm_foundry",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.field_workshop",
+      "quantity": 1
+    },
+    {
+      "definitionId": "universal.utility_fabricator",
+      "quantity": 1
+    },
+    {
+      "definitionId": "synara.neural_relay",
+      "quantity": 3
+    },
+    {
+      "definitionId": "synara.orchestration_hub",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.microgrid_station",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.water_reclaimer",
+      "quantity": 1
+    },
+    {
+      "definitionId": "universal.transit_stop",
+      "quantity": 1
+    },
+    {
+      "definitionId": "universal.warehouse",
+      "quantity": 1
+    },
+    {
+      "definitionId": "synara.agency_forum",
+      "quantity": 3
+    },
+    {
+      "definitionId": "universal.community_plaza",
+      "quantity": 1
+    },
+    {
+      "definitionId": "universal.public_clinic",
+      "quantity": 1
+    },
+    {
+      "definitionId": "universal.founder_monument",
+      "quantity": 1
+    },
+    {
+      "definitionId": "synara.guardian_drone_cohort",
+      "quantity": 2
+    },
+    {
+      "definitionId": "synara.audit_sentinel",
+      "quantity": 2
+    },
+    {
+      "definitionId": "universal.watch_post",
+      "quantity": 1
+    },
+    {
+      "definitionId": "universal.barrier_hub",
+      "quantity": 1
+    },
+    {
+      "definitionId": "synara.archon_mira_vey",
+      "quantity": 1
+    },
+    {
+      "definitionId": "synara.the_thinking_spire",
+      "quantity": 1
+    }
+  ]
+}

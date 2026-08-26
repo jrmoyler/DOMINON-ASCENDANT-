@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dominion-ascendant.invalid/schemas/vertical-slice-route-fixture.schema.json",
+  "title": "Vertical Slice Pre-Final-Commit Route Fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "fixtureId",
+    "route",
+    "commitBoundary",
+    "brokerTag",
+    "relationship",
+    "sourceAuthorities",
+    "loyaltyAction",
+    "daxtonOutcome",
+    "expectedAftermath",
+    "generationContract"
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "fixtureId": {"type": "string", "pattern": "^fixture\\.release\\.(force|economic|influence|alliance)$"},
+    "route": {"enum": ["Force", "Economic", "Influence", "Alliance"]},
+    "commitBoundary": {"const": "IMMEDIATELY_BEFORE_FINAL_ROUTE_COMMIT"},
+    "brokerTag": {"enum": ["broker_force", "broker_economic", "broker_influence", "broker_alliance"]},
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trust", "respect", "grievance"],
+      "properties": {
+        "trust": {"type": "number", "minimum": 0, "maximum": 100},
+        "respect": {"type": "number", "minimum": 0, "maximum": 100},
+        "grievance": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "sourceAuthorities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(campaign|conflict|diplomacy|history|quest|region|trade)\\.[a-z0-9_.-]+$"
+      }
+    },
+    "loyaltyAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "outcome", "targetDefinition", "recipient", "giftLoyaltyReward"],
+      "properties": {
+        "system": {"const": "UDACaptureComponent"},
+        "outcome": {"const": "Gift"},
+        "targetDefinition": {"const": "forgeweave.infinite_foundry"},
+        "recipient": {"const": "civilization.ironheart_workers"},
+        "giftLoyaltyReward": {"enum": [15, 30, 45, 60]}
+      }
+    },
+    "daxtonOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["leaderState", "saveGrandForge", "evacuateWorkers", "offerProductionUnion"],
+      "properties": {
+        "leaderState": {"enum": ["Prisoner", "IndustrialAdvisor", "Governor", "AlliedForgeLord"]},
+        "saveGrandForge": {"type": "boolean"},
+        "evacuateWorkers": {"type": "boolean"},
+        "offerProductionUnion": {"type": "boolean"}
+      }
+    },
+    "expectedAftermath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["loyalty", "daxtonState", "historyTags", "damageFingerprint", "relationship"],
+      "properties": {
+        "loyalty": {"const": "PAIRWISE_DISTINCT"},
+        "daxtonState": {"const": "PAIRWISE_DISTINCT"},
+        "historyTags": {"const": "PAIRWISE_DISTINCT"},
+        "damageFingerprint": {"const": "PAIRWISE_DISTINCT"},
+        "relationship": {"const": "PAIRWISE_DISTINCT"}
+      }
+    },
+    "generationContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "automationTest", "binaryAssetPolicy"],
+      "properties": {
+        "tool": {"const": "Build/Tools/ReleaseCandidateTool.py"},
+        "automationTest": {"const": "Dominion.Release.VerticalSlice"},
+        "binaryAssetPolicy": {"const": "SOURCE_ONLY_NO_FABRICATED_UASSET"}
+      }
+    }
+  }
+}

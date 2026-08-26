@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "v1.1 audio recipes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sourceId",
+    "music",
+    "ambient",
+    "sfx"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceId": {
+      "const": "presentation.audio.v11"
+    },
+    "music": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "displayName",
+          "assetPath",
+          "recipe"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^music\\."
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetPath": {
+            "type": "string",
+            "pattern": "^/Game/Audio/Music/"
+          },
+          "recipe": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "palette",
+              "playback",
+              "purpose"
+            ],
+            "properties": {
+              "palette": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "playback": {
+                "type": "string",
+                "minLength": 1
+              },
+              "purpose": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "ambient": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "displayName",
+          "assetPath",
+          "recipe"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ambient\\."
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetPath": {
+            "type": "string",
+            "pattern": "^/Game/Audio/Ambient/"
+          },
+          "recipe": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "layers",
+              "spatialized",
+              "loopSeconds"
+            ],
+            "properties": {
+              "layers": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "spatialized": {
+                "type": "boolean"
+              },
+              "loopSeconds": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "sfx": {
+      "type": "array",
+      "minItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "family",
+          "assetPath",
+          "recipe"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^sfx\\."
+          },
+          "family": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetPath": {
+            "type": "string",
+            "pattern": "^/Game/Audio/SFX/"
+          },
+          "recipe": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "transient",
+              "palette",
+              "event",
+              "variationLayers"
+            ],
+            "properties": {
+              "transient": {
+                "type": "string",
+                "minLength": 1
+              },
+              "palette": {
+                "type": "string",
+                "minLength": 1
+              },
+              "event": {
+                "type": "string",
+                "minLength": 1
+              },
+              "variationLayers": {
+                "const": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

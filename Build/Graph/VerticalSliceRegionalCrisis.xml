@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BuildGraph xmlns="http://www.epicgames.com/BuildGraph">
+  <Option Name="ProjectFile" Restrict=".+\.uproject" DefaultValue="DominionAscendant.uproject" />
+  <Node Name="GenerateRegionalCrisisAssets">
+    <Spawn Exe="bash" Arguments="Build/Scripts/PreCookRegionalCrisis.sh &quot;$(ProjectFile)&quot;" />
+  </Node>
+  <Node Name="ValidateRegionalCrisisAssets" Requires="GenerateRegionalCrisisAssets">
+    <Log Message="Regional crisis generated cache passed commandlet ValidateOnly." />
+  </Node>
+  <Aggregate Name="RegionalCrisisPreCook" Requires="ValidateRegionalCrisisAssets" />
+</BuildGraph>

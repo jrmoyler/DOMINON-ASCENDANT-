@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dominion Ascendant vertical-slice presentation root",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "contentId",
+    "fingerprint",
+    "authority",
+    "sources",
+    "expectedCounts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "contentId": {
+      "const": "presentation.vertical_slice.v11"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frozenScope",
+        "primaryAssetsAndFactionLanguage",
+        "gameplayOwnership",
+        "cachePolicy"
+      ],
+      "properties": {
+        "frozenScope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "primaryAssetsAndFactionLanguage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gameplayOwnership": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cachePolicy": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "buildings",
+        "characters",
+        "vfx",
+        "audio",
+        "bindings",
+        "artifacts"
+      ],
+      "properties": {
+        "buildings": {
+          "const": "Buildings/Presentation/PrimaryAssets.json"
+        },
+        "characters": {
+          "const": "Characters/Presentation/PrimaryAssets.json"
+        },
+        "vfx": {
+          "const": "VFX/Presentation/CoreVFX.json"
+        },
+        "audio": {
+          "const": "Audio/Presentation/VerticalSliceAudio.json"
+        },
+        "bindings": {
+          "const": "Buildings/Presentation/FactionBindings.json"
+        },
+        "artifacts": {
+          "const": "DA/Manifests/PresentationArtifactSources.json"
+        }
+      }
+    },
+    "expectedCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primaryAssets",
+        "coreVfx",
+        "musicCues",
+        "ambientLoops",
+        "minimumSfxEvents",
+        "constructionGrammars",
+        "minimumGeneratedDefinitions"
+      ],
+      "properties": {
+        "primaryAssets": {
+          "const": 50
+        },
+        "coreVfx": {
+          "const": 25
+        },
+        "musicCues": {
+          "const": 9
+        },
+        "ambientLoops": {
+          "const": 12
+        },
+        "minimumSfxEvents": {
+          "const": 60
+        },
+        "constructionGrammars": {
+          "const": 3
+        },
+        "minimumGeneratedDefinitions": {
+          "const": 156
+        }
+      }
+    }
+  }
+}

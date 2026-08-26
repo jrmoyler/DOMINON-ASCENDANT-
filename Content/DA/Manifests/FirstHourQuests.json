@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 2,
+  "campaignId": "campaign.vertical_slice.first_hour",
+  "fingerprint": "2c82c47966c118441564e717007e451326bfdea4",
+  "quests": [
+    {
+      "id": "quest.wake_the_hall", "title": "Wake the Hall", "sourceDefinitionId": "quest.wake_the_hall.v2", "assetPath": "/Game/DA/Quests/Q_WakeTheHall",
+      "prerequisiteQuestIds": [], "startCondition": "NewCampaign",
+      "worldAssetBindings": [
+        {"bindingId": "founder_hall", "definitionId": "special.founder_hall", "bindWhen": "Start", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": false}
+      ],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.wake_the_hall.start", "condition": "NewCampaign", "edges": [{"branchTag": "begin", "targetNodeId": "reach_hall"}]},
+        {"id": "reach_hall", "type": "Objective", "sourceDefinitionId": "quest.wake_the_hall.reach", "condition": "FounderReached", "bindingId": "founder_hall", "edges": [{"branchTag": "reached", "targetNodeId": "restore_power"}]},
+        {"id": "restore_power", "type": "Objective", "sourceDefinitionId": "quest.wake_the_hall.power", "condition": "FounderHallPowered", "bindingId": "founder_hall", "edges": [{"branchTag": "powered", "targetNodeId": "route_choice"}]},
+        {"id": "route_choice", "type": "Choice", "sourceDefinitionId": "quest.wake_the_hall.route", "condition": "ExplicitChoice", "edges": [{"branchTag": "explore_markings", "targetNodeId": "inspect_markings"}, {"branchTag": "continue_activation", "targetNodeId": "activate_core"}]},
+        {"id": "inspect_markings", "type": "Explore", "sourceDefinitionId": "quest.wake_the_hall.markings", "condition": "CustodianMarkingsInspected", "edges": [{"branchTag": "observed", "targetNodeId": "activate_core"}]},
+        {"id": "activate_core", "type": "Objective", "sourceDefinitionId": "quest.wake_the_hall.activate", "condition": "FounderHallOnline", "bindingId": "founder_hall", "edges": [{"branchTag": "online", "targetNodeId": "resolution"}]},
+        {"id": "resolution", "type": "Resolution", "sourceDefinitionId": "quest.wake_the_hall.resolution", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": ["founder_hall_awake"],
+      "rewards": [
+        {"actionId": "reward.wake_the_hall.city_mode", "type": "CityMode", "contentId": "mode.city", "quantity": 1},
+        {"actionId": "reward.wake_the_hall.adaptive_habitat", "type": "CardInstance", "definitionId": "synara.adaptive_habitat", "quantity": 1}
+      ],
+      "outcomes": {}
+    },
+    {
+      "id": "quest.a_place_to_stay", "title": "A Place to Stay", "sourceDefinitionId": "quest.a_place_to_stay.v2", "assetPath": "/Game/DA/Quests/Q_APlaceToStay",
+      "prerequisiteQuestIds": ["quest.wake_the_hall"], "startCondition": "PrerequisitesMet",
+      "worldAssetBindings": [
+        {"bindingId": "adaptive_habitat", "definitionId": "synara.adaptive_habitat", "bindWhen": "Objective", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": false}
+      ],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.a_place_to_stay.start", "condition": "PrerequisitesMet", "edges": [{"branchTag": "begin", "targetNodeId": "inspect_card"}]},
+        {"id": "inspect_card", "type": "Objective", "sourceDefinitionId": "quest.a_place_to_stay.inspect", "condition": "AdaptiveHabitatInspected", "edges": [{"branchTag": "inspected", "targetNodeId": "place_habitat"}]},
+        {"id": "place_habitat", "type": "Build", "sourceDefinitionId": "quest.a_place_to_stay.place", "condition": "AdaptiveHabitatPlaced", "bindingId": "adaptive_habitat", "edges": [{"branchTag": "placed", "targetNodeId": "habitat_operational"}]},
+        {"id": "habitat_operational", "type": "Build", "sourceDefinitionId": "quest.a_place_to_stay.operational", "condition": "HabitatConstructionComplete", "bindingId": "adaptive_habitat", "edges": [{"branchTag": "built", "targetNodeId": "citizens_arrive"}]},
+        {"id": "citizens_arrive", "type": "CitizenCondition", "sourceDefinitionId": "quest.a_place_to_stay.arrival", "condition": "NiaPresent", "edges": [{"branchTag": "arrived", "targetNodeId": "resolution"}]},
+        {"id": "resolution", "type": "Resolution", "sourceDefinitionId": "quest.a_place_to_stay.resolution", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": [],
+      "rewards": [
+        {"actionId": "reward.a_place_to_stay.microgrid_blueprint", "type": "Blueprint", "definitionId": "universal.microgrid_station", "quantity": 1},
+        {"actionId": "reward.a_place_to_stay.water_blueprint", "type": "Blueprint", "definitionId": "universal.water_reclaimer", "quantity": 1}
+      ],
+      "outcomes": {}
+    },
+    {
+      "id": "quest.power_water_people", "title": "Power, Water, People", "sourceDefinitionId": "quest.power_water_people.v2", "assetPath": "/Game/DA/Quests/Q_PowerWaterPeople",
+      "prerequisiteQuestIds": ["quest.a_place_to_stay"], "startCondition": "HabitatOccupied",
+      "worldAssetBindings": [
+        {"bindingId": "adaptive_habitat", "definitionId": "synara.adaptive_habitat", "bindWhen": "Start", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": true},
+        {"bindingId": "microgrid_station", "definitionId": "universal.microgrid_station", "bindWhen": "Objective", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": true},
+        {"bindingId": "water_reclaimer", "definitionId": "universal.water_reclaimer", "bindWhen": "Objective", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": true}
+      ],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.power_water_people.start", "condition": "HabitatOccupied", "bindingId": "adaptive_habitat", "edges": [{"branchTag": "begin", "targetNodeId": "microgrid_operational"}]},
+        {"id": "microgrid_operational", "type": "Build", "sourceDefinitionId": "quest.power_water_people.microgrid", "condition": "BoundAssetOperational", "bindingId": "microgrid_station", "edges": [{"branchTag": "power_asset", "targetNodeId": "water_operational"}]},
+        {"id": "water_operational", "type": "Build", "sourceDefinitionId": "quest.power_water_people.water", "condition": "BoundAssetOperational", "bindingId": "water_reclaimer", "edges": [{"branchTag": "water_asset", "targetNodeId": "coverage_choice"}]},
+        {"id": "coverage_choice", "type": "Choice", "sourceDefinitionId": "quest.power_water_people.coverage", "condition": "ExplicitChoice", "edges": [{"branchTag": "within_coverage", "targetNodeId": "power_supplied"}, {"branchTag": "expand_network", "targetNodeId": "expansion_guidance"}]},
+        {"id": "expansion_guidance", "type": "Objective", "sourceDefinitionId": "quest.power_water_people.expansion", "condition": "UtilityExpansionAcknowledged", "edges": [{"branchTag": "expanded", "targetNodeId": "power_supplied"}]},
+        {"id": "power_supplied", "type": "WorldCondition", "sourceDefinitionId": "quest.power_water_people.power_supply", "condition": "HabitatPowerFullySupplied", "bindingId": "adaptive_habitat", "edges": [{"branchTag": "powered", "targetNodeId": "water_supplied"}]},
+        {"id": "water_supplied", "type": "WorldCondition", "sourceDefinitionId": "quest.power_water_people.water_supply", "condition": "HabitatWaterFullySupplied", "bindingId": "adaptive_habitat", "edges": [{"branchTag": "supplied", "targetNodeId": "resolution"}]},
+        {"id": "resolution", "type": "Resolution", "sourceDefinitionId": "quest.power_water_people.resolution", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": [],
+      "rewards": [{"actionId": "reward.power_water_people.utility_systems", "type": "UtilitySystems", "contentId": "system.utilities", "quantity": 1}],
+      "outcomes": {}
+    },
+    {
+      "id": "quest.nia_needs_a_job", "title": "Nia Needs a Job", "sourceDefinitionId": "quest.nia_needs_a_job.v2", "assetPath": "/Game/DA/Quests/Q_NiaNeedsAJob",
+      "prerequisiteQuestIds": ["quest.power_water_people"], "startCondition": "PrerequisitesMet",
+      "worldAssetBindings": [
+        {"bindingId": "cognitive_operations_tower", "definitionId": "synara.cognitive_operations_tower", "bindWhen": "Objective", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": true}
+      ],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.nia_needs_a_job.start", "condition": "PrerequisitesMet", "edges": [{"branchTag": "begin", "targetNodeId": "speak_nia"}]},
+        {"id": "speak_nia", "type": "Dialogue", "sourceDefinitionId": "quest.nia_needs_a_job.speak", "condition": "NiaSpokenTo", "edges": [{"branchTag": "spoken", "targetNodeId": "tower_operational"}]},
+        {"id": "tower_operational", "type": "Build", "sourceDefinitionId": "quest.nia_needs_a_job.tower", "condition": "BoundAssetOperational", "bindingId": "cognitive_operations_tower", "edges": [{"branchTag": "built", "targetNodeId": "half_staffed"}]},
+        {"id": "half_staffed", "type": "CitizenCondition", "sourceDefinitionId": "quest.nia_needs_a_job.staff", "condition": "TowerHalfStaffed", "bindingId": "cognitive_operations_tower", "edges": [{"branchTag": "staffed", "targetNodeId": "nia_assigned"}]},
+        {"id": "nia_assigned", "type": "CitizenCondition", "sourceDefinitionId": "quest.nia_needs_a_job.assigned", "condition": "NiaAssignedToTower", "bindingId": "cognitive_operations_tower", "edges": [{"branchTag": "employed", "targetNodeId": "resolution"}]},
+        {"id": "resolution", "type": "Resolution", "sourceDefinitionId": "quest.nia_needs_a_job.resolution", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": [],
+      "rewards": [
+        {"actionId": "reward.nia_needs_a_job.operator_xp", "type": "OperatorXp", "contentId": "citizen.synara.nia_vale", "quantity": 1},
+        {"actionId": "reward.nia_needs_a_job.corner_exchange", "type": "CardInstance", "definitionId": "universal.corner_exchange", "quantity": 1}
+      ],
+      "outcomes": {}
+    },
+    {
+      "id": "quest.replacement_model", "title": "The Replacement Model", "sourceDefinitionId": "quest.replacement_model.v2", "assetPath": "/Game/DA/Quests/Q_ReplacementModel",
+      "prerequisiteQuestIds": ["quest.nia_needs_a_job"], "startCondition": "AutonomousExchangeAvailable",
+      "worldAssetBindings": [
+        {"bindingId": "cognitive_operations_tower", "definitionId": "synara.cognitive_operations_tower", "bindWhen": "Start", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": true},
+        {"bindingId": "autonomous_exchange", "definitionId": "synara.autonomous_exchange", "bindWhen": "Start", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": false}
+      ],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.replacement_model.start", "condition": "AutonomousExchangeAvailable", "bindingId": "autonomous_exchange", "edges": [{"branchTag": "begin", "targetNodeId": "model_discovered"}]},
+        {"id": "model_discovered", "type": "Investigation", "sourceDefinitionId": "quest.replacement_model.discovery", "condition": "ReplacementModelDiscovered", "edges": [{"branchTag": "review", "targetNodeId": "choice"}]},
+        {"id": "choice", "type": "Choice", "sourceDefinitionId": "quest.replacement_model.choice", "condition": "ExplicitChoice", "edges": [
+          {"branchTag": "accept", "targetNodeId": "accept_resolution"}, {"branchTag": "modify", "targetNodeId": "modify_resolution"},
+          {"branchTag": "audit", "targetNodeId": "audit_resolution"}, {"branchTag": "reject", "targetNodeId": "reject_resolution"}
+        ]},
+        {"id": "accept_resolution", "type": "Resolution", "sourceDefinitionId": "quest.replacement_model.accept", "condition": "Resolved", "edges": []},
+        {"id": "modify_resolution", "type": "Resolution", "sourceDefinitionId": "quest.replacement_model.modify", "condition": "Resolved", "edges": []},
+        {"id": "audit_resolution", "type": "Resolution", "sourceDefinitionId": "quest.replacement_model.audit", "condition": "Resolved", "edges": []},
+        {"id": "reject_resolution", "type": "Resolution", "sourceDefinitionId": "quest.replacement_model.reject", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": [], "rewards": [],
+      "outcomes": {
+        "accept": {"actionId": "action.replacement_model.accept", "historyTags": ["nia_automation_accepted"], "storyState": "story.nia.replacement_model.automation_accepted", "semanticEffects": ["effect.capital_efficiency.increased"], "eligibilityAny": [], "dependencyDelta": 6, "humanAgencySupportDelta": -8, "niaTrustDelta": -5, "rewards": []},
+        "modify": {"actionId": "action.replacement_model.modify", "historyTags": ["nia_jobs_preserved"], "storyState": "story.nia.replacement_model.jobs_preserved", "semanticEffects": ["effect.capital_efficiency.smaller_increase"], "eligibilityAny": [], "dependencyDelta": 2, "niaTrustDelta": 4, "rewards": []},
+        "audit": {"actionId": "action.replacement_model.audit", "historyTags": ["nia_model_audited"], "storyState": "story.nia.replacement_model.model_audited", "semanticEffects": ["effect.social_data.incomplete"], "eligibilityAny": ["Vision", "ResearchAction"], "rewards": [
+          {"actionId": "reward.replacement_model.insight", "type": "InsightReward", "contentId": "reward.insight.replacement_model", "quantity": 1},
+          {"actionId": "reward.replacement_model.intelligence_auditor", "type": "IntelligenceAuditorPath", "contentId": "class.synara.intelligence_auditor", "quantity": 1}
+        ]},
+        "reject": {"actionId": "action.replacement_model.reject", "historyTags": ["nia_jobs_preserved"], "storyState": "story.nia.replacement_model.jobs_protected", "semanticEffects": ["effect.human_agency.supported", "effect.ascendants.approval_lost"], "eligibilityAny": [], "rewards": []}
+      }
+    },
+    {
+      "id": "quest.agency_has_a_price", "title": "Agency Has a Price", "sourceDefinitionId": "quest.agency_has_a_price.v2", "assetPath": "/Game/DA/Quests/Q_AgencyHasAPrice",
+      "prerequisiteQuestIds": ["quest.replacement_model"], "startCondition": "DependencyAbove25", "worldAssetBindings": [
+        {"bindingId": "agency_forum", "definitionId": "synara.agency_forum", "bindWhen": "Objective", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": true}
+      ],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.agency_has_a_price.start", "condition": "DependencyAbove25", "edges": [{"branchTag": "petition", "targetNodeId": "choice"}]},
+        {"id": "choice", "type": "Choice", "sourceDefinitionId": "quest.agency_has_a_price.choice", "condition": "ExplicitChoice", "edges": [
+          {"branchTag": "agency_forum", "targetNodeId": "build_forum"}, {"branchTag": "retrain", "targetNodeId": "retrain_workers"},
+          {"branchTag": "automation_cap", "targetNodeId": "enact_cap"}, {"branchTag": "reject", "targetNodeId": "reject_resolution"}
+        ]},
+        {"id": "build_forum", "type": "Build", "sourceDefinitionId": "quest.agency_has_a_price.forum", "condition": "BoundAssetOperational", "bindingId": "agency_forum", "edges": [{"branchTag": "built", "targetNodeId": "forum_resolution"}]},
+        {"id": "forum_resolution", "type": "Resolution", "sourceDefinitionId": "quest.agency_has_a_price.forum_resolution", "condition": "Resolved", "edges": []},
+        {"id": "retrain_workers", "type": "Objective", "sourceDefinitionId": "quest.agency_has_a_price.retrain", "condition": "WorkersRetrained", "edges": [{"branchTag": "retrained", "targetNodeId": "retrain_resolution"}]},
+        {"id": "retrain_resolution", "type": "Resolution", "sourceDefinitionId": "quest.agency_has_a_price.retrain_resolution", "condition": "Resolved", "edges": []},
+        {"id": "enact_cap", "type": "Objective", "sourceDefinitionId": "quest.agency_has_a_price.cap", "condition": "AutomationCapEnacted", "edges": [{"branchTag": "enacted", "targetNodeId": "cap_resolution"}]},
+        {"id": "cap_resolution", "type": "Resolution", "sourceDefinitionId": "quest.agency_has_a_price.cap_resolution", "condition": "Resolved", "edges": []},
+        {"id": "reject_resolution", "type": "Resolution", "sourceDefinitionId": "quest.agency_has_a_price.reject", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": [], "rewards": [],
+      "outcomes": {
+        "agency_forum": {"actionId": "action.agency_petition.agency_forum", "historyTags": ["agency_petition_supported"], "semanticEffects": ["effect.agency_forum.committed"], "eligibilityAny": [], "rewards": []},
+        "retrain": {"actionId": "action.agency_petition.retrain", "historyTags": ["agency_petition_supported"], "semanticEffects": ["effect.displaced_workers.retrained"], "eligibilityAny": [], "rewards": []},
+        "automation_cap": {"actionId": "action.agency_petition.automation_cap", "historyTags": ["agency_petition_supported"], "semanticEffects": ["effect.automation_cap.enacted"], "eligibilityAny": [], "rewards": []},
+        "reject": {"actionId": "action.agency_petition.reject", "historyTags": ["agency_petition_rejected"], "semanticEffects": ["effect.agency_petition.rejected"], "eligibilityAny": [], "rewards": []}
+      }
+    },
+    {
+      "id": "quest.signal_in_foundation", "title": "Signal in the Foundation", "sourceDefinitionId": "quest.signal_in_foundation.v2", "assetPath": "/Game/DA/Quests/Q_SignalInFoundation",
+      "prerequisiteQuestIds": ["quest.agency_has_a_price"], "startCondition": "SixPlayerBuildings", "worldAssetBindings": [
+        {"bindingId": "founder_hall", "definitionId": "special.founder_hall", "bindWhen": "Start", "cityId": "player_capital", "ownerId": "civilization.synara", "requireOperational": true}
+      ],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.signal_in_foundation.start", "condition": "PrerequisitesMet", "edges": [{"branchTag": "signal", "targetNodeId": "enter_tunnel"}]},
+        {"id": "enter_tunnel", "type": "Explore", "sourceDefinitionId": "quest.signal_in_foundation.tunnel", "condition": "EnteredUtilityTunnel", "edges": [{"branchTag": "entered", "targetNodeId": "restore_node"}]},
+        {"id": "restore_node", "type": "Objective", "sourceDefinitionId": "quest.signal_in_foundation.restore", "condition": "AncientNodeRestored", "edges": [{"branchTag": "restored", "targetNodeId": "drones"}]},
+        {"id": "drones", "type": "Combat", "sourceDefinitionId": "quest.signal_in_foundation.drones", "condition": "MaintenanceDronesDefeated", "edges": [{"branchTag": "secured", "targetNodeId": "inspect_symbol"}]},
+        {"id": "inspect_symbol", "type": "Investigation", "sourceDefinitionId": "quest.signal_in_foundation.symbol", "condition": "UnknownSymbolInspected", "edges": [{"branchTag": "recognized", "targetNodeId": "resolution"}]},
+        {"id": "resolution", "type": "Resolution", "sourceDefinitionId": "quest.signal_in_foundation.resolution", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": [], "rewards": [{"actionId": "reward.signal_in_foundation.axiom_fragment", "type": "AxiomArchiveFragment", "contentId": "archive.axiom.fragment.01", "quantity": 1}], "outcomes": {}
+    },
+    {
+      "id": "quest.iron_at_border", "title": "Iron at the Border", "sourceDefinitionId": "quest.iron_at_border.v2", "assetPath": "/Game/DA/Quests/Q_IronAtBorder",
+      "prerequisiteQuestIds": ["quest.signal_in_foundation"], "startCondition": "WorldMapUnlocked", "worldAssetBindings": [],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.iron_at_border.start", "condition": "WorldMapUnlocked", "edges": [{"branchTag": "request", "targetNodeId": "choice"}]},
+        {"id": "choice", "type": "Choice", "sourceDefinitionId": "quest.iron_at_border.choice", "condition": "ExplicitChoice", "edges": [
+          {"branchTag": "accept", "targetNodeId": "accept_resolution"}, {"branchTag": "refuse", "targetNodeId": "refuse_resolution"},
+          {"branchTag": "favorable_terms", "targetNodeId": "favorable_resolution"}, {"branchTag": "defer", "targetNodeId": "defer_resolution"}
+        ]},
+        {"id": "accept_resolution", "type": "Resolution", "sourceDefinitionId": "quest.iron_at_border.accept", "condition": "Resolved", "edges": []},
+        {"id": "refuse_resolution", "type": "Resolution", "sourceDefinitionId": "quest.iron_at_border.refuse", "condition": "Resolved", "edges": []},
+        {"id": "favorable_resolution", "type": "Resolution", "sourceDefinitionId": "quest.iron_at_border.favorable", "condition": "Resolved", "edges": []},
+        {"id": "defer_resolution", "type": "Resolution", "sourceDefinitionId": "quest.iron_at_border.defer", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": [], "rewards": [],
+      "outcomes": {
+        "accept": {"actionId": "action.iron_at_border.accept", "historyTags": ["forge_trade_supported"], "semanticEffects": ["effect.forgeweave.trust_up", "effect.forgeweave.dependence_up"], "eligibilityAny": [], "rewards": [{"actionId": "reward.iron_at_border.forgeweave_contact", "type": "DiplomacyContact", "contentId": "civilization.forgeweave", "quantity": 1}]},
+        "refuse": {"actionId": "action.iron_at_border.refuse", "historyTags": [], "semanticEffects": ["effect.forgeweave.trust_down"], "eligibilityAny": [], "rewards": [{"actionId": "reward.iron_at_border.forgeweave_contact", "type": "DiplomacyContact", "contentId": "civilization.forgeweave", "quantity": 1}]},
+        "favorable_terms": {"actionId": "action.iron_at_border.favorable_terms", "historyTags": ["forge_trade_supported"], "semanticEffects": ["effect.forgeweave.respect_up", "effect.forgeweave.dependence_up"], "eligibilityAny": [], "rewards": [{"actionId": "reward.iron_at_border.forgeweave_contact", "type": "DiplomacyContact", "contentId": "civilization.forgeweave", "quantity": 1}]},
+        "defer": {"actionId": "action.iron_at_border.defer", "historyTags": [], "semanticEffects": ["effect.forgeweave.request_deferred"], "eligibilityAny": [], "rewards": [{"actionId": "reward.iron_at_border.forgeweave_contact", "type": "DiplomacyContact", "contentId": "civilization.forgeweave", "quantity": 1}]}
+      }
+    },
+    {
+      "id": "quest.basin_speaks", "title": "The Basin Speaks", "sourceDefinitionId": "quest.basin_speaks.v2", "assetPath": "/Game/DA/Quests/Q_BasinSpeaks",
+      "prerequisiteQuestIds": ["quest.iron_at_border"], "startCondition": "ForgeweaveContact", "worldAssetBindings": [],
+      "nodes": [
+        {"id": "start", "type": "Start", "sourceDefinitionId": "quest.basin_speaks.start", "condition": "ForgeweaveContact", "edges": [{"branchTag": "invited", "targetNodeId": "reach_basin"}]},
+        {"id": "reach_basin", "type": "Explore", "sourceDefinitionId": "quest.basin_speaks.travel", "condition": "EdenBasinReached", "edges": [{"branchTag": "arrived", "targetNodeId": "inspect_water"}]},
+        {"id": "inspect_water", "type": "Investigation", "sourceDefinitionId": "quest.basin_speaks.water", "condition": "WaterQualityInspected", "edges": [{"branchTag": "inspected", "targetNodeId": "speak_amara"}]},
+        {"id": "speak_amara", "type": "Dialogue", "sourceDefinitionId": "quest.basin_speaks.amara", "condition": "AmaraSpokenTo", "edges": [{"branchTag": "heard", "targetNodeId": "speak_ori"}]},
+        {"id": "speak_ori", "type": "Dialogue", "sourceDefinitionId": "quest.basin_speaks.ori", "condition": "OriSpokenTo", "edges": [{"branchTag": "revealed", "targetNodeId": "resolution"}]},
+        {"id": "resolution", "type": "Resolution", "sourceDefinitionId": "quest.basin_speaks.resolution", "condition": "Resolved", "edges": []}
+      ],
+      "completionHistoryTags": ["eden_watershed_supported"],
+      "rewards": [{"actionId": "reward.basin_speaks.eden_trade_access", "type": "EdenTradeAccess", "contentId": "trade.eden.access", "quantity": 1}], "outcomes": {}
+    }
+  ],
+  "citizen": {
+    "id": "citizen.synara.nia_vale", "displayName": "Nia Vale", "assetPath": "/Game/DA/Citizens/DA_Citizen_NiaVale",
+    "origin": "Synara", "occupation": "Junior Systems Technician", "startingClass": "Operator Initiate",
+    "traits": ["Curious", "Automation Skeptic", "High Aptitude"], "towerJobId": "job.synara.cognitive_operations_tower.operator",
+    "championEligibility": {"requiredStoryState": "story.nia.human_override.supported", "requiredCrisisQuestId": "quest.human_override", "requiredCrisisSourceDefinitionId": "quest.human_override.v1", "requiredCrisisDefinitionFingerprint": "433693a4a1332f736fc8e4a08a565fad", "requiredCrisisCompletionActionId": "action.quest.human_override.completed", "championDefinitionId": "champion.nia_vale.human_override"}
+  }
+}

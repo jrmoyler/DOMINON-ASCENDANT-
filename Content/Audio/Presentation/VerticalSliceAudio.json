@@ -1,0 +1,957 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "presentation.audio.v11",
+  "music": [
+    {
+      "id": "music.opening_founder_arrival",
+      "displayName": "Opening / Founder Arrival",
+      "assetPath": "/Game/Audio/Music/DA_OpeningFounderArrival",
+      "recipe": {
+        "palette": [
+          "restrained harmonic pulse",
+          "human strings"
+        ],
+        "playback": "one_shot_to_exploration",
+        "purpose": "introduces Founder and first city"
+      }
+    },
+    {
+      "id": "music.synara_city_day",
+      "displayName": "Synara City Day",
+      "assetPath": "/Game/Audio/Music/DA_SynaraCityDay",
+      "recipe": {
+        "palette": [
+          "glassy percussion",
+          "subtle computation"
+        ],
+        "playback": "seamless_loop",
+        "purpose": "calm Synara civic operation"
+      }
+    },
+    {
+      "id": "music.synara_tension",
+      "displayName": "Synara Tension",
+      "assetPath": "/Game/Audio/Music/DA_SynaraTension",
+      "recipe": {
+        "palette": [
+          "controlled machine pulse",
+          "low string pressure"
+        ],
+        "playback": "adaptive_loop",
+        "purpose": "Dependency and city tension"
+      }
+    },
+    {
+      "id": "music.forgeweave_region",
+      "displayName": "Forgeweave Region",
+      "assetPath": "/Game/Audio/Music/DA_ForgeweaveRegion",
+      "recipe": {
+        "palette": [
+          "heavy percussion",
+          "deep metal resonance"
+        ],
+        "playback": "seamless_loop",
+        "purpose": "Ironheart regional identity"
+      }
+    },
+    {
+      "id": "music.eden_basin",
+      "displayName": "Eden Basin",
+      "assetPath": "/Game/Audio/Music/DA_EdenBasin",
+      "recipe": {
+        "palette": [
+          "water rhythm",
+          "wood resonance",
+          "living texture"
+        ],
+        "playback": "seamless_loop",
+        "purpose": "Eden ecological operation"
+      }
+    },
+    {
+      "id": "music.frontier_combat",
+      "displayName": "Frontier Combat",
+      "assetPath": "/Game/Audio/Music/DA_FrontierCombat",
+      "recipe": {
+        "palette": [
+          "tactical percussion",
+          "low brass pulse"
+        ],
+        "playback": "adaptive_loop",
+        "purpose": "frontier systemic combat"
+      }
+    },
+    {
+      "id": "music.iron_veil",
+      "displayName": "Iron Veil",
+      "assetPath": "/Game/Audio/Music/DA_IronVeil",
+      "recipe": {
+        "palette": [
+          "industrial ostinato",
+          "pressure vent rhythm"
+        ],
+        "playback": "adaptive_loop",
+        "purpose": "Operation Iron Veil"
+      }
+    },
+    {
+      "id": "music.daxton_grand_forge",
+      "displayName": "Daxton / Grand Forge",
+      "assetPath": "/Game/Audio/Music/DA_DaxtonGrandForge",
+      "recipe": {
+        "palette": [
+          "furnace roar rhythm",
+          "heavy mechanical percussion"
+        ],
+        "playback": "adaptive_boss_phases",
+        "purpose": "Daxton encounter phases"
+      }
+    },
+    {
+      "id": "music.ascension_convergence",
+      "displayName": "Ascension / Convergence",
+      "assetPath": "/Game/Audio/Music/DA_AscensionConvergence",
+      "recipe": {
+        "palette": [
+          "precision rhythm",
+          "heavy resonance",
+          "ancient harmonic"
+        ],
+        "playback": "one_shot_sequence",
+        "purpose": "Forgeweave authority transfer"
+      }
+    }
+  ],
+  "ambient": [
+    {
+      "id": "ambient.synara_civic",
+      "displayName": "Synara civic",
+      "assetPath": "/Game/Audio/Ambient/DA_SynaraCivic",
+      "recipe": {
+        "layers": [
+          "occupied civic murmur",
+          "autonomous service lanes",
+          "restrained data pulses"
+        ],
+        "spatialized": true,
+        "loopSeconds": 90
+      }
+    },
+    {
+      "id": "ambient.synara_industrial",
+      "displayName": "Synara industrial",
+      "assetPath": "/Game/Audio/Ambient/DA_SynaraIndustrial",
+      "recipe": {
+        "layers": [
+          "robotic cells",
+          "precise actuators",
+          "spatial drone motion"
+        ],
+        "spatialized": true,
+        "loopSeconds": 85
+      }
+    },
+    {
+      "id": "ambient.synara_night",
+      "displayName": "Synara night",
+      "assetPath": "/Game/Audio/Ambient/DA_SynaraNight",
+      "recipe": {
+        "layers": [
+          "distant transit",
+          "quiet machine pulses",
+          "inhabited windows"
+        ],
+        "spatialized": true,
+        "loopSeconds": 100
+      }
+    },
+    {
+      "id": "ambient.forgeweave_industrial",
+      "displayName": "Forgeweave industrial",
+      "assetPath": "/Game/Audio/Ambient/DA_ForgeweaveIndustrial",
+      "recipe": {
+        "layers": [
+          "hammering",
+          "rail clanks",
+          "pressure vents"
+        ],
+        "spatialized": true,
+        "loopSeconds": 80
+      }
+    },
+    {
+      "id": "ambient.forgeweave_worker_district",
+      "displayName": "Forgeweave worker district",
+      "assetPath": "/Game/Audio/Ambient/DA_ForgeweaveWorkerDistrict",
+      "recipe": {
+        "layers": [
+          "worker voices",
+          "freight movement",
+          "maintenance roads"
+        ],
+        "spatialized": true,
+        "loopSeconds": 95
+      }
+    },
+    {
+      "id": "ambient.forgeweave_grand_forge",
+      "displayName": "Forgeweave Grand Forge",
+      "assetPath": "/Game/Audio/Ambient/DA_ForgeweaveGrandForge",
+      "recipe": {
+        "layers": [
+          "furnace roar",
+          "chain drive",
+          "vertical machinery"
+        ],
+        "spatialized": true,
+        "loopSeconds": 75
+      }
+    },
+    {
+      "id": "ambient.eden_wetland",
+      "displayName": "Eden wetland",
+      "assetPath": "/Game/Audio/Ambient/DA_EdenWetland",
+      "recipe": {
+        "layers": [
+          "water",
+          "insects",
+          "soft wind"
+        ],
+        "spatialized": true,
+        "loopSeconds": 110
+      }
+    },
+    {
+      "id": "ambient.eden_settlement",
+      "displayName": "Eden settlement",
+      "assetPath": "/Game/Audio/Ambient/DA_EdenSettlement",
+      "recipe": {
+        "layers": [
+          "wood resonance",
+          "plant movement",
+          "human activity"
+        ],
+        "spatialized": true,
+        "loopSeconds": 105
+      }
+    },
+    {
+      "id": "ambient.frontier_wilderness",
+      "displayName": "Frontier wilderness",
+      "assetPath": "/Game/Audio/Ambient/DA_FrontierWilderness",
+      "recipe": {
+        "layers": [
+          "wind",
+          "distant fauna",
+          "weather movement"
+        ],
+        "spatialized": true,
+        "loopSeconds": 120
+      }
+    },
+    {
+      "id": "ambient.neutral_settlement",
+      "displayName": "neutral settlement",
+      "assetPath": "/Game/Audio/Ambient/DA_NeutralSettlement",
+      "recipe": {
+        "layers": [
+          "city crowd",
+          "local utilities",
+          "street activity"
+        ],
+        "spatialized": true,
+        "loopSeconds": 90
+      }
+    },
+    {
+      "id": "ambient.axiom_tunnel",
+      "displayName": "Axiom tunnel",
+      "assetPath": "/Game/Audio/Ambient/DA_AxiomTunnel",
+      "recipe": {
+        "layers": [
+          "stone resonance",
+          "remote machine lattice",
+          "sub-bass air"
+        ],
+        "spatialized": true,
+        "loopSeconds": 80
+      }
+    },
+    {
+      "id": "ambient.post_ascension_capital",
+      "displayName": "post-Ascension capital",
+      "assetPath": "/Game/Audio/Ambient/DA_PostAscensionCapital",
+      "recipe": {
+        "layers": [
+          "Synara computation",
+          "Forgeweave annex machinery",
+          "Relic resonance"
+        ],
+        "spatialized": true,
+        "loopSeconds": 100
+      }
+    }
+  ],
+  "sfx": [
+    {
+      "id": "sfx.ui.confirm",
+      "family": "ui",
+      "assetPath": "/Game/Audio/SFX/Ui_Confirm/DA_SFX_Ui_Confirm",
+      "recipe": {
+        "transient": "short harmonic confirmation",
+        "palette": "glassy tick",
+        "event": "positive interface action",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.ui.cancel",
+      "family": "ui",
+      "assetPath": "/Game/Audio/SFX/Ui_Cancel/DA_SFX_Ui_Cancel",
+      "recipe": {
+        "transient": "soft descending rejection",
+        "palette": "muted click",
+        "event": "non-destructive cancel",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.ui.warning",
+      "family": "ui",
+      "assetPath": "/Game/Audio/SFX/Ui_Warning/DA_SFX_Ui_Warning",
+      "recipe": {
+        "transient": "two-stage caution pulse",
+        "palette": "restrained alarm",
+        "event": "actionable warning",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.ui.focus",
+      "family": "ui",
+      "assetPath": "/Game/Audio/SFX/Ui_Focus/DA_SFX_Ui_Focus",
+      "recipe": {
+        "transient": "single tactile index",
+        "palette": "quiet interface tap",
+        "event": "focus movement",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.ui.notification",
+      "family": "ui",
+      "assetPath": "/Game/Audio/SFX/Ui_Notification/DA_SFX_Ui_Notification",
+      "recipe": {
+        "transient": "layered civic chime",
+        "palette": "short harmonic tone",
+        "event": "new information",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.card.draw",
+      "family": "card",
+      "assetPath": "/Game/Audio/SFX/Card_Draw/DA_SFX_Card_Draw",
+      "recipe": {
+        "transient": "paper-composite slide",
+        "palette": "light mechanism",
+        "event": "card enters hand",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.card.inspect",
+      "family": "card",
+      "assetPath": "/Game/Audio/SFX/Card_Inspect/DA_SFX_Card_Inspect",
+      "recipe": {
+        "transient": "pedestal latch",
+        "palette": "soft harmonic lift",
+        "event": "3D inspect opens",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.card.place",
+      "family": "card",
+      "assetPath": "/Game/Audio/SFX/Card_Place/DA_SFX_Card_Place",
+      "recipe": {
+        "transient": "tactile lock and spatial pulse",
+        "palette": "material click",
+        "event": "placement accepted",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.card.craft",
+      "family": "card",
+      "assetPath": "/Game/Audio/SFX/Card_Craft/DA_SFX_Card_Craft",
+      "recipe": {
+        "transient": "layered assembly ticks",
+        "palette": "mechanical sequence",
+        "event": "craft completes",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.card.unlock",
+      "family": "card",
+      "assetPath": "/Game/Audio/SFX/Card_Unlock/DA_SFX_Card_Unlock",
+      "recipe": {
+        "transient": "fan-open mechanism and chime",
+        "palette": "collection reveal",
+        "event": "definition becomes available",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.construction.synara_stage",
+      "family": "construction",
+      "assetPath": "/Game/Audio/SFX/Construction_SynaraStage/DA_SFX_Construction_SynaraStage",
+      "recipe": {
+        "transient": "micro-drone clicks and panel alignment",
+        "palette": "precise mechanical",
+        "event": "Synara stage transition",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.construction.forgeweave_stage",
+      "family": "construction",
+      "assetPath": "/Game/Audio/SFX/Construction_ForgeweaveStage/DA_SFX_Construction_ForgeweaveStage",
+      "recipe": {
+        "transient": "hydraulic impact and bolted plate",
+        "palette": "heavy industrial",
+        "event": "Forgeweave stage transition",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.construction.eden_stage",
+      "family": "construction",
+      "assetPath": "/Game/Audio/SFX/Construction_EdenStage/DA_SFX_Construction_EdenStage",
+      "recipe": {
+        "transient": "root movement and timber resonance",
+        "palette": "organic physical",
+        "event": "Eden stage transition",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.construction.complete",
+      "family": "construction",
+      "assetPath": "/Game/Audio/SFX/Construction_Complete/DA_SFX_Construction_Complete",
+      "recipe": {
+        "transient": "systems acceptance cadence",
+        "palette": "cross-faction completion",
+        "event": "building becomes operational",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.construction.repair",
+      "family": "construction",
+      "assetPath": "/Game/Audio/SFX/Construction_Repair/DA_SFX_Construction_Repair",
+      "recipe": {
+        "transient": "tool action and structural settle",
+        "palette": "functional maintenance",
+        "event": "damage repair",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.utilities.power_online",
+      "family": "utilities",
+      "assetPath": "/Game/Audio/SFX/Utilities_PowerOnline/DA_SFX_Utilities_PowerOnline",
+      "recipe": {
+        "transient": "transformer rise and stable hum",
+        "palette": "electrical utility",
+        "event": "power restored",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.utilities.power_fail",
+      "family": "utilities",
+      "assetPath": "/Game/Audio/SFX/Utilities_PowerFail/DA_SFX_Utilities_PowerFail",
+      "recipe": {
+        "transient": "load drop and relay release",
+        "palette": "electrical utility",
+        "event": "power lost",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.utilities.water_flow",
+      "family": "utilities",
+      "assetPath": "/Game/Audio/SFX/Utilities_WaterFlow/DA_SFX_Utilities_WaterFlow",
+      "recipe": {
+        "transient": "valve open and pipe flow",
+        "palette": "water utility",
+        "event": "water route enabled",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.utilities.data_pulse",
+      "family": "utilities",
+      "assetPath": "/Game/Audio/SFX/Utilities_DataPulse/DA_SFX_Utilities_DataPulse",
+      "recipe": {
+        "transient": "directional packet cadence",
+        "palette": "network utility",
+        "event": "data link active",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.utilities.network_disrupt",
+      "family": "utilities",
+      "assetPath": "/Game/Audio/SFX/Utilities_NetworkDisrupt/DA_SFX_Utilities_NetworkDisrupt",
+      "recipe": {
+        "transient": "timing breakup and relay fault",
+        "palette": "network utility",
+        "event": "data link disrupted",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.citizen.crowd_day",
+      "family": "citizen",
+      "assetPath": "/Game/Audio/SFX/Citizen_CrowdDay/DA_SFX_Citizen_CrowdDay",
+      "recipe": {
+        "transient": "layered civic voices",
+        "palette": "human activity",
+        "event": "normal city population",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.citizen.crowd_alarm",
+      "family": "citizen",
+      "assetPath": "/Game/Audio/SFX/Citizen_CrowdAlarm/DA_SFX_Citizen_CrowdAlarm",
+      "recipe": {
+        "transient": "localized alarm reactions",
+        "palette": "human response",
+        "event": "danger response",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.citizen.job_assign",
+      "family": "citizen",
+      "assetPath": "/Game/Audio/SFX/Citizen_JobAssign/DA_SFX_Citizen_JobAssign",
+      "recipe": {
+        "transient": "workstation acceptance tone",
+        "palette": "civic interface",
+        "event": "job assignment",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.citizen.satisfaction_up",
+      "family": "citizen",
+      "assetPath": "/Game/Audio/SFX/Citizen_SatisfactionUp/DA_SFX_Citizen_SatisfactionUp",
+      "recipe": {
+        "transient": "brief positive crowd lift",
+        "palette": "human response",
+        "event": "satisfaction gain",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.citizen.protest",
+      "family": "citizen",
+      "assetPath": "/Game/Audio/SFX/Citizen_Protest/DA_SFX_Citizen_Protest",
+      "recipe": {
+        "transient": "organized chant bed",
+        "palette": "human response",
+        "event": "public grievance",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.founder_movement.footstep_soft",
+      "family": "founder_movement",
+      "assetPath": "/Game/Audio/SFX/FounderMovement_FootstepSoft/DA_SFX_FounderMovement_FootstepSoft",
+      "recipe": {
+        "transient": "layered boot on soft surface",
+        "palette": "spatial movement",
+        "event": "Founder walk",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.founder_movement.footstep_metal",
+      "family": "founder_movement",
+      "assetPath": "/Game/Audio/SFX/FounderMovement_FootstepMetal/DA_SFX_FounderMovement_FootstepMetal",
+      "recipe": {
+        "transient": "boot on industrial plate",
+        "palette": "spatial movement",
+        "event": "Founder industrial walk",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.founder_movement.sprint",
+      "family": "founder_movement",
+      "assetPath": "/Game/Audio/SFX/FounderMovement_Sprint/DA_SFX_FounderMovement_Sprint",
+      "recipe": {
+        "transient": "accelerated equipment and step layer",
+        "palette": "spatial movement",
+        "event": "Founder sprint",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.founder_movement.jump",
+      "family": "founder_movement",
+      "assetPath": "/Game/Audio/SFX/FounderMovement_Jump/DA_SFX_FounderMovement_Jump",
+      "recipe": {
+        "transient": "takeoff cloth and landing impact",
+        "palette": "spatial movement",
+        "event": "Founder jump",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.founder_movement.interact",
+      "family": "founder_movement",
+      "assetPath": "/Game/Audio/SFX/FounderMovement_Interact/DA_SFX_FounderMovement_Interact",
+      "recipe": {
+        "transient": "equipment settle and tactile action",
+        "palette": "spatial interaction",
+        "event": "Founder interaction",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.weapons.rifle",
+      "family": "weapons",
+      "assetPath": "/Game/Audio/SFX/Weapons_Rifle/DA_SFX_Weapons_Rifle",
+      "recipe": {
+        "transient": "controlled ballistic report",
+        "palette": "combat transient",
+        "event": "standard ranged fire",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.weapons.heavy",
+      "family": "weapons",
+      "assetPath": "/Game/Audio/SFX/Weapons_Heavy/DA_SFX_Weapons_Heavy",
+      "recipe": {
+        "transient": "low heavy weapon report",
+        "palette": "combat transient",
+        "event": "heavy fire",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.weapons.drone_bolt",
+      "family": "weapons",
+      "assetPath": "/Game/Audio/SFX/Weapons_DroneBolt/DA_SFX_Weapons_DroneBolt",
+      "recipe": {
+        "transient": "precise energy discharge",
+        "palette": "combat transient",
+        "event": "drone fire",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.weapons.impact",
+      "family": "weapons",
+      "assetPath": "/Game/Audio/SFX/Weapons_Impact/DA_SFX_Weapons_Impact",
+      "recipe": {
+        "transient": "material-aware strike",
+        "palette": "combat transient",
+        "event": "weapon impact",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.weapons.reload",
+      "family": "weapons",
+      "assetPath": "/Game/Audio/SFX/Weapons_Reload/DA_SFX_Weapons_Reload",
+      "recipe": {
+        "transient": "mechanical magazine cycle",
+        "palette": "combat mechanism",
+        "event": "weapon reload",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.units.synara_move",
+      "family": "units",
+      "assetPath": "/Game/Audio/SFX/Units_SynaraMove/DA_SFX_Units_SynaraMove",
+      "recipe": {
+        "transient": "coordinated light servos",
+        "palette": "faction movement",
+        "event": "Synara unit movement",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.units.forgeweave_move",
+      "family": "units",
+      "assetPath": "/Game/Audio/SFX/Units_ForgeweaveMove/DA_SFX_Units_ForgeweaveMove",
+      "recipe": {
+        "transient": "heavy armor and tool mass",
+        "palette": "faction movement",
+        "event": "Forgeweave unit movement",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.units.eden_move",
+      "family": "units",
+      "assetPath": "/Game/Audio/SFX/Units_EdenMove/DA_SFX_Units_EdenMove",
+      "recipe": {
+        "transient": "field gear and natural surface",
+        "palette": "faction movement",
+        "event": "Eden unit movement",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.units.deploy",
+      "family": "units",
+      "assetPath": "/Game/Audio/SFX/Units_Deploy/DA_SFX_Units_Deploy",
+      "recipe": {
+        "transient": "formation locks into role",
+        "palette": "unit command",
+        "event": "unit deployment",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.units.retreat",
+      "family": "units",
+      "assetPath": "/Game/Audio/SFX/Units_Retreat/DA_SFX_Units_Retreat",
+      "recipe": {
+        "transient": "urgent formation break cue",
+        "palette": "unit command",
+        "event": "unit retreat",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.vehicles.synara_drive",
+      "family": "vehicles",
+      "assetPath": "/Game/Audio/SFX/Vehicles_SynaraDrive/DA_SFX_Vehicles_SynaraDrive",
+      "recipe": {
+        "transient": "quiet autonomous traction",
+        "palette": "faction vehicle",
+        "event": "Synara vehicle movement",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.vehicles.forgeweave_drive",
+      "family": "vehicles",
+      "assetPath": "/Game/Audio/SFX/Vehicles_ForgeweaveDrive/DA_SFX_Vehicles_ForgeweaveDrive",
+      "recipe": {
+        "transient": "tracked load and diesel-electric mass",
+        "palette": "faction vehicle",
+        "event": "Forgeweave vehicle movement",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.vehicles.frontier_drive",
+      "family": "vehicles",
+      "assetPath": "/Game/Audio/SFX/Vehicles_FrontierDrive/DA_SFX_Vehicles_FrontierDrive",
+      "recipe": {
+        "transient": "rugged suspension and surface noise",
+        "palette": "vehicle movement",
+        "event": "frontier vehicle movement",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.vehicles.brake",
+      "family": "vehicles",
+      "assetPath": "/Game/Audio/SFX/Vehicles_Brake/DA_SFX_Vehicles_Brake",
+      "recipe": {
+        "transient": "mass-aware brake release",
+        "palette": "vehicle mechanism",
+        "event": "vehicle stop",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.vehicles.impact",
+      "family": "vehicles",
+      "assetPath": "/Game/Audio/SFX/Vehicles_Impact/DA_SFX_Vehicles_Impact",
+      "recipe": {
+        "transient": "chassis strike and debris",
+        "palette": "vehicle damage",
+        "event": "vehicle collision",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.damage.structure_impact",
+      "family": "damage",
+      "assetPath": "/Game/Audio/SFX/Damage_StructureImpact/DA_SFX_Damage_StructureImpact",
+      "recipe": {
+        "transient": "localized structural strike",
+        "palette": "damage transient",
+        "event": "building damage",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.damage.breach",
+      "family": "damage",
+      "assetPath": "/Game/Audio/SFX/Damage_Breach/DA_SFX_Damage_Breach",
+      "recipe": {
+        "transient": "ruptured pipe steel and pressure",
+        "palette": "damage transient",
+        "event": "structural breach",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.damage.disabled",
+      "family": "damage",
+      "assetPath": "/Game/Audio/SFX/Damage_Disabled/DA_SFX_Damage_Disabled",
+      "recipe": {
+        "transient": "systems wind down and lock",
+        "palette": "damage state",
+        "event": "building disabled",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.damage.ruin",
+      "family": "damage",
+      "assetPath": "/Game/Audio/SFX/Damage_Ruin/DA_SFX_Damage_Ruin",
+      "recipe": {
+        "transient": "authored collapse and settling debris",
+        "palette": "damage state",
+        "event": "ruin transition",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.damage.repair",
+      "family": "damage",
+      "assetPath": "/Game/Audio/SFX/Damage_Repair/DA_SFX_Damage_Repair",
+      "recipe": {
+        "transient": "tool pass and system restart",
+        "palette": "damage recovery",
+        "event": "module repaired",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.capture.progress",
+      "family": "capture",
+      "assetPath": "/Game/Audio/SFX/Capture_Progress/DA_SFX_Capture_Progress",
+      "recipe": {
+        "transient": "spatial interaction cadence",
+        "palette": "capture process",
+        "event": "capture advances",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.capture.complete",
+      "family": "capture",
+      "assetPath": "/Game/Audio/SFX/Capture_Complete/DA_SFX_Capture_Complete",
+      "recipe": {
+        "transient": "objective lock tone",
+        "palette": "capture process",
+        "event": "capture completes",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.capture.integration",
+      "family": "capture",
+      "assetPath": "/Game/Audio/SFX/Capture_Integration/DA_SFX_Capture_Integration",
+      "recipe": {
+        "transient": "scaffold tools and interface adaptation",
+        "palette": "ownership integration",
+        "event": "integration work",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.capture.signage_remove",
+      "family": "capture",
+      "assetPath": "/Game/Audio/SFX/Capture_SignageRemove/DA_SFX_Capture_SignageRemove",
+      "recipe": {
+        "transient": "fastener release and sign handling",
+        "palette": "ownership signage",
+        "event": "old signage removed",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.capture.signage_install",
+      "family": "capture",
+      "assetPath": "/Game/Audio/SFX/Capture_SignageInstall/DA_SFX_Capture_SignageInstall",
+      "recipe": {
+        "transient": "new fasteners and civic marker tone",
+        "palette": "ownership signage",
+        "event": "new signage installed",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.relic.forge_awaken",
+      "family": "relic",
+      "assetPath": "/Game/Audio/SFX/Relic_ForgeAwaken/DA_SFX_Relic_ForgeAwaken",
+      "recipe": {
+        "transient": "deep mechanical tone and suspended embers",
+        "palette": "Relic authority",
+        "event": "Forge Relic awakens",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.relic.emerge",
+      "family": "relic",
+      "assetPath": "/Game/Audio/SFX/Relic_Emerge/DA_SFX_Relic_Emerge",
+      "recipe": {
+        "transient": "stone-metal resonance rising",
+        "palette": "Relic authority",
+        "event": "Relic emerges",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.relic.transit",
+      "family": "relic",
+      "assetPath": "/Game/Audio/SFX/Relic_Transit/DA_SFX_Relic_Transit",
+      "recipe": {
+        "transient": "world-scale harmonic surge",
+        "palette": "Relic authority",
+        "event": "Relic travels",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.relic.install",
+      "family": "relic",
+      "assetPath": "/Game/Audio/SFX/Relic_Install/DA_SFX_Relic_Install",
+      "recipe": {
+        "transient": "plinth lock and hall resonance",
+        "palette": "Relic authority",
+        "event": "Relic enters Founder Hall",
+        "variationLayers": 0
+      }
+    },
+    {
+      "id": "sfx.relic.convergence_sting",
+      "family": "relic",
+      "assetPath": "/Game/Audio/SFX/Relic_ConvergenceSting/DA_SFX_Relic_ConvergenceSting",
+      "recipe": {
+        "transient": "precision and heavy motifs resolve",
+        "palette": "Ascension motif",
+        "event": "Convergence authority appears",
+        "variationLayers": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dominion Ascendant vertical-slice UI manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fingerprint", "schemaVersion", "visualDirection", "inputContexts", "screens", "overlays", "campaignCriticalActions", "accessibilityOptions"],
+  "properties": {
+    "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "schemaVersion": {"const": 1},
+    "visualDirection": {"$ref": "#/$defs/visualDirection"},
+    "inputContexts": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/inputContext"}},
+    "screens": {"type": "array", "minItems": 27, "maxItems": 27, "items": {"$ref": "#/$defs/screen"}},
+    "overlays": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"$ref": "#/$defs/overlay"}},
+    "campaignCriticalActions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/action"}},
+    "accessibilityOptions": {"type": "array", "minItems": 19, "maxItems": 19, "items": {"$ref": "#/$defs/accessibility"}}
+  },
+  "$defs": {
+    "visualDirection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tone", "lowChromeHUD", "keepCenterAndLowerMiddleClear", "motionSettingId", "flashSettingId"],
+      "properties": {
+        "tone": {"const": "industrial_civic_synara"}, "lowChromeHUD": {"const": true},
+        "keepCenterAndLowerMiddleClear": {"const": true}, "motionSettingId": {"const": "reduced_motion"},
+        "flashSettingId": {"const": "reduced_flash"}
+      }
+    },
+    "inputContext": {
+      "type": "object", "additionalProperties": false, "required": ["id", "assetPath", "priority"],
+      "properties": {"id": {"type": "string", "minLength": 1}, "assetPath": {"type": "string", "pattern": "^/Game/UI/Input/"}, "priority": {"type": "integer", "minimum": 0}}
+    },
+    "screen": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "displayName", "assetPath", "widgetClass", "layer", "inputContextId", "inputMode", "entryFocusTarget", "backTarget", "dataChannels", "campaignCriticalActions"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "displayName": {"type": "string", "minLength": 1},
+        "assetPath": {"type": "string", "pattern": "^/Game/UI/(Screens|HUD)/"},
+        "widgetClass": {"type": "string", "pattern": "^/Script/DominionUI\\."},
+        "layer": {"enum": ["menu", "hud", "panel", "modal"]}, "inputContextId": {"type": "string"},
+        "inputMode": {"enum": ["game_only", "ui_only", "game_and_ui"]}, "entryFocusTarget": {"type": "string", "minLength": 1},
+        "backTarget": {"type": "string", "minLength": 1}, "dataChannels": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "campaignCriticalActions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "overlay": {
+      "type": "object", "additionalProperties": false, "required": ["id", "displayName", "assetPath", "widgetClass", "markerShape"],
+      "properties": {"id": {"type": "string"}, "displayName": {"type": "string"}, "assetPath": {"type": "string", "pattern": "^/Game/UI/Overlays/"}, "widgetClass": {"type": "string", "pattern": "^/Script/DominionUI\\."}, "markerShape": {"type": "string", "minLength": 1}}
+    },
+    "action": {
+      "type": "object", "additionalProperties": false, "required": ["id", "commandId", "surfaces", "keyboardInput", "controllerInput", "requiresHover"],
+      "properties": {"id": {"type": "string"}, "commandId": {"type": "string", "pattern": "^command\\."}, "surfaces": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true}, "keyboardInput": {"type": "string", "minLength": 1}, "controllerInput": {"type": "string", "minLength": 1}, "requiresHover": {"const": false}}
+    },
+    "accessibility": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type", "defaultValue"],
+      "properties": {"id": {"type": "string"}, "type": {"enum": ["boolean", "float", "enum", "binding_map", "hold_toggle_map"]}, "defaultValue": {}, "minimum": {"type": "number"}, "maximum": {"type": "number"}, "values": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}}
+    }
+  }
+}

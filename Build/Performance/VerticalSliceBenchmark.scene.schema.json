@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "sceneId", "generatorVersion", "deterministicSeed", "gameplayAssetCount", "gameplayAssetClass", "citizensByLOD", "weatherActive", "alliedSquadCount", "enemySquadCount", "vehicleCount", "constructionEffectCount", "constructionEffectAsset", "damagedBuildingCount", "modeTransition"],
+  "properties": {
+    "$schema": {"const": "VerticalSliceBenchmark.scene.schema.json"},
+    "schemaVersion": {"const": 1},
+    "sceneId": {"const": "benchmark.vertical_slice.synara_capital"},
+    "generatorVersion": {"const": 1},
+    "deterministicSeed": {"type": "integer", "minimum": 1},
+    "gameplayAssetCount": {"const": 50},
+    "gameplayAssetClass": {"const": "/Script/DominionGameplay.DAWorldAsset"},
+    "citizensByLOD": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "prefixItems": [
+        {"const": {"lod": 0, "count": 30, "representation": "full"}},
+        {"const": {"lod": 1, "count": 30, "representation": "detailed"}},
+        {"const": {"lod": 2, "count": 40, "representation": "aggregated"}},
+        {"const": {"lod": 3, "count": 20, "representation": "strategic"}}
+      ],
+      "items": false
+    },
+    "weatherActive": {"const": true},
+    "alliedSquadCount": {"const": 3},
+    "enemySquadCount": {"const": 3},
+    "vehicleCount": {"const": 1},
+    "constructionEffectCount": {"const": 1},
+    "constructionEffectAsset": {"const": "/Game/VFX/Synara/DA_VFX_Synara_Construction.DA_VFX_Synara_Construction"},
+    "damagedBuildingCount": {"const": 1},
+    "modeTransition": {"const": ["City", "Command", "Founder"]}
+  }
+}

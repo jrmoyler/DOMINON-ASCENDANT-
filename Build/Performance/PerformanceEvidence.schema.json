@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "sceneId", "planSha256", "state", "readinessReasons", "hardware", "commands", "measurements", "claims"],
+  "properties": {
+    "$schema": {"const": "PerformanceEvidence.schema.json"},
+    "schemaVersion": {"const": 1},
+    "sceneId": {"const": "benchmark.vertical_slice.synara_capital"},
+    "planSha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "state": {"enum": ["NOT_RUN", "NOT_READY", "CANDIDATE", "CAPTURED"]},
+    "readinessReasons": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "hardware": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cpu", "gpu", "systemMemoryGiB", "storage"],
+          "properties": {
+            "cpu": {"type": "string", "minLength": 1},
+            "gpu": {"type": "string", "minLength": 1},
+            "systemMemoryGiB": {"type": "integer", "minimum": 1},
+            "storage": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "commands": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prepare", "automation", "cook"],
+      "properties": {
+        "prepare": {"$ref": "#/$defs/command"},
+        "automation": {"$ref": "#/$defs/command"},
+        "cook": {"$ref": "#/$defs/command"}
+      }
+    },
+    "measurements": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["frameSampleCount", "averageFramesPerSecond", "worstFrameFramesPerSecond", "worstDevelopmentCycleMilliseconds", "modeTransitionSeconds", "developmentCycles", "enabledEventCount", "playerEconomyDevelopmentCycles", "tradeWorldTicks", "forgeweaveWorldTicks", "utilityTopologyNodeCount", "utilityTopologyResolved", "populationStayedNonnegative", "eventEmissionCount", "eventTransitionCount", "eventRunawayDetected", "staleRequiredQuestDetected", "requiredQuestResolutionFailed", "initialSaveBytes", "finalSaveBytes", "repeatabilityDigestA", "repeatabilityDigestB"],
+      "properties": {
+        "frameSampleCount": {"type": "integer", "minimum": 1},
+        "averageFramesPerSecond": {"type": "number", "exclusiveMinimum": 0},
+        "worstFrameFramesPerSecond": {"type": "number", "exclusiveMinimum": 0},
+        "worstDevelopmentCycleMilliseconds": {"type": "number", "minimum": 0},
+        "modeTransitionSeconds": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number", "minimum": 0}},
+        "developmentCycles": {"type": "integer", "minimum": 0},
+        "enabledEventCount": {"type": "integer", "minimum": 0},
+        "playerEconomyDevelopmentCycles": {"type": "integer", "minimum": 0},
+        "tradeWorldTicks": {"type": "integer", "minimum": 0},
+        "forgeweaveWorldTicks": {"type": "integer", "minimum": 0},
+        "utilityTopologyNodeCount": {"type": "integer", "minimum": 0},
+        "utilityTopologyResolved": {"type": "boolean"},
+        "populationStayedNonnegative": {"type": "boolean"},
+        "eventEmissionCount": {"type": "integer", "minimum": 0},
+        "eventTransitionCount": {"type": "integer", "minimum": 0},
+        "eventRunawayDetected": {"type": "boolean"},
+        "staleRequiredQuestDetected": {"type": "boolean"},
+        "requiredQuestResolutionFailed": {"type": "boolean"},
+        "initialSaveBytes": {"type": "integer", "minimum": 0},
+        "finalSaveBytes": {"type": "integer", "minimum": 0},
+        "repeatabilityDigestA": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "repeatabilityDigestB": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["performanceTargetsPassed", "soakPassed", "cookPassed"],
+      "properties": {
+        "performanceTargetsPassed": {"type": "boolean"},
+        "soakPassed": {"type": "boolean"},
+        "cookPassed": {"type": "boolean"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"const": "CAPTURED"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "planSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "readinessReasons": {"maxItems": 0},
+          "hardware": {"type": "object"},
+          "measurements": {"type": "object"},
+          "commands": {
+            "properties": {
+              "prepare": {"$ref": "#/$defs/successCommand"},
+              "automation": {"$ref": "#/$defs/successCommand"},
+              "cook": {"$ref": "#/$defs/successCommand"}
+            }
+          }
+        }
+      },
+      "else": {
+        "if": {"properties": {"state": {"const": "CANDIDATE"}}, "required": ["state"]},
+        "then": {
+          "properties": {
+            "planSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "readinessReasons": {"minItems": 1},
+            "hardware": {"type": "object"},
+            "measurements": {"type": "object"},
+            "commands": {
+              "properties": {
+                "prepare": {"$ref": "#/$defs/candidateCommand"},
+                "automation": {"$ref": "#/$defs/candidateCommand"},
+                "cook": {"$ref": "#/$defs/candidateCommand"}
+              }
+            },
+            "claims": {
+              "properties": {
+                "performanceTargetsPassed": {"const": false},
+                "soakPassed": {"const": false},
+                "cookPassed": {"const": false}
+              }
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "readinessReasons": {"minItems": 1},
+            "hardware": {"type": "null"},
+            "measurements": {"type": "null"},
+            "claims": {
+              "properties": {
+                "performanceTargetsPassed": {"const": false},
+                "soakPassed": {"const": false},
+                "cookPassed": {"const": false}
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["argv", "exitCode"],
+      "properties": {
+        "argv": {"type": "array", "items": {"type": "string"}},
+        "exitCode": {"type": ["integer", "null"]}
+      }
+    },
+    "successCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["argv", "exitCode"],
+      "properties": {
+        "argv": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "exitCode": {"const": 0}
+      }
+    },
+    "candidateCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["argv", "exitCode"],
+      "properties": {
+        "argv": {"type": "array", "maxItems": 0},
+        "exitCode": {"type": "null"}
+      }
+    }
+  }
+}

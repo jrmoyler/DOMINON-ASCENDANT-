@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "v1.1 core VFX recipes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sourceId",
+    "effects"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceId": {
+      "const": "presentation.core_vfx.v11"
+    },
+    "effects": {
+      "type": "array",
+      "minItems": 25,
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "faction",
+          "family",
+          "assetPath",
+          "recipe"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^vfx\\."
+          },
+          "faction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "family": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetPath": {
+            "type": "string",
+            "pattern": "^/Game/VFX/"
+          },
+          "recipe": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "anticipation",
+              "active",
+              "resolution",
+              "signature",
+              "gameplayRadiusMeters"
+            ],
+            "properties": {
+              "anticipation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "active": {
+                "type": "string",
+                "minLength": 1
+              },
+              "resolution": {
+                "type": "string",
+                "minLength": 1
+              },
+              "signature": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gameplayRadiusMeters": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

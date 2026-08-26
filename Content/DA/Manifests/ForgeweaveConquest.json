@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "campaign.vertical_slice.forgeweave_conquest",
+  "fingerprint": "9a337e852f4be7fd140b6126e1e207c501c583ce",
+  "quests": [
+    {
+      "id": "quest.broker_of_ironheart",
+      "title": "Broker of Ironheart",
+      "assetPath": "/Game/DA/Quests/Q_BrokerOfIronheart",
+      "citizenIds": ["citizen.forgeweave.mara_kest"],
+      "trigger": "quest.foundry_shortage.completed",
+      "choices": ["force", "economic", "influence", "alliance"],
+      "systems": ["conquest", "diplomacy", "history"],
+      "outcomeTags": ["broker_of_ironheart_route_chosen"],
+      "choiceOutcomeTags": {
+        "force": "broker_force",
+        "economic": "broker_economic",
+        "influence": "broker_influence",
+        "alliance": "broker_alliance"
+      },
+      "dialogueConditions": ["relationship.synara.forgeweave"],
+      "requirements": {},
+      "nodes": [
+        {"id": "start", "type": "start", "edges": [{"branch": "always", "target": "choice"}]},
+        {"id": "choice", "type": "choice", "edges": [
+          {"branch": "force", "target": "resolution.force"},
+          {"branch": "economic", "target": "resolution.economic"},
+          {"branch": "influence", "target": "resolution.influence"},
+          {"branch": "alliance", "target": "resolution.alliance"}
+        ]},
+        {"id": "resolution.force", "type": "resolution", "edges": []},
+        {"id": "resolution.economic", "type": "resolution", "edges": []},
+        {"id": "resolution.influence", "type": "resolution", "edges": []},
+        {"id": "resolution.alliance", "type": "resolution", "edges": []}
+      ]
+    },
+    {
+      "id": "quest.workers_signal",
+      "title": "The Workers' Signal",
+      "assetPath": "/Game/DA/Quests/Q_WorkersSignal",
+      "citizenIds": ["citizen.forgeweave.mara_kest"],
+      "trigger": "broker.influence|workers_protected",
+      "choices": [],
+      "systems": ["worker_endorsement", "service_crisis", "credibility_history", "faction_support"],
+      "outcomeTags": ["workers_signal_completed"],
+      "choiceOutcomeTags": {},
+      "dialogueConditions": ["workers_protected", "mara_numbers_worker_coalition"],
+      "requirements": {
+        "storedInfluenceCanComplete": false,
+        "serviceCrisisRequired": true,
+        "workerEndorsementRequired": true
+      },
+      "nodes": [
+        {"id": "start", "type": "start", "edges": [{"branch": "always", "target": "objective.endorsement"}]},
+        {"id": "objective.endorsement", "type": "faction_condition", "edges": [{"branch": "satisfied", "target": "resolution.influence"}]},
+        {"id": "resolution.influence", "type": "resolution", "edges": []}
+      ]
+    },
+    {
+      "id": "quest.supply_noose",
+      "title": "The Supply Noose",
+      "assetPath": "/Game/DA/Quests/Q_SupplyNoose",
+      "citizenIds": ["citizen.forgeweave.daxton_rhe"],
+      "trigger": "broker.economic|fulfilled_forgeweave_trade",
+      "choices": [],
+      "systems": ["fulfilled_trade", "freight_share", "component_dependence", "emergency_finance"],
+      "outcomeTags": ["supply_noose_completed", "daxton_restructuring_resolved"],
+      "choiceOutcomeTags": {},
+      "dialogueConditions": ["relationship.synara.forgeweave.dependence"],
+      "requirements": {
+        "fulfilledTradeRequired": true,
+        "genericPurchaseAllowed": false,
+        "maximumDefaultAutonomyLoss": 15
+      },
+      "nodes": [
+        {"id": "start", "type": "start", "edges": [{"branch": "always", "target": "objective.leverage"}]},
+        {"id": "objective.leverage", "type": "economy_condition", "edges": [{"branch": "satisfied", "target": "resolution.economic"}]},
+        {"id": "resolution.economic", "type": "resolution", "edges": []}
+      ]
+    },
+    {
+      "id": "quest.operation_iron_veil",
+      "title": "Operation Iron Veil",
+      "assetPath": "/Game/DA/Quests/Q_OperationIronVeil",
+      "citizenIds": ["citizen.forgeweave.daxton_rhe"],
+      "trigger": "broker.force|ironheart_hostile",
+      "choices": [],
+      "systems": ["control_zones", "captured_military_assets", "elite_defeat", "city_shield_command"],
+      "outcomeTags": ["operation_iron_veil_completed", "daxton_encounter_resolved"],
+      "choiceOutcomeTags": {},
+      "dialogueConditions": ["ironheart_civilian_damage", "grand_forge_preserved"],
+      "requirements": {
+        "ironheartOwnershipChangeRequired": true,
+        "persistentDamageRequired": true,
+        "postWarLoyaltyRequired": true
+      },
+      "nodes": [
+        {"id": "start", "type": "start", "edges": [{"branch": "always", "target": "objective.sovereignty"}]},
+        {"id": "objective.sovereignty", "type": "combat", "edges": [{"branch": "satisfied", "target": "resolution.force"}]},
+        {"id": "resolution.force", "type": "resolution", "edges": []}
+      ]
+    },
+    {
+      "id": "quest.third_foundry",
+      "title": "The Third Foundry",
+      "assetPath": "/Game/DA/Quests/Q_ThirdFoundry",
+      "citizenIds": ["citizen.forgeweave.daxton_rhe", "citizen.forgeweave.mara_kest"],
+      "trigger": "broker.alliance|joint_forgeweave_crisis_success",
+      "choices": [],
+      "systems": ["trust", "shared_interest", "crisis_resolution", "respect", "grievance"],
+      "outcomeTags": ["third_foundry_completed", "forge_relic_voluntary_transfer"],
+      "choiceOutcomeTags": {},
+      "dialogueConditions": ["relationship.synara.forgeweave", "joint_forgeweave_crisis_success"],
+      "requirements": {
+        "allianceAverageAtLeast": 80,
+        "allianceComponentAtLeast": 65,
+        "majorGrievanceAllowed": false,
+        "thirdFoundryComplete": true
+      },
+      "nodes": [
+        {"id": "start", "type": "start", "edges": [{"branch": "always", "target": "objective.union"}]},
+        {"id": "objective.union", "type": "relationship_condition", "edges": [{"branch": "satisfied", "target": "resolution.alliance"}]},
+        {"id": "resolution.alliance", "type": "resolution", "edges": []}
+      ]
+    }
+  ]
+}

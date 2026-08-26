@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "resolution", "qualityPreset", "referenceHardware", "targetAverageFramesPerSecond", "minimumWorstCaseFramesPerSecond", "severeDevelopmentCycleHitchMilliseconds", "maximumModeTransitionSeconds", "minimumFrameSamples", "developmentCycles", "enabledEventCount", "maximumSaveBytes", "maximumSaveGrowthBytes"],
+  "properties": {
+    "$schema": {"const": "VerticalSliceBenchmark.budget.schema.json"},
+    "schemaVersion": {"const": 1},
+    "resolution": {"const": {"width": 1920, "height": 1080}},
+    "qualityPreset": {"const": "High"},
+    "referenceHardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpu", "gpu", "systemMemoryGiB", "storage"],
+      "properties": {
+        "cpu": {"const": "Ryzen 5 5600 or equivalent"},
+        "gpu": {"const": "RTX 3060 or RX 6700 XT class"},
+        "systemMemoryGiB": {"const": 16},
+        "storage": {"const": "SSD"}
+      }
+    },
+    "targetAverageFramesPerSecond": {"const": 60.0},
+    "minimumWorstCaseFramesPerSecond": {"const": 30.0},
+    "severeDevelopmentCycleHitchMilliseconds": {"const": 100.0},
+    "maximumModeTransitionSeconds": {"const": 1.5},
+    "minimumFrameSamples": {"type": "integer", "minimum": 600},
+    "developmentCycles": {"const": 1000},
+    "enabledEventCount": {"const": 6},
+    "maximumSaveBytes": {"type": "integer", "minimum": 1},
+    "maximumSaveGrowthBytes": {"type": "integer", "minimum": 0}
+  }
+}

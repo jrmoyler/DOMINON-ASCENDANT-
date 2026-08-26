@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "presentation.primary.characters.v06",
+  "assets": [
+    {
+      "number": 12,
+      "id": "primary.12.guardian_drone_cohort",
+      "displayName": "Guardian Drone Cohort",
+      "faction": "Synara",
+      "kind": "Unit",
+      "assetPath": "/Game/Characters/Synara/Primary12/DA_Presentation_GuardianDroneCohort",
+      "recipe": {
+        "silhouette": "six narrow coordinated drone silhouettes",
+        "materials": [
+          "ivory composite",
+          "graphite internals",
+          "smoked visor"
+        ],
+        "requiredVariants": [
+          "defense formation",
+          "rapid interception formation"
+        ],
+        "readabilityHook": "articulated support drones",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 13,
+      "id": "primary.13.audit_sentinel",
+      "displayName": "Audit Sentinel",
+      "faction": "Synara",
+      "kind": "Unit",
+      "assetPath": "/Game/Characters/Synara/Primary13/DA_Presentation_AuditSentinel",
+      "recipe": {
+        "silhouette": "two-person robot hybrid inspection team",
+        "materials": [
+          "ivory composite",
+          "graphite internals",
+          "smoked visor"
+        ],
+        "requiredVariants": [
+          "cyber inspection gear",
+          "sabotage sensor profile"
+        ],
+        "readabilityHook": "sensor-rich headgear",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 14,
+      "id": "primary.14.synara_command_vehicle",
+      "displayName": "Synara Command Vehicle",
+      "faction": "Synara",
+      "kind": "Vehicle",
+      "assetPath": "/Game/Characters/Synara/Primary14/DA_Presentation_SynaraCommandVehicle",
+      "recipe": {
+        "silhouette": "low-profile autonomous tactical carrier",
+        "materials": [
+          "ivory composite",
+          "graphite internals",
+          "smoked visor"
+        ],
+        "requiredVariants": [
+          "command deployment state",
+          "damaged mobility state"
+        ],
+        "readabilityHook": "directional sensor crown",
+        "rigProfile": "vehicle_articulation"
+      }
+    },
+    {
+      "number": 15,
+      "id": "primary.15.archon_mira_vey",
+      "displayName": "Archon Mira Vey",
+      "faction": "Synara",
+      "kind": "Leader",
+      "assetPath": "/Game/Characters/Synara/Primary15/DA_Presentation_ArchonMiraVey",
+      "recipe": {
+        "silhouette": "elegant human augmented civic silhouette",
+        "materials": [
+          "ivory composite",
+          "graphite internals",
+          "smoked visor"
+        ],
+        "requiredVariants": [
+          "civilian leadership costume",
+          "tactical variant",
+          "dialogue facial rig",
+          "combat rig"
+        ],
+        "readabilityHook": "wearable computational interface",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 25,
+      "id": "primary.25.forge_guard",
+      "displayName": "Forge Guard",
+      "faction": "Forgeweave",
+      "kind": "Unit",
+      "assetPath": "/Game/Characters/Forgeweave/Primary25/DA_Presentation_ForgeGuard",
+      "recipe": {
+        "silhouette": "four broad heavy industrial infantry silhouettes",
+        "materials": [
+          "blackened steel",
+          "workwear textile",
+          "heat-stained alloy"
+        ],
+        "requiredVariants": [
+          "heavy formation",
+          "surrender state"
+        ],
+        "readabilityHook": "powered industrial armor",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 26,
+      "id": "primary.26.mechanist_crew",
+      "displayName": "Mechanist Crew",
+      "faction": "Forgeweave",
+      "kind": "Unit",
+      "assetPath": "/Game/Characters/Forgeweave/Primary26/DA_Presentation_MechanistCrew",
+      "recipe": {
+        "silhouette": "three-person repair engineering crew",
+        "materials": [
+          "blackened steel",
+          "workwear textile",
+          "heat-stained alloy"
+        ],
+        "requiredVariants": [
+          "repair operation",
+          "field engineering"
+        ],
+        "readabilityHook": "tool gantry backpacks",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 27,
+      "id": "primary.27.forgeweave_heavy_carrier",
+      "displayName": "Forgeweave Heavy Carrier",
+      "faction": "Forgeweave",
+      "kind": "Vehicle",
+      "assetPath": "/Game/Characters/Forgeweave/Primary27/DA_Presentation_ForgeweaveHeavyCarrier",
+      "recipe": {
+        "silhouette": "heavy tracked multi-axle transport",
+        "materials": [
+          "blackened steel",
+          "workwear textile",
+          "heat-stained alloy"
+        ],
+        "requiredVariants": [
+          "cargo state",
+          "combat damaged state"
+        ],
+        "readabilityHook": "visible suspension and heavy plating",
+        "rigProfile": "vehicle_articulation"
+      }
+    },
+    {
+      "number": 28,
+      "id": "primary.28.daxton_rhe",
+      "displayName": "Daxton Rhe",
+      "faction": "Forgeweave",
+      "kind": "Leader",
+      "assetPath": "/Game/Characters/Forgeweave/Primary28/DA_Presentation_DaxtonRhe",
+      "recipe": {
+        "silhouette": "industrial commander in evolved work armor",
+        "materials": [
+          "blackened steel",
+          "workwear textile",
+          "heat-stained alloy"
+        ],
+        "requiredVariants": [
+          "civilian command appearance",
+          "powered boss armor",
+          "dialogue rig",
+          "combat rig",
+          "damaged armor state"
+        ],
+        "readabilityHook": "command armor without fantasy ornament",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 36,
+      "id": "primary.36.ranger_circle",
+      "displayName": "Ranger Circle",
+      "faction": "EdenCircuit",
+      "kind": "Unit",
+      "assetPath": "/Game/Characters/EdenCircuit/Primary36/DA_Presentation_RangerCircle",
+      "recipe": {
+        "silhouette": "four-person terrain reconnaissance circle",
+        "materials": [
+          "engineered textile",
+          "timber composite",
+          "living fiber"
+        ],
+        "requiredVariants": [
+          "recon formation",
+          "terrain operation"
+        ],
+        "readabilityHook": "low-aggression field profile",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 37,
+      "id": "primary.37.symbiosis_keepers",
+      "displayName": "Symbiosis Keepers",
+      "faction": "EdenCircuit",
+      "kind": "Unit",
+      "assetPath": "/Game/Characters/EdenCircuit/Primary37/DA_Presentation_SymbiosisKeepers",
+      "recipe": {
+        "silhouette": "ecological restoration support team",
+        "materials": [
+          "engineered textile",
+          "timber composite",
+          "living fiber"
+        ],
+        "requiredVariants": [
+          "restoration operation",
+          "support formation"
+        ],
+        "readabilityHook": "living-tool equipment",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 38,
+      "id": "primary.38.amara_venn",
+      "displayName": "Amara Venn",
+      "faction": "EdenCircuit",
+      "kind": "Leader",
+      "assetPath": "/Game/Characters/EdenCircuit/Primary38/DA_Presentation_AmaraVenn",
+      "recipe": {
+        "silhouette": "practical ecological civic field silhouette",
+        "materials": [
+          "engineered textile",
+          "timber composite",
+          "living fiber"
+        ],
+        "requiredVariants": [
+          "civic fieldwear",
+          "diplomacy appearance",
+          "crisis-operation gear",
+          "dialogue rig"
+        ],
+        "readabilityHook": "fieldwear with civic symbolism",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 48,
+      "id": "primary.48.founder_base_character",
+      "displayName": "Founder Base Character",
+      "faction": "Player",
+      "kind": "Character",
+      "assetPath": "/Game/Characters/Player/Primary48/DA_Presentation_FounderBaseCharacter",
+      "recipe": {
+        "silhouette": "modular readable player silhouette",
+        "materials": [
+          "modular armor composite",
+          "faction equipment sockets"
+        ],
+        "requiredVariants": [
+          "body variation",
+          "armor modules",
+          "faction equipment",
+          "Founder animations"
+        ],
+        "readabilityHook": "mode-readable equipment",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    },
+    {
+      "number": 49,
+      "id": "primary.49.nia_vale",
+      "displayName": "Nia Vale",
+      "faction": "Synara",
+      "kind": "Champion",
+      "assetPath": "/Game/Characters/Synara/Primary49/DA_Presentation_NiaVale",
+      "recipe": {
+        "silhouette": "technician with human-scale Synara equipment",
+        "materials": [
+          "ivory composite",
+          "graphite internals",
+          "smoked visor"
+        ],
+        "requiredVariants": [
+          "technician appearance",
+          "civilian variation",
+          "Champion upgrade visual",
+          "dialogue rig"
+        ],
+        "readabilityHook": "tool harness and upgrade silhouette",
+        "rigProfile": "full_skeletal_dialogue_or_command_lod"
+      }
+    }
+  ]
+}
