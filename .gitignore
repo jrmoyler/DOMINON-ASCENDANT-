@@ -13,3 +13,8 @@ Saved/
 *.opensdf
 *.sdf
 __pycache__/
+
+# Web slice
+web/node_modules/
+web/dist/
+web/.vite/
