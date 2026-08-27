@@ -14,7 +14,7 @@ npm run dev      # http://localhost:5173
 | `npm run build` | Typecheck, then bundle to `dist/` |
 | `npm run preview` | Serve the production bundle |
 | `npm run typecheck` | Types only |
-| `npx tsx --tsconfig tsconfig.app.json sim.ts` | Headless balance harness |
+| `npm run sim` | Headless balance harness |
 
 ## Layout
 
@@ -27,16 +27,25 @@ src/
     economy.ts     Development Cycle resolution, utilities, migration
     quests.ts      First-hour quest chain evaluated against live state
     state.ts       Campaign state, deck, placement, save/load
-  render/        Three.js — no React, no game rules
-    Scene.ts       Camera rig, raycasting, overlays, mesh reconciliation
-    buildings.ts   Procedural graybox meshes
-    palette.ts     Visual direction
+  render/        Babylon.js runtime — no React, no game rules
+    Scene.ts       Cinematic world, camera, picking, overlays, reconciliation
+    architecture.ts Deterministic authored silhouette plans
+    buildings.ts   Custom lofted structures, facade bands and spires
+    strategicAtmosphere.ts Three.js curve-authoring boundary
+    palette.ts     Faction and material direction
   ui/            React HUD layered over the canvas
+    motion.ts      anime.js interface and cinematic reveal choreography
 ```
 
 The three layers only depend downward: `ui` reads `game` and `render`, `render`
 reads `game`, and `game` depends on nothing but the content manifests. That
 mirrors the module direction the Unreal slice enforces.
+
+Babylon.js owns the only visible WebGL scene. Three.js is deliberately isolated
+to neutral atmosphere-curve authoring, so the engines never compete for the
+same canvas or render loop. Shipped 3D content remains GLB/glTF-first; the
+built-in city kit uses custom vertex lofts rather than visible box, plane,
+cylinder, sphere, or ring placeholders.
 
 ## Content is the single source of truth
 
