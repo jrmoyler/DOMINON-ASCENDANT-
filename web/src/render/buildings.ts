@@ -1,5 +1,4 @@
 import { Color3 } from '@babylonjs/core/Maths/math.color'
-import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
@@ -7,9 +6,11 @@ import { VertexBuffer } from '@babylonjs/core/Buffers/buffer'
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial'
 import type { Scene } from '@babylonjs/core/scene'
 import type { CardDefinition, WorldAsset } from '@/game/types'
-import { rotatedFootprint } from '@/game/grid'
 import { createArchitecturePlan, type PlanPoint } from './architecture'
 import { FACTION_COLOR, TYPE_STYLE } from './palette'
+import { createArchitectureGeometry, type ArchitectureFinish } from './architectureGeometry'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+import type { BufferGeometry } from 'three'
 
 export interface BuildingVisual {
   root: TransformNode
@@ -70,69 +71,6 @@ function createLoft(
   return mesh
 }
 
-function interpolateContour(plan: ReturnType<typeof createArchitecturePlan>, t: number): PlanPoint[] {
-  const fromIndex = t < 0.5 ? 0 : 1
-  const toIndex = fromIndex + 1
-  const local = t < 0.5 ? t * 2 : (t - 0.5) * 2
-  return plan.contours[fromIndex].map(([x, z], index) => {
-    const [tx, tz] = plan.contours[toIndex][index]
-    return [x + (tx - x) * local, z + (tz - z) * local] as const
-  })
-}
-
-function createFacadeBand(
-  name: string,
-  scene: Scene,
-  contour: PlanPoint[],
-  height: number,
-  thickness: number,
-  material: PBRMaterial,
-): Mesh {
-  const positions: number[] = []
-  const indices: number[] = []
-  for (const [x, z] of contour) positions.push(x, height - thickness, z, x, height + thickness, z)
-  for (let side = 0; side < contour.length; side += 1) {
-    const next = (side + 1) % contour.length
-    const low = side * 2
-    const high = low + 1
-    const nextLow = next * 2
-    const nextHigh = nextLow + 1
-    indices.push(low, nextLow, high, nextLow, nextHigh, high)
-  }
-  const mesh = new Mesh(name, scene)
-  applyVertexData(mesh, positions, indices)
-  mesh.material = material
-  return mesh
-}
-
-function createSpireBlade(
-  name: string,
-  scene: Scene,
-  path: PlanPoint[],
-  baseHeight: number,
-  material: PBRMaterial,
-): Mesh {
-  const positions: number[] = []
-  const indices: number[] = []
-  const width = 0.42
-  path.forEach(([x, z], index) => {
-    const y = baseHeight * (0.32 + index * 0.44)
-    const tangent = index === path.length - 1
-      ? new Vector3(x - path[index - 1][0], 0, z - path[index - 1][1])
-      : new Vector3(path[index + 1][0] - x, 0, path[index + 1][1] - z)
-    const side = Vector3.Cross(tangent.normalize(), Vector3.Up()).normalize().scale(width * (1 - index * 0.22))
-    positions.push(x + side.x, y, z + side.z, x - side.x, y, z - side.z)
-  })
-  for (let index = 0; index < path.length - 1; index += 1) {
-    const a = index * 2
-    indices.push(a, a + 2, a + 1, a + 2, a + 3, a + 1)
-  }
-  const mesh = new Mesh(name, scene)
-  applyVertexData(mesh, positions, indices)
-  mesh.material = material
-  return mesh
-}
-
 function createSignalLoop(name: string, scene: Scene, radius: number, material: PBRMaterial): Mesh {
   const positions: number[] = []
   const indices: number[] = []
@@ -147,7 +85,7 @@ function createSignalLoop(name: string, scene: Scene, radius: number, material: 
   }
   for (let index = 0; index < segments; index += 1) {
     const next = (index + 1) % segments
-    indices.push(index * 2, next * 2, index * 2 + 1, next * 2, next * 2 + 1, index * 2 + 1)
+    indices.push(index * 2, index * 2 + 1, next * 2, next * 2, index * 2 + 1, next * 2 + 1)
   }
   const mesh = new Mesh(name, scene)
   applyVertexData(mesh, positions, indices)
@@ -155,72 +93,62 @@ function createSignalLoop(name: string, scene: Scene, radius: number, material: 
   return mesh
 }
 
-export function createBuildingVisual(
-  scene: Scene,
-  asset: WorldAsset,
-  def: CardDefinition,
-): BuildingVisual {
+// Cache immutable Three-authored geometry; instances own their Babylon materials.
+const geometryCache = new Map<string, { name: string; finish: ArchitectureFinish; positions: number[]; normals: number[]; indices: number[] }[]>()
+
+export function createBuildingVisual(scene: Scene, asset: WorldAsset, def: CardDefinition): BuildingVisual {
   const root = new TransformNode(`asset:${asset.id}`, scene)
-  const [fw, fd] = rotatedFootprint(asset.footprint, asset.rotation)
-  const plan = createArchitecturePlan(def.cardType, `${asset.id}:${def.id}`, [fw, fd])
-  const style = TYPE_STYLE[def.cardType]
-  const faction = asColor(FACTION_COLOR[def.faction])
-
-  const shellMaterial = new PBRMaterial(`shell:${asset.id}`, scene)
-  shellMaterial.albedoColor = asColor(style.color)
-  shellMaterial.metallic = plan.materialFamily === 'alloy' ? 0.76 : plan.materialFamily === 'glass' ? 0.42 : 0.16
-  shellMaterial.roughness = plan.materialFamily === 'stone' ? 0.76 : 0.34
-  shellMaterial.environmentIntensity = 0.72
-
-  const accentMaterial = new PBRMaterial(`signal:${asset.id}`, scene)
-  accentMaterial.albedoColor = faction.scale(0.4)
-  accentMaterial.emissiveColor = faction
-  accentMaterial.emissiveIntensity = 1.15
-  accentMaterial.metallic = 0.35
-  accentMaterial.roughness = 0.22
-
-  const shell = createLoft(`shell:${asset.id}`, scene, plan.contours, plan.heights, shellMaterial)
-  shell.parent = root
-  shell.metadata = { assetId: asset.id }
-
-  for (let band = 1; band <= plan.facadeBands; band += 1) {
-    const t = band / (plan.facadeBands + 1)
-    const mesh = createFacadeBand(
-      `band:${asset.id}:${band}`,
-      scene,
-      interpolateContour(plan, t),
-      plan.heights.at(-1)! * t,
-      0.08,
-      accentMaterial,
-    )
+  const [fw, fd] = asset.footprint
+  root.rotation.y = asset.rotation * Math.PI / 2
+  const key = `${def.cardType}:${fw}:${fd}`
+  let parts = geometryCache.get(key)
+  if (!parts) {
+    const authoredParts = createArchitectureGeometry(def.cardType, fw * 8, fd * 8)
+    const batches = new Map<ArchitectureFinish, BufferGeometry[]>()
+    for (const part of authoredParts) {
+      const batch = batches.get(part.finish) ?? []
+      batch.push(part.geometry); batches.set(part.finish, batch)
+    }
+    parts = [...batches].map(([finish, geometries]) => {
+      const name = finish
+      const geometry = mergeGeometries(geometries, false)!
+      geometries.forEach((part) => part.dispose())
+      const positions = Array.from(geometry.getAttribute('position').array)
+      const normals = Array.from(geometry.getAttribute('normal').array)
+      const indices = Array.from({ length: positions.length / 3 }, (_, index) => index)
+      // Three uses counterclockwise triangles; Babylon's default is clockwise.
+      for (let i = 0; i < indices.length; i += 3) [indices[i + 1], indices[i + 2]] = [indices[i + 2], indices[i + 1]]
+      geometry.dispose()
+      return { name, finish, positions, normals, indices }
+    })
+    geometryCache.set(key, parts)
+  }
+  const finishes: Record<ArchitectureFinish, [number, number, number]> = {
+    shell: [TYPE_STYLE[def.cardType].color, 0.12, 0.72], stone: [0xc7bfaa, 0.04, 0.85],
+    metal: [0x4d565b, 0.65, 0.4], glass: [0x29424c, 0.45, 0.22],
+    signal: [FACTION_COLOR[def.faction], 0.2, 0.4], garden: [0x526841, 0, 0.95],
+  }
+  const materials = Object.fromEntries(Object.entries(finishes).map(([finish, [color, metallic, roughness]]) => {
+    const material = new PBRMaterial(`${finish}:${asset.id}`, scene)
+    material.albedoColor = asColor(color)
+    material.metallic = metallic
+    material.roughness = roughness
+    material.environmentIntensity = 0.65
+    if (finish === 'signal') { material.emissiveColor = asColor(color); material.emissiveIntensity = 0.3 }
+    return [finish, material]
+  })) as Record<ArchitectureFinish, PBRMaterial>
+  for (const part of parts) {
+    const mesh = new Mesh(`${part.name}:${asset.id}`, scene)
+    const data = new VertexData()
+    data.positions = part.positions; data.normals = part.normals; data.indices = part.indices
+    data.applyToMesh(mesh)
+    mesh.material = materials[part.finish]
+    mesh.receiveShadows = true
     mesh.parent = root
-    mesh.metadata = { assetId: asset.id }
+    mesh.metadata = { assetId: asset.id, architecturalPart: part.name }
   }
-
-  for (let index = 0; index < plan.spirePaths.length; index += 1) {
-    const blade = createSpireBlade(
-      `spire:${asset.id}:${index}`,
-      scene,
-      plan.spirePaths[index],
-      plan.heights.at(-1)! * (1 + plan.canopyBias * 0.28),
-      index % 2 === 0 ? accentMaterial : shellMaterial,
-    )
-    blade.parent = root
-    blade.metadata = { assetId: asset.id }
-  }
-
-  const baseSignal = createSignalLoop(
-    `foundation-signal:${asset.id}`,
-    scene,
-    Math.max(fw, fd) * 4 * 0.88,
-    accentMaterial,
-  )
-  baseSignal.position.y = 0.18
-  baseSignal.parent = root
-  baseSignal.metadata = { assetId: asset.id }
-
   root.metadata = { assetId: asset.id }
-  return { root, accents: [accentMaterial], signalColor: FACTION_COLOR[def.faction] }
+  return { root, accents: [materials.signal], signalColor: FACTION_COLOR[def.faction] }
 }
 
 export function createPlacementGhost(scene: Scene): BuildingVisual {

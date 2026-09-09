@@ -4,10 +4,13 @@ import {
   STARTING_POPULATION,
   STARTING_RESOURCES,
   computeTotals,
+  computeServices,
   resolveCycle,
 } from './economy'
+import type { AssetServices } from './economy'
 import { GRID_SIZE, canPlace } from './grid'
 import { ascensionProgress, evaluateQuests, initialQuests } from './quests'
+import { restoreCampaign } from './persistence'
 import type { CardInstance, GameState, LogEntry, OverlayId, WorldAsset } from './types'
 
 export const SAVE_VERSION = 1
@@ -67,7 +70,21 @@ export function createInitialState(): GameState {
   }
 
   const draw = shuffle(deck)
-  const hand = draw.splice(0, HAND_SIZE)
+  // A city needs an income engine, homes, and an opening quest asset. Draw one
+  // affordable example of each from the same canonical deck; the remaining
+  // hand and deck stay shuffled. No cards or starting resources are added.
+  const hand: string[] = []
+  for (const type of ['Infrastructure', 'Residential', 'Retail']) {
+    let pick = -1
+    for (let i = 0; i < draw.length; i++) {
+      const card = definition(instances[draw[i]].definitionId)
+      if (!card.placeable || card.cardType !== type || card.deploymentInsight > STARTING_RESOURCES.insight ||
+        card.deploymentInfluence > STARTING_RESOURCES.influence) continue
+      if (pick < 0 || card.deploymentCapital < definition(instances[draw[pick]].definitionId).deploymentCapital) pick = i
+    }
+    if (pick >= 0) hand.push(...draw.splice(pick, 1))
+  }
+  hand.push(...draw.splice(0, HAND_SIZE - hand.length))
 
   const state: GameState = {
     version: SAVE_VERSION,
@@ -132,7 +149,7 @@ export interface PlaceResult {
   reason?: string
 }
 
-export function placeCard(
+function validatePlacement(
   state: GameState,
   instanceId: string,
   x: number,
@@ -158,6 +175,56 @@ export function placeCard(
   if (state.resources.influence < def.deploymentInfluence) {
     return { ok: false, reason: `Needs ${def.deploymentInfluence} Influence` }
   }
+
+  return { ok: true }
+}
+
+export interface PlacementPreview extends PlaceResult {
+  warnings: string[]
+  services: AssetServices | null
+}
+
+/** Full placement verdict plus utilities after construction, without spending a card. */
+export function previewPlacement(
+  state: GameState,
+  instanceId: string,
+  x: number,
+  y: number,
+  rotation: 0 | 1 | 2 | 3,
+): PlacementPreview {
+  const check = validatePlacement(state, instanceId, x, y, rotation)
+  if (!check.ok) return { ...check, warnings: [], services: null }
+  const def = definition(state.instances[instanceId].definitionId)
+  const candidate: WorldAsset = {
+    id: '__placement_preview__', definitionId: def.id, x, y, rotation,
+    footprint: def.footprint, cyclesRemaining: 0, operational: true, brownout: false, staffed: 0,
+  }
+  const assets = [...state.assets, candidate]
+  const services = computeServices(assets).get(candidate.id)!
+  const warnings: string[] = []
+  if (!services.power) warnings.push('Outside power coverage — build within 6 cells of a power source.')
+  if (!services.water) warnings.push('Outside water coverage — build within 6 cells of a water source.')
+  if (!services.data && (def.utilityData > 0 || def.baseInsightPerCycle > 0)) {
+    warnings.push('Outside data coverage — research output will be reduced.')
+  }
+  const totals = computeTotals(assets, state.population)
+  if (totals.powerDemand > totals.powerSupply) warnings.push('City power demand will exceed supply.')
+  if (totals.waterDemand > totals.waterSupply) warnings.push('City water demand will exceed supply.')
+  if (totals.dataDemand > totals.dataSupply) warnings.push('City data demand will exceed supply.')
+  return { ok: true, warnings, services }
+}
+
+export function placeCard(
+  state: GameState,
+  instanceId: string,
+  x: number,
+  y: number,
+  rotation: 0 | 1 | 2 | 3,
+): PlaceResult {
+  const check = validatePlacement(state, instanceId, x, y, rotation)
+  if (!check.ok) return check
+  const instance = state.instances[instanceId]
+  const def = definition(instance.definitionId)
 
   state.resources.capital -= def.deploymentCapital
   state.resources.insight -= def.deploymentInsight
@@ -260,23 +327,27 @@ export function serialize(state: GameState): string {
 
 export function deserialize(raw: string): GameState | null {
   try {
-    const parsed = JSON.parse(raw) as GameState
-    if (parsed.version !== SAVE_VERSION) return null
-    if (!Array.isArray(parsed.assets) || !parsed.instances) return null
-    // Rehydrate derived state rather than trusting the saved copy.
-    parsed.totals = computeTotals(parsed.assets, parsed.population)
-    parsed.speed = 0
-    return parsed
+    if (raw.length > 2_000_000) return null
+    return restoreCampaign(JSON.parse(raw), SAVE_VERSION)
   } catch {
     return null
   }
 }
 
 export const SAVE_KEY = 'dominion-ascendant.save.v1'
+export const SAVE_BACKUP_KEY = `${SAVE_KEY}.backup`
 
 export function saveToStorage(state: GameState): boolean {
   try {
-    localStorage.setItem(SAVE_KEY, serialize(state))
+    const serialized = serialize(state)
+    if (!deserialize(serialized)) return false
+    const previous = localStorage.getItem(SAVE_KEY)
+    if (previous && deserialize(previous)) {
+      // localStorage.setItem is atomic: retain the last valid checkpoint before
+      // replacing the primary. Never overwrite a good backup with corrupt data.
+      localStorage.setItem(SAVE_BACKUP_KEY, previous)
+    }
+    localStorage.setItem(SAVE_KEY, serialized)
     return true
   } catch {
     return false
@@ -285,8 +356,12 @@ export function saveToStorage(state: GameState): boolean {
 
 export function loadFromStorage(): GameState | null {
   try {
-    const raw = localStorage.getItem(SAVE_KEY)
-    return raw ? deserialize(raw) : null
+    for (const key of [SAVE_KEY, SAVE_BACKUP_KEY]) {
+      const raw = localStorage.getItem(key)
+      const state = raw ? deserialize(raw) : null
+      if (state) return state
+    }
+    return null
   } catch {
     return null
   }
@@ -295,6 +370,7 @@ export function loadFromStorage(): GameState | null {
 export function clearStorage() {
   try {
     localStorage.removeItem(SAVE_KEY)
+    localStorage.removeItem(SAVE_BACKUP_KEY)
   } catch {
     /* storage unavailable; nothing to clear */
   }

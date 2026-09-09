@@ -26,7 +26,8 @@ export function cellsOf(asset: Pick<WorldAsset, 'x' | 'y' | 'footprint' | 'rotat
 }
 
 export function inBounds(x: number, y: number, w: number, d: number): boolean {
-  return x >= 0 && y >= 0 && x + w <= GRID_SIZE && y + d <= GRID_SIZE
+  return [x, y, w, d].every(Number.isInteger) && w > 0 && d > 0 &&
+    x >= 0 && y >= 0 && x + w <= GRID_SIZE && y + d <= GRID_SIZE
 }
 
 /** Set of every occupied cell index. */
@@ -48,6 +49,7 @@ export function canPlace(
   footprint: [number, number],
   rotation: 0 | 1 | 2 | 3,
 ): PlacementCheck {
+  if (![0, 1, 2, 3].includes(rotation)) return { ok: false, reason: 'Invalid building rotation' }
   const [w, d] = rotatedFootprint(footprint, rotation)
   if (!inBounds(x, y, w, d)) return { ok: false, reason: 'Outside the build grid' }
   const occupied = occupancy(assets)
@@ -61,6 +63,7 @@ export function canPlace(
 }
 
 export function assetAt(assets: WorldAsset[], x: number, y: number): WorldAsset | undefined {
+  if (!inBounds(x, y, 1, 1)) return undefined
   const target = y * GRID_SIZE + x
   return assets.find((asset) => cellsOf(asset).includes(target))
 }

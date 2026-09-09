@@ -7,7 +7,7 @@ requirements.
 | | Browser slice (`web/`) | Unreal slice (`Source/`) |
 |---|---|---|
 | Runs on | Any modern browser | Windows PC |
-| Engine | TypeScript + Three.js | Unreal Engine 5.8 |
+| Engine | TypeScript + Babylon.js, Three.js geometry, Anime.js | Unreal Engine 5.8 |
 | Deployed to | Vercel | Local build only |
 | Status | Playable now | Source-complete, never compiled |
 
@@ -40,12 +40,14 @@ npx tsx --tsconfig tsconfig.app.json sim.ts   # headless balance harness
 | Click a card, then click a cell | Place a building |
 | Click a building | Inspect it |
 | Drag | Orbit the camera |
-| Shift+drag / right-drag | Pan |
+| Right-drag | Pan |
 | Scroll | Zoom |
 | `R` | Rotate the footprint |
 | `1`–`6` | Select a card from hand |
 | `Space` | Pause / resume |
 | `Esc` | Cancel selection |
+| `Home` / Recenter | Restore the city camera |
+| Field guide | Read controls and strategy; pauses the simulation while open |
 
 ### How it plays
 
@@ -58,6 +60,15 @@ gets no Power or Water, produces nothing, and drags approval down. Housing
 raises the population ceiling, jobs employ the citizens who arrive, and retail
 and industry pay for all of it. Approval falls when any of the three is
 missing, and a large city costs goodwill just for being large.
+
+The opening hand guarantees one Infrastructure, Residential, and Retail card from the
+unchanged canonical 60-card deck. Remaining cards are shuffled. Placement feedback checks
+Capital, Insight, Influence, occupancy, and local utility reach. Utility warnings are advice;
+you can still commission an expansion before its services are ready.
+
+The campaign autosaves after each Development Cycle and keeps the previous valid checkpoint
+as a recovery copy. Manual saves are available in Menu. Loading starts paused. Restarting
+or restoring a save requires confirmation; background tabs and the field guide stop the clock.
 
 Nine first-hour quests gate the run. Closing all nine reaches
 `CONVERGENCE AUTHORITY: 1/20`.
@@ -72,8 +83,8 @@ come from `Content/DA/Manifests/FirstHourQuests.json`.
 The manifests deliberately leave most per-card economy values unauthored
 (`"absent per-card values remain explicitly unauthored"`). The browser slice
 fills those gaps with a derivation table in `web/src/game/content.ts`. Those
-numbers are **web-slice tuning, not balance canon**, and the in-game inspector
-labels them as derived.
+numbers are **web-slice tuning, not balance canon**. Their provenance stays in the
+content module and developer documentation; the inspector presents player-facing costs and effects.
 
 Two deliberate deviations from Vertical Slice Production Spec v1.1:
 

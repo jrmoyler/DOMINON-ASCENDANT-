@@ -6,16 +6,16 @@ import type { CardType, Faction } from '@/game/types'
  */
 export const PALETTE = {
   background: 0x080d16,
-  fog: 0x0a1020,
-  ground: 0x121a29,
-  groundEdge: 0x0d1420,
-  gridLine: 0x1e2b40,
-  gridMajor: 0x2b3d59,
+  fog: 0xa3b1b2,
+  ground: 0x68705e,
+  groundEdge: 0x4f5b51,
+  gridLine: 0x736f60,
+  gridMajor: 0x877f68,
   hoverValid: 0x4ade80,
   hoverInvalid: 0xf05252,
   selection: 0xf2c14e,
-  keyLight: 0xdce6f5,
-  fillLight: 0x2a4a7a,
+  keyLight: 0xe8eadf,
+  fillLight: 0x63777d,
   rim: 0x4dd8e6,
 } as const
 
@@ -39,15 +39,15 @@ export const FACTION_CSS: Record<Faction, string> = {
 
 /** Base body colour and silhouette height (in metres) per card type. */
 export const TYPE_STYLE: Record<CardType, { color: number; height: number }> = {
-  Residential: { color: 0x3f4d66, height: 11 },
-  Retail: { color: 0x4a4f6b, height: 8 },
-  Office: { color: 0x394a68, height: 20 },
-  Industrial: { color: 0x53483f, height: 12 },
-  Infrastructure: { color: 0x2f4152, height: 9 },
-  Civic: { color: 0x45526b, height: 10 },
-  Research: { color: 0x36486b, height: 16 },
-  Defense: { color: 0x4b4640, height: 9 },
-  Wonder: { color: 0x5c4f6e, height: 28 },
+  Residential: { color: 0xaaa693, height: 11 },
+  Retail: { color: 0xa99783, height: 8 },
+  Office: { color: 0x708c92, height: 20 },
+  Industrial: { color: 0x8f7866, height: 12 },
+  Infrastructure: { color: 0x80918d, height: 9 },
+  Civic: { color: 0xb5b19e, height: 10 },
+  Research: { color: 0x7f9698, height: 16 },
+  Defense: { color: 0x888572, height: 9 },
+  Wonder: { color: 0xb1a88c, height: 28 },
   Unit: { color: 0x4d4a44, height: 5 },
   Leader: { color: 0x55506b, height: 7 },
   Special: { color: 0x6b5a33, height: 18 },

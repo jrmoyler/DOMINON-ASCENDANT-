@@ -1,0 +1,218 @@
+[
+  {
+    "family": "Residential",
+    "file": "residential.glb",
+    "bytes": 178180,
+    "triangles": 3072,
+    "meshes": 15,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 230968,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Retail",
+    "file": "retail.glb",
+    "bytes": 55736,
+    "triangles": 868,
+    "meshes": 12,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 70588,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Office",
+    "file": "office.glb",
+    "bytes": 204868,
+    "triangles": 3624,
+    "meshes": 12,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 268988,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Industrial",
+    "file": "industrial.glb",
+    "bytes": 56312,
+    "triangles": 930,
+    "meshes": 13,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 75692,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Infrastructure",
+    "file": "infrastructure.glb",
+    "bytes": 45904,
+    "triangles": 876,
+    "meshes": 14,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 72240,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Civic",
+    "file": "civic.glb",
+    "bytes": 72616,
+    "triangles": 1280,
+    "meshes": 14,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 101384,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Research",
+    "file": "research.glb",
+    "bytes": 68604,
+    "triangles": 1400,
+    "meshes": 14,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 109988,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Defense",
+    "file": "defense.glb",
+    "bytes": 44248,
+    "triangles": 748,
+    "meshes": 14,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 63000,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Wonder",
+    "file": "wonder.glb",
+    "bytes": 51628,
+    "triangles": 784,
+    "meshes": 14,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 65676,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Unit",
+    "file": "unit.glb",
+    "bytes": 40268,
+    "triangles": 584,
+    "meshes": 12,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 50104,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Leader",
+    "file": "leader.glb",
+    "bytes": 79500,
+    "triangles": 1312,
+    "meshes": 12,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 102588,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  },
+  {
+    "family": "Special",
+    "file": "special.glb",
+    "bytes": 155628,
+    "triangles": 2704,
+    "meshes": 11,
+    "materials": 6,
+    "units": "metres",
+    "footprint": [
+      16,
+      16
+    ],
+    "up": "+Y",
+    "pivot": "ground-centre",
+    "source": "web/src/render/architectureGeometry.ts",
+    "unoptimizedBytes": 202200,
+    "optimization": "glTF Transform 4.5.0: dedup, prune, weld; no lossy simplification or compression"
+  }
+]
