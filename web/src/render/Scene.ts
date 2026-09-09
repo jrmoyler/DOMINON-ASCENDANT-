@@ -1,3 +1,4 @@
+import { animate } from 'animejs'
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -10,7 +11,6 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial'
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { ImageProcessingConfiguration } from '@babylonjs/core/Materials/imageProcessingConfiguration'
 import { GlowLayer } from '@babylonjs/core/Layers/glowLayer'
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline'
@@ -28,7 +28,8 @@ import {
   tagAsPickable,
   type BuildingVisual,
 } from './buildings'
-import { createStrategicAtmosphere } from './strategicAtmosphere'
+import { createCivicEnvironment } from './civicEnvironment'
+import { createCivicTraffic } from './civicTraffic'
 
 const WORLD = GRID_SIZE * CELL_METRES
 
@@ -60,35 +61,40 @@ function applyMeshData(mesh: Mesh, positions: number[], indices: number[]) {
   data.applyToMesh(mesh, true)
 }
 
-function terrainHeight(x: number, z: number): number {
-  const cityDistance = Math.max(Math.abs(x), Math.abs(z))
-  if (cityDistance <= WORLD * 0.53) return 0
-  const edge = Math.min(1, (cityDistance - WORLD * 0.53) / (WORLD * 0.55))
+/** The developed plateau and north river share the environment's authored coordinates. */
+export function terrainHeight(x: number, z: number): number {
+  const northBank = -WORLD / 2 - 110
+  const southBank = -WORLD / 2 - 40
+  const riverDepth = Math.min(1, Math.max(0, (z - northBank) / 2), Math.max(0, (southBank - z) / 2))
+  const riverWidth = Math.min(1, Math.max(0, (380 - Math.abs(x)) / 20))
+  if (riverDepth > 0 && riverWidth > 0) return -5 * riverDepth * riverWidth
+  const distance = Math.max(Math.abs(x), Math.abs(z))
+  if (distance <= 380) return 0
+  const edge = Math.min(1, (distance - 380) / 150)
   const ridges = Math.sin(x * 0.035) * 8 + Math.cos(z * 0.027) * 10 + Math.sin((x + z) * 0.014) * 14
-  const river = Math.exp(-Math.pow((z + x * 0.18 - 178) / 22, 2)) * -22
-  return edge * (ridges + river - 1.5)
+  return edge * (ridges - 1.5)
 }
 
-function createTerrain(scene: Scene): Mesh {
+export function createTerrain(scene: Scene): Mesh {
   const mesh = new Mesh('authored-terrain', scene)
   const size = WORLD * 4.4
   const subdivisions = 84
   const positions: number[] = []
   const indices: number[] = []
   const uvs: number[] = []
-  for (let zIndex = 0; zIndex <= subdivisions; zIndex += 1) {
-    for (let xIndex = 0; xIndex <= subdivisions; xIndex += 1) {
-      const x = (xIndex / subdivisions - 0.5) * size
-      const z = (zIndex / subdivisions - 0.5) * size
-      positions.push(x, terrainHeight(x, z), z)
-      uvs.push(xIndex / subdivisions, zIndex / subdivisions)
-    }
+  const axis = Array.from({ length: subdivisions + 1 }, (_, index) => (index / subdivisions - 0.5) * size)
+  // Explicit bank rows prevent coarse-grid interpolation from burying the river margins.
+  const xs = Array.from(new Set([...axis, -380, -360, 360, 380])).sort((a, b) => a - b)
+  const zs = Array.from(new Set([...axis, -WORLD / 2 - 110, -WORLD / 2 - 108, -WORLD / 2 - 42, -WORLD / 2 - 40])).sort((a, b) => a - b)
+  for (const z of zs) for (const x of xs) {
+    positions.push(x, terrainHeight(x, z), z)
+    uvs.push(x / size + 0.5, z / size + 0.5)
   }
-  for (let zIndex = 0; zIndex < subdivisions; zIndex += 1) {
-    for (let xIndex = 0; xIndex < subdivisions; xIndex += 1) {
-      const row = subdivisions + 1
+  for (let zIndex = 0; zIndex < zs.length - 1; zIndex += 1) {
+    for (let xIndex = 0; xIndex < xs.length - 1; xIndex += 1) {
+      const row = xs.length
       const a = zIndex * row + xIndex
-      indices.push(a, a + row, a + 1, a + 1, a + row, a + row + 1)
+      indices.push(a, a + 1, a + row, a + 1, a + row + 1, a + row)
     }
   }
   const normals: number[] = []
@@ -129,10 +135,10 @@ function appendRoadQuad(
   const start = positions.length / 3
   positions.push(x1 + px, 0.09, z1 + pz, x1 - px, 0.09, z1 - pz)
   positions.push(x2 + px, 0.09, z2 + pz, x2 - px, 0.09, z2 - pz)
-  indices.push(start, start + 2, start + 1, start + 2, start + 3, start + 1)
+  indices.push(start, start + 1, start + 2, start + 2, start + 1, start + 3)
 }
 
-function createCivicLattice(scene: Scene): Mesh {
+export function createCivicLattice(scene: Scene): Mesh {
   const mesh = new Mesh('civic-lattice', scene)
   const positions: number[] = []
   const indices: number[] = []
@@ -147,15 +153,15 @@ function createCivicLattice(scene: Scene): Mesh {
   const material = new PBRMaterial('lattice-signal', scene)
   material.albedoColor = color(PALETTE.gridLine)
   material.emissiveColor = color(PALETTE.gridMajor)
-  material.emissiveIntensity = 0.55
-  material.metallic = 0.72
+  material.emissiveIntensity = 0.03
+  material.metallic = 0.08
   material.roughness = 0.3
   mesh.material = material
   mesh.isPickable = false
   return mesh
 }
 
-function createSkyVault(scene: Scene): Mesh {
+export function createSkyVault(scene: Scene): Mesh {
   const mesh = new Mesh('sky-vault', scene)
   const radius = WORLD * 4
   const rings = 18
@@ -183,11 +189,11 @@ function createSkyVault(scene: Scene): Mesh {
   }
   applyMeshData(mesh, positions, indices)
   const material = new GradientMaterial('sky-gradient', scene)
-  material.topColor = Color3.FromHexString('#101f42')
-  material.bottomColor = Color3.FromHexString('#02050d')
+  material.topColor = Color3.FromHexString('#8da5ad')
+  material.bottomColor = Color3.FromHexString('#d3c9ae')
   material.offset = 0.15
   material.scale = 0.92
-  material.backFaceCulling = false
+  material.backFaceCulling = true
   material.disableLighting = true
   mesh.material = material
   mesh.infiniteDistance = true
@@ -195,55 +201,41 @@ function createSkyVault(scene: Scene): Mesh {
   return mesh
 }
 
-function createAtmosphere(scene: Scene): TransformNode {
-  const root = new TransformNode('strategic-atmosphere', scene)
-  createStrategicAtmosphere('synara-dawn').forEach((band, bandIndex) => {
-    const mesh = new Mesh(`atmosphere-band:${bandIndex}`, scene)
+interface OverlayCell { cell: number; value: number; alpha: number; height: number }
+
+/** One draw call per overlay color, independent of utility coverage size. */
+export function createCellSignals(scene: Scene, root: TransformNode, cells: OverlayCell[]) {
+  const groups = new Map<string, OverlayCell[]>()
+  for (const cell of cells) {
+    const key = `${cell.value}:${cell.alpha}:${cell.height}`
+    const group = groups.get(key) ?? []
+    group.push(cell)
+    groups.set(key, group)
+  }
+  for (const [key, group] of groups) {
     const positions: number[] = []
     const indices: number[] = []
-    band.points.forEach((point, index) => {
-      const rhythm = 2.5 + Math.sin(index * 0.55 + bandIndex) * 1.2
-      positions.push(point.x, point.y - rhythm, point.z, point.x, point.y + rhythm, point.z)
-    })
-    for (let index = 0; index < band.points.length - 1; index += 1) {
-      const a = index * 2
-      indices.push(a, a + 2, a + 1, a + 2, a + 3, a + 1)
+    const half = CELL_METRES * 0.47
+    for (const item of group) {
+      const centre = cellCentre(item.cell % GRID_SIZE, Math.floor(item.cell / GRID_SIZE))
+      const index = positions.length / 3
+      positions.push(centre.x - half, item.height, centre.z - half, centre.x - half, item.height, centre.z + half,
+        centre.x + half, item.height, centre.z + half, centre.x + half, item.height, centre.z - half)
+      indices.push(index, index + 2, index + 1, index, index + 3, index + 2)
     }
+    const mesh = new Mesh(`coverage:${key}`, scene)
     applyMeshData(mesh, positions, indices)
-    const material = new StandardMaterial(`atmosphere-material:${bandIndex}`, scene)
-    material.emissiveColor = Color3.FromHexString(band.color)
-    material.alpha = band.alpha
+    const material = new PBRMaterial(`coverage:${key}`, scene)
+    material.albedoColor = color(group[0].value)
+    material.emissiveColor = color(group[0].value)
+    material.emissiveIntensity = 0.5
+    material.alpha = group[0].alpha
+    material.transparencyMode = PBRMaterial.PBRMATERIAL_ALPHABLEND
     material.disableLighting = true
-    material.backFaceCulling = false
     mesh.material = material
-    mesh.parent = root
     mesh.isPickable = false
-  })
-  return root
-}
-
-function createCellSignal(scene: Scene, name: string, value: number, alpha: number): Mesh {
-  const mesh = new Mesh(name, scene)
-  const positions: number[] = [0, 0, 0]
-  const indices: number[] = []
-  const points = 10
-  for (let index = 0; index < points; index += 1) {
-    const angle = (index / points) * Math.PI * 2
-    const radius = CELL_METRES * (index % 2 === 0 ? 0.45 : 0.39)
-    positions.push(Math.cos(angle) * radius, 0, Math.sin(angle) * radius)
+    mesh.parent = root
   }
-  for (let index = 0; index < points; index += 1) indices.push(0, index + 1, ((index + 1) % points) + 1)
-  applyMeshData(mesh, positions, indices)
-  const material = new PBRMaterial(`${name}:material`, scene)
-  material.albedoColor = color(value)
-  material.emissiveColor = color(value)
-  material.emissiveIntensity = 0.7
-  material.alpha = alpha
-  material.transparencyMode = PBRMaterial.PBRMATERIAL_ALPHABLEND
-  material.disableLighting = true
-  mesh.material = material
-  mesh.isPickable = false
-  return mesh
 }
 
 export class CityScene {
@@ -251,6 +243,7 @@ export class CityScene {
   private scene: Scene
   private camera: ArcRotateCamera
   private ground: Mesh
+  private traffic: ReturnType<typeof createCivicTraffic>
   private shadow: ShadowGenerator
   private buildingRoot: TransformNode
   private overlayRoot: TransformNode
@@ -264,6 +257,12 @@ export class CityScene {
   private ghostFootprint: [number, number] = [1, 1]
   private ghostValid = true
   private ghostVisible = false
+  private activePointers = new Set<number>()
+  private overlaySignature = ''
+  private hasSynced = false
+  private heightTargets = new Map<string, number>()
+  private constructionMotion = new Map<string, ReturnType<typeof animate>>()
+  private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -277,24 +276,25 @@ export class CityScene {
       powerPreference: 'high-performance',
     })
     this.scene = new Scene(this.engine)
-    this.scene.clearColor = new Color4(0.018, 0.03, 0.064, 1)
+    this.engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 1.5))
+    this.scene.clearColor = new Color4(0.56, 0.63, 0.65, 1)
     this.scene.fogMode = Scene.FOGMODE_EXP2
-    this.scene.fogDensity = 0.00165
+    this.scene.fogDensity = 0.0011
     this.scene.fogColor = color(PALETTE.fog)
-    this.scene.ambientColor = new Color3(0.08, 0.12, 0.2)
+    this.scene.ambientColor = new Color3(0.22, 0.24, 0.22)
 
     this.camera = new ArcRotateCamera(
       'command-camera',
-      Math.PI * 0.25,
-      Math.PI * 0.34,
-      140,
+      Math.PI * 0.68,
+      Math.PI * 0.29,
+      175,
       Vector3.Zero(),
       this.scene,
     )
     this.camera.lowerRadiusLimit = 32
-    this.camera.upperRadiusLimit = 620
-    this.camera.lowerBetaLimit = 0.18
-    this.camera.upperBetaLimit = Math.PI / 2.08
+    this.camera.upperRadiusLimit = 460
+    this.camera.lowerBetaLimit = 0.3
+    this.camera.upperBetaLimit = Math.PI * 0.44
     this.camera.wheelDeltaPercentage = 0.012
     this.camera.panningSensibility = 115
     this.camera.panningAxis = new Vector3(1, 0, 1)
@@ -302,44 +302,47 @@ export class CityScene {
     this.camera.attachControl(canvas, true)
 
     const hemi = new HemisphericLight('dawn-fill', new Vector3(0.18, 1, 0.32), this.scene)
-    hemi.intensity = 0.78
+    hemi.intensity = 1.05
     hemi.diffuse = color(PALETTE.keyLight)
     hemi.groundColor = color(PALETTE.fillLight)
 
     const key = new DirectionalLight('synara-sun', new Vector3(-0.48, -0.82, -0.34), this.scene)
     key.position = new Vector3(WORLD * 0.6, WORLD, WORLD * 0.5)
-    key.intensity = 2.35
-    key.diffuse = Color3.FromHexString('#dce9ff')
-    this.shadow = new ShadowGenerator(2048, key)
+    key.intensity = 2.7
+    key.diffuse = Color3.FromHexString('#fff0d2')
+    this.shadow = new ShadowGenerator(window.innerWidth < 768 ? 1024 : 2048, key)
     this.shadow.useBlurExponentialShadowMap = true
-    this.shadow.blurKernel = 24
+    this.shadow.blurKernel = 12
     this.shadow.bias = 0.0007
 
     this.ground = createTerrain(this.scene)
     createCivicLattice(this.scene)
     createSkyVault(this.scene)
-    createAtmosphere(this.scene)
+    createCivicEnvironment(this.scene).forEach((mesh) => {
+      if (mesh.name.endsWith(':stone') || mesh.name.endsWith(':foliage')) this.shadow.addShadowCaster(mesh)
+    })
 
+    this.traffic = createCivicTraffic(this.scene)
     this.buildingRoot = new TransformNode('city-assets', this.scene)
     this.overlayRoot = new TransformNode('analysis-signals', this.scene)
     this.ghost = createPlacementGhost(this.scene)
     this.selectionSignal = createSelectionSignal(this.scene)
 
     const glow = new GlowLayer('signal-bloom', this.scene, { blurKernelSize: 42 })
-    glow.intensity = 0.62
+    glow.intensity = 0.18
     const pipeline = new DefaultRenderingPipeline('cinematic-pipeline', true, this.scene, [this.camera])
     pipeline.fxaaEnabled = true
     pipeline.bloomEnabled = true
     pipeline.bloomThreshold = 0.76
-    pipeline.bloomWeight = 0.22
+    pipeline.bloomWeight = 0.08
     pipeline.bloomKernel = 48
-    pipeline.samples = 2
+    pipeline.samples = window.innerWidth < 768 ? 1 : 2
 
     const processing = this.scene.imageProcessingConfiguration
     processing.toneMappingEnabled = true
     processing.toneMappingType = ImageProcessingConfiguration.TONEMAPPING_ACES
-    processing.exposure = 1.16
-    processing.contrast = 1.18
+    processing.exposure = 1.1
+    processing.contrast = 1.08
 
     this.attachEvents()
     this.resize()
@@ -348,8 +351,9 @@ export class CityScene {
   private eventCoordinates(event: PointerEvent) {
     const rect = this.canvas.getBoundingClientRect()
     return {
-      x: ((event.clientX - rect.left) / Math.max(1, rect.width)) * this.engine.getRenderWidth(),
-      y: ((event.clientY - rect.top) / Math.max(1, rect.height)) * this.engine.getRenderHeight(),
+      // Babylon converts CSS pixels through hardwareScalingLevel internally.
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
     }
   }
 
@@ -357,6 +361,7 @@ export class CityScene {
     this.canvas.addEventListener('pointerdown', this.onPointerDown)
     this.canvas.addEventListener('pointermove', this.onPointerMove)
     window.addEventListener('pointerup', this.onPointerUp)
+    window.addEventListener('pointercancel', this.onPointerCancel)
     this.canvas.addEventListener('contextmenu', this.preventContextMenu)
     this.canvas.addEventListener('pointerleave', this.onPointerLeave)
   }
@@ -370,8 +375,10 @@ export class CityScene {
   }
 
   private onPointerDown = (event: PointerEvent) => {
+    this.activePointers.add(event.pointerId)
     this.pointerDown = { x: event.clientX, y: event.clientY }
-    this.movedWhileDown = false
+    this.movedWhileDown = this.activePointers.size > 1
+    this.updateHover(event)
   }
 
   private onPointerMove = (event: PointerEvent) => {
@@ -381,8 +388,18 @@ export class CityScene {
     this.updateHover(event)
   }
 
+  private onPointerCancel = (event: PointerEvent) => {
+    this.activePointers.delete(event.pointerId)
+    this.movedWhileDown = true
+    this.onPointerLeave()
+  }
+
   private onPointerUp = (event: PointerEvent) => {
-    if (this.movedWhileDown || event.button !== 0) return
+    const startedHere = this.activePointers.delete(event.pointerId)
+    if (!startedHere || this.movedWhileDown || event.button !== 0 || this.activePointers.size) return
+    const rect = this.canvas.getBoundingClientRect()
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return
+    this.updateHover(event)
     if (this.ghostVisible) {
       if (this.hoverCell) this.callbacks.onCellClick(this.hoverCell.x, this.hoverCell.y)
       return
@@ -470,16 +487,33 @@ export class CityScene {
       const progress = def.constructionCycles
         ? 1 - asset.cyclesRemaining / def.constructionCycles
         : 1
-      visual.root.scaling.y = asset.operational ? 1 : Math.max(0.14, progress)
+      const targetHeight = asset.operational ? 1 : Math.max(0.14, progress)
+      if (this.heightTargets.get(asset.id) !== targetHeight) {
+        this.constructionMotion.get(asset.id)?.cancel()
+        if (!this.hasSynced || this.reducedMotion) {
+          visual.root.scaling.y = targetHeight
+        } else {
+          if (!this.heightTargets.has(asset.id)) visual.root.scaling.y = 0.04
+          this.constructionMotion.set(asset.id, animate(visual.root.scaling, {
+            y: targetHeight,
+            duration: asset.operational ? 850 : 440,
+            ease: asset.operational ? 'outBack(1.2)' : 'outCubic',
+          }))
+        }
+        this.heightTargets.set(asset.id, targetHeight)
+      }
       setSignalColor(
         visual.accents,
         visual.signalColor,
-        asset.operational ? (asset.brownout ? 0.12 : 1.15) : 0.04,
+        asset.operational ? (asset.brownout ? 0.04 : 0.45) : 0.02,
       )
     }
 
     for (const [id, visual] of this.meshes) {
       if (seen.has(id)) continue
+      this.constructionMotion.get(id)?.cancel()
+      this.constructionMotion.delete(id)
+      this.heightTargets.delete(id)
       visual.root.dispose(false, true)
       this.meshes.delete(id)
     }
@@ -503,11 +537,16 @@ export class CityScene {
 
     this.syncOverlay(state)
     this.refreshGhost()
+    this.hasSynced = true
   }
 
   private syncOverlay(state: GameState) {
+    const signature = JSON.stringify([state.overlay, state.assets.map((asset) => [asset.id, asset.x, asset.y, asset.rotation, asset.operational, asset.staffed, asset.brownout])])
+    if (signature === this.overlaySignature) return
+    this.overlaySignature = signature
     this.overlayRoot.getChildren().forEach((node) => node.dispose(false, true))
     if (state.overlay === 'none') return
+    const overlayCells: OverlayCell[] = []
 
     const services = computeServices(state.assets)
     const utility = state.overlay === 'power' || state.overlay === 'water' || state.overlay === 'data'
@@ -534,10 +573,7 @@ export class CityScene {
         }
       }
       for (const cell of covered) {
-        const signal = createCellSignal(this.scene, `coverage:${cell}`, PALETTE.rim, 0.08)
-        signal.position = cellCentre(cell % GRID_SIZE, Math.floor(cell / GRID_SIZE))
-        signal.position.y = 0.14
-        signal.parent = this.overlayRoot
+        overlayCells.push({ cell, value: PALETTE.rim, alpha: 0.16, height: 0.14 })
       }
     }
 
@@ -555,17 +591,28 @@ export class CityScene {
       }
       if (value === null) continue
       for (const cell of cellsOf(asset)) {
-        const signal = createCellSignal(this.scene, `asset-signal:${asset.id}:${cell}`, value, 0.34)
-        signal.position = cellCentre(cell % GRID_SIZE, Math.floor(cell / GRID_SIZE))
-        signal.position.y = 0.24
-        signal.parent = this.overlayRoot
+        overlayCells.push({ cell, value, alpha: 0.42, height: 0.24 })
       }
     }
+    createCellSignals(this.scene, this.overlayRoot, overlayCells)
   }
 
   focusOn(asset: WorldAsset) {
-    const centre = cellCentre(asset.x, asset.y)
+    const [w, d] = rotatedFootprint(asset.footprint, asset.rotation)
+    const centre = cellCentre(asset.x + (w - 1) / 2, asset.y + (d - 1) / 2)
     this.camera.setTarget(new Vector3(centre.x, 0, centre.z))
+  }
+
+  resetView() {
+    this.camera.setTarget(Vector3.Zero())
+    this.camera.alpha = Math.PI * 0.68
+    this.camera.beta = Math.PI * 0.29
+    this.camera.radius = 175
+    this.camera.inertialAlphaOffset = 0
+    this.camera.inertialBetaOffset = 0
+    this.camera.inertialRadiusOffset = 0
+    this.camera.inertialPanningX = 0
+    this.camera.inertialPanningY = 0
   }
 
   resize() {
@@ -574,9 +621,13 @@ export class CityScene {
 
   start() {
     this.engine.runRenderLoop(() => {
-      if (!this.disposed) {
-        const pulse = 1 + Math.sin(performance.now() * 0.0022) * 0.04
+      if (!this.disposed && !document.hidden) {
+        const target = this.camera.target
+        target.x = Math.max(-WORLD / 2, Math.min(WORLD / 2, target.x))
+        target.z = Math.max(-WORLD / 2, Math.min(WORLD / 2, target.z))
+        const pulse = this.reducedMotion ? 1 : 1 + Math.sin(performance.now() * 0.0022) * 0.04
         this.selectionSignal.scaling.y = pulse
+        if (!this.reducedMotion) this.traffic.update(performance.now() / 1000)
         this.scene.render()
       }
     })
@@ -584,9 +635,12 @@ export class CityScene {
 
   dispose() {
     this.disposed = true
+    this.constructionMotion.forEach((animation) => animation.cancel())
+    this.constructionMotion.clear()
     this.canvas.removeEventListener('pointerdown', this.onPointerDown)
     this.canvas.removeEventListener('pointermove', this.onPointerMove)
     window.removeEventListener('pointerup', this.onPointerUp)
+    window.removeEventListener('pointercancel', this.onPointerCancel)
     this.canvas.removeEventListener('contextmenu', this.preventContextMenu)
     this.canvas.removeEventListener('pointerleave', this.onPointerLeave)
     this.camera.detachControl()

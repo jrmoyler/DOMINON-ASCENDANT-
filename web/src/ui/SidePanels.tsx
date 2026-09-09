@@ -1,7 +1,7 @@
+import { useState } from 'react'
 import { definition } from '@/game/content'
 import { UTILITY_RADIUS } from '@/game/economy'
 import type { GameState, OverlayId } from '@/game/types'
-import { FACTION_CSS, TYPE_CSS } from '@/render/palette'
 import { fmt } from './format'
 
 const OVERLAYS: { id: OverlayId; label: string }[] = [
@@ -17,15 +17,14 @@ const OVERLAYS: { id: OverlayId; label: string }[] = [
 export function QuestPanel({ state }: { state: GameState }) {
   const active = state.quests.filter((q) => q.status !== 'locked')
   const done = state.quests.filter((q) => q.status === 'complete').length
+  const next = state.quests.find((q) => q.status === 'active')
+  const objective = next?.objectives.find(o => !o.done)
 
   return (
-    <section className="panel quest-panel">
-      <h2>
-        First Hour
-        <span className="panel-badge">
-          {done}/{state.quests.length}
-        </span>
-      </h2>
+    <details className="panel quest-panel">
+      <summary><span>First Hour <b>{done}/{state.quests.length}</b><small>{state.ascended ? 'Forgeweave Ascension achieved' : next?.title ?? 'Awaiting next objective'}</small></span></summary>
+      <div className="panel-content">
+      {objective && <p className="next-objective">Next: {objective.label} <strong>{fmt(objective.progress)}/{fmt(objective.target)}</strong></p>}
 
       <div className="ascension-bar" title="Progress toward Forgeweave Ascension">
         <div className="ascension-fill" style={{ width: `${state.ascensionProgress * 100}%` }} />
@@ -53,7 +52,8 @@ export function QuestPanel({ state }: { state: GameState }) {
           </li>
         ))}
       </ul>
-    </section>
+      </div>
+    </details>
   )
 }
 
@@ -65,20 +65,24 @@ export function OverlayPanel({
   onOverlay: (id: OverlayId) => void
 }) {
   return (
-    <section className="panel overlay-panel">
-      <h2>Overlays</h2>
+    <details className="panel overlay-panel">
+      <summary>Map layers <span>{state.overlay === 'none' ? 'Terrain' : OVERLAYS.find(o => o.id === state.overlay)?.label}</span></summary>
+      <div className="panel-content">
       <div className="overlay-grid">
         {OVERLAYS.map((o) => (
           <button
             key={o.id}
             className={state.overlay === o.id ? 'active' : ''}
+            aria-pressed={state.overlay === o.id}
             onClick={() => onOverlay(o.id)}
           >
             {o.label}
           </button>
         ))}
       </div>
-    </section>
+      <p className="panel-help">Power, Water and Data show local utility reach. Buildings outside that reach cannot operate at full capacity.</p>
+      </div>
+    </details>
   )
 }
 
@@ -91,6 +95,7 @@ export function InspectPanel({
   onDemolish: (assetId: string) => void
   onClose: () => void
 }) {
+  const [confirmAsset, setConfirmAsset] = useState<string | null>(null)
   const asset = state.assets.find((a) => a.id === state.selectedAssetId)
   if (!asset) return null
   const def = definition(asset.definitionId)
@@ -111,7 +116,9 @@ export function InspectPanel({
   if (def.waterProduced > 0) rows.push(['Water supplied', `+${Math.round(def.waterProduced)} (r${UTILITY_RADIUS})`])
   if (def.utilityPower > 0) rows.push(['Power drawn', `−${Math.round(def.utilityPower)}`])
 
-  const derived = !def.authored.has('deploymentCapital')
+  if (def.utilityWater > 0) rows.push(['Water drawn', `−${def.utilityWater.toFixed(1)}`])
+  if (def.utilityData > 0) rows.push(['Data drawn', `−${def.utilityData.toFixed(1)}`])
+  if (def.dataProduced > 0) rows.push(['Data supplied', `+${Math.round(def.dataProduced)} (r${UTILITY_RADIUS})`])
 
   return (
     <section className="panel inspect-panel">
@@ -121,10 +128,10 @@ export function InspectPanel({
           ×
         </button>
       </h2>
-      <div className="inspect-name" style={{ color: FACTION_CSS[def.faction] }}>
+      <div className="inspect-name">
         {def.displayName}
       </div>
-      <div className="inspect-type" style={{ color: TYPE_CSS[def.cardType] }}>
+      <div className="inspect-type">
         {def.cardType} · {def.rarity}
       </div>
       <p className="inspect-desc">{def.description}</p>
@@ -136,16 +143,9 @@ export function InspectPanel({
           </div>
         ))}
       </dl>
-      {derived && (
-        <p className="inspect-note">
-          Values derived for the browser slice — the content manifests leave this card’s economy
-          explicitly unauthored.
-        </p>
-      )}
       {def.id !== 'special.founder_hall' && (
-        <button className="demolish-btn" onClick={() => onDemolish(asset.id)}>
-          Decommission (refund {Math.floor(def.deploymentCapital / 2)} ⬢)
-        </button>
+        <div className="decommission"><button className="demolish-btn" onClick={() => setConfirmAsset(asset.id)}>Decommission · {Math.floor(def.deploymentCapital / 2)} Capital refund</button>
+        {confirmAsset === asset.id && <div className="confirm-action"><p>Remove {def.displayName}? Its output will stop immediately.</p><button className="danger-button" onClick={() => { onDemolish(asset.id); setConfirmAsset(null) }}>Confirm decommission</button><button onClick={() => setConfirmAsset(null)}>Keep building</button></div>}</div>
       )}
     </section>
   )
@@ -153,8 +153,9 @@ export function InspectPanel({
 
 export function LogPanel({ state }: { state: GameState }) {
   return (
-    <section className="panel log-panel">
-      <h2>Signal</h2>
+    <details className="panel log-panel">
+      <summary>Dispatches <span>{state.log.length}</span></summary>
+      <div className="panel-content">
       <ul className="log-list">
         {state.log.slice(0, 40).map((entry, i) => (
           <li key={`${entry.cycle}-${i}`} className={entry.kind}>
@@ -163,6 +164,7 @@ export function LogPanel({ state }: { state: GameState }) {
           </li>
         ))}
       </ul>
-    </section>
+      </div>
+    </details>
   )
 }

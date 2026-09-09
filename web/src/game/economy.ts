@@ -130,6 +130,11 @@ export interface CycleResult {
   events: string[]
 }
 
+/** Preview the next actual cycle, including any construction that will finish. */
+export function projectNextCycle(state: GameState): CycleResult {
+  return resolveCycle({ ...state, assets: state.assets.map((asset) => ({ ...asset })) })
+}
+
 /**
  * Resolve one Development Cycle: construction, production, maintenance and
  * migration, in that order.
@@ -137,7 +142,7 @@ export interface CycleResult {
 export function resolveCycle(state: GameState): CycleResult {
   const events: string[] = []
 
-  // 1. Construction advances first, so a site finished this cycle produces next.
+  // 1. Construction advances first; a completed site produces in this cycle.
   for (const asset of state.assets) {
     if (asset.operational) continue
     asset.cyclesRemaining -= 1
