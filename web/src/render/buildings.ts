@@ -16,6 +16,8 @@ export interface BuildingVisual {
   root: TransformNode
   accents: PBRMaterial[]
   signalColor: number
+  /** Glazing that lights up after dark. */
+  windows?: PBRMaterial
 }
 
 function asColor(value: number): Color3 {
@@ -71,7 +73,7 @@ function createLoft(
   return mesh
 }
 
-function createSignalLoop(name: string, scene: Scene, radius: number, material: PBRMaterial): Mesh {
+export function createSignalLoop(name: string, scene: Scene, radius: number, material: PBRMaterial): Mesh {
   const positions: number[] = []
   const indices: number[] = []
   const segments = 48
@@ -148,7 +150,7 @@ export function createBuildingVisual(scene: Scene, asset: WorldAsset, def: CardD
     mesh.metadata = { assetId: asset.id, architecturalPart: part.name }
   }
   root.metadata = { assetId: asset.id }
-  return { root, accents: [materials.signal], signalColor: FACTION_COLOR[def.faction] }
+  return { root, accents: [materials.signal], signalColor: FACTION_COLOR[def.faction], windows: materials.glass }
 }
 
 export function createPlacementGhost(scene: Scene): BuildingVisual {

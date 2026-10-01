@@ -143,6 +143,7 @@ export interface CityTotals {
   happiness: number
   dependency: number
   resourceHunger: number
+  defense: number
 }
 
 export type OverlayId =
@@ -175,6 +176,49 @@ export interface LogEntry {
   kind: 'info' | 'good' | 'warn' | 'quest'
 }
 
+export type Difficulty = 'settler' | 'governor' | 'ascendant'
+export type Doctrine = 'replication' | 'concord' | 'verdance'
+export type ConquestPath = 'force' | 'economic' | 'influence' | 'alliance'
+
+/** A timed (or permanent, cyclesLeft = -1) campaign effect. Multipliers are additive offsets. */
+export interface Modifier {
+  id: string
+  label: string
+  cyclesLeft: number
+  capital?: number
+  insight?: number
+  influence?: number
+  approval?: number
+  upkeep?: number
+  power?: number
+  water?: number
+  defense?: number
+  threat?: number
+}
+
+export interface DraftOffer {
+  options: string[]
+  reason: string
+}
+
+export interface Outcome {
+  kind: 'victory' | 'defeat'
+  title: string
+  text: string
+}
+
+export interface CampaignStats {
+  peakPopulation: number
+  built: number
+  eventsResolved: number
+  raidsRepelled: number
+  raidsSuffered: number
+  cardsDrafted: number
+  tacticsPlayed: number
+  capitalEarned: number
+  marketBuys: number
+}
+
 export interface GameState {
   version: number
   cycle: number
@@ -198,4 +242,26 @@ export interface GameState {
   ascensionProgress: number
   ascended: boolean
   placedCount: number
+
+  difficulty: Difficulty
+  act: 1 | 2 | 3
+  doctrine: Doctrine | null
+  path: ConquestPath | null
+  modifiers: Modifier[]
+  /** assetId -> cycles the asset stays sabotaged. */
+  sabotaged: Record<string, number>
+  /** Event awaiting a decision; the clock stops while one is open. */
+  pendingEvent: string | null
+  eventCooldown: number
+  recentEvents: string[]
+  draft: DraftOffer | null
+  /** Ironheart Dominance, 0..100. 100 means Ashcroft falls. */
+  threat: number
+  raidTimer: number
+  raidCount: number
+  overdriveCycles: number
+  strikes: { insolvency: number; unrest: number }
+  outcome: Outcome | null
+  stats: CampaignStats
+  flags: string[]
 }

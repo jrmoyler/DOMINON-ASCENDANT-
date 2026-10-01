@@ -4,10 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="DOMINION // ASCENDANT - browser-playable vertical slice. Build a Synara frontier capital, manage citizens, and pursue the First Ascension." />
-    <meta name="theme-color" content="#172326" />
+    <meta name="theme-color" content="#101617" />
+    <meta name="color-scheme" content="dark" />
     <title>DOMINION // ASCENDANT</title>
+
+    <!-- PWA / install -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Dominion" />
+    <meta name="application-name" content="Dominion" />
+
+    <!-- Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DOMINION // ASCENDANT" />
+    <meta property="og:title" content="DOMINION // ASCENDANT" />
+    <meta property="og:description" content="A city-building card strategy game. Build a civilization worth inheriting." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="DOMINION // ASCENDANT title card: a brass tower rising over a dark skyline." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DOMINION // ASCENDANT" />
+    <meta name="twitter:description" content="A city-building card strategy game. Build a civilization worth inheriting." />
+    <meta name="twitter:image" content="/og-image.png" />
   </head>
-  <body>
+  <body style="background:#101617">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

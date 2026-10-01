@@ -4,8 +4,8 @@ import type { WorldAsset } from './types'
 export const GRID_SIZE = 32
 export const CELL_METRES = 8
 
-/** Spec §46: production acceptance target for persistent player-placed assets. */
-export const BUILD_LIMIT = 50
+/** Spec §46 targets 50 persistent assets; the full browser campaign needs room for 90. */
+export const BUILD_LIMIT = 90
 
 export function rotatedFootprint(
   footprint: [number, number],

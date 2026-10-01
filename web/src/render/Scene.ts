@@ -1,3 +1,5 @@
+// Side effect: enables scene.pick() in the tree-shaken Babylon build. Without it every click misses.
+import '@babylonjs/core/Culling/ray'
 import { animate } from 'animejs'
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
@@ -20,7 +22,9 @@ import { UTILITY_RADIUS, computeServices } from '@/game/economy'
 import { definition } from '@/game/content'
 import type { GameState, WorldAsset } from '@/game/types'
 import { PALETTE } from './palette'
+import { Matrix } from '@babylonjs/core/Maths/math.vector'
 import {
+  createSignalLoop,
   createBuildingVisual,
   createPlacementGhost,
   createSelectionSignal,
@@ -238,6 +242,14 @@ export function createCellSignals(scene: Scene, root: TransformNode, cells: Over
   }
 }
 
+interface Floater { el: HTMLDivElement; pos: Vector3; born: number; life: number }
+interface Burst { mesh: Mesh; material: PBRMaterial; born: number; life: number; scale: number }
+
+const DAY = { hemi: 1.05, key: 2.7, top: Color3.FromHexString('#8da5ad'), bottom: Color3.FromHexString('#d3c9ae'), fog: Color3.FromHexString('#a3b1b2'), clear: new Color4(0.56, 0.63, 0.65, 1), keyColor: Color3.FromHexString('#fff0d2'), hemiColor: Color3.FromHexString('#e8eadf'), exposure: 1.1 }
+const NIGHT = { hemi: 0.42, key: 0.7, top: Color3.FromHexString('#141c2c'), bottom: Color3.FromHexString('#4a3f36'), fog: Color3.FromHexString('#262c36'), clear: new Color4(0.09, 0.11, 0.16, 1), keyColor: Color3.FromHexString('#a9bddf'), hemiColor: Color3.FromHexString('#6d7d9e'), exposure: 1.25 }
+
+const WINDOW_GLOW = Color3.FromHexString('#f4c27c')
+
 export class CityScene {
   private engine: Engine
   private scene: Scene
@@ -263,6 +275,20 @@ export class CityScene {
   private heightTargets = new Map<string, number>()
   private constructionMotion = new Map<string, ReturnType<typeof animate>>()
   private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  private hemi!: HemisphericLight
+  private key!: DirectionalLight
+  private sky!: GradientMaterial
+  private night = 0
+  private nightTarget = 0
+  private appliedNight = -1
+  private floaterLayer: HTMLDivElement
+  private floaters: Floater[] = []
+  private bursts: Burst[] = []
+  private shakeUntil = 0
+  private shakeStrength = 0
+  private sabotaged = new Set<string>()
+  private lastFrame = performance.now()
+  private lastSignals = new Map<string, { color: number; intensity: number }>()
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -301,12 +327,12 @@ export class CityScene {
     this.camera.inertia = 0.78
     this.camera.attachControl(canvas, true)
 
-    const hemi = new HemisphericLight('dawn-fill', new Vector3(0.18, 1, 0.32), this.scene)
+    const hemi = this.hemi = new HemisphericLight('dawn-fill', new Vector3(0.18, 1, 0.32), this.scene)
     hemi.intensity = 1.05
     hemi.diffuse = color(PALETTE.keyLight)
     hemi.groundColor = color(PALETTE.fillLight)
 
-    const key = new DirectionalLight('synara-sun', new Vector3(-0.48, -0.82, -0.34), this.scene)
+    const key = this.key = new DirectionalLight('synara-sun', new Vector3(-0.48, -0.82, -0.34), this.scene)
     key.position = new Vector3(WORLD * 0.6, WORLD, WORLD * 0.5)
     key.intensity = 2.7
     key.diffuse = Color3.FromHexString('#fff0d2')
@@ -317,7 +343,7 @@ export class CityScene {
 
     this.ground = createTerrain(this.scene)
     createCivicLattice(this.scene)
-    createSkyVault(this.scene)
+    this.sky = createSkyVault(this.scene).material as GradientMaterial
     createCivicEnvironment(this.scene).forEach((mesh) => {
       if (mesh.name.endsWith(':stone') || mesh.name.endsWith(':foliage')) this.shadow.addShadowCaster(mesh)
     })
@@ -344,8 +370,134 @@ export class CityScene {
     processing.exposure = 1.1
     processing.contrast = 1.08
 
+    this.floaterLayer = document.createElement('div')
+    this.floaterLayer.className = 'floater-layer'
+    this.floaterLayer.setAttribute('aria-hidden', 'true')
+    canvas.parentElement?.appendChild(this.floaterLayer)
+
     this.attachEvents()
     this.resize()
+  }
+
+  /** 0 = full day, 1 = full night. Eased in the render loop. */
+  setNight(value: number) {
+    this.nightTarget = Math.max(0, Math.min(1, value))
+  }
+
+  private applyNight() {
+    const n = this.night
+    const lerp = (a: number, b: number) => a + (b - a) * n
+    this.hemi.intensity = lerp(DAY.hemi, NIGHT.hemi)
+    this.hemi.diffuse = Color3.Lerp(DAY.hemiColor, NIGHT.hemiColor, n)
+    this.key.intensity = lerp(DAY.key, NIGHT.key)
+    this.key.diffuse = Color3.Lerp(DAY.keyColor, NIGHT.keyColor, n)
+    this.sky.topColor = Color3.Lerp(DAY.top, NIGHT.top, n)
+    this.sky.bottomColor = Color3.Lerp(DAY.bottom, NIGHT.bottom, n)
+    this.scene.fogColor = Color3.Lerp(DAY.fog, NIGHT.fog, n)
+    this.scene.clearColor = Color4.Lerp(DAY.clear, NIGHT.clear, n)
+    this.scene.imageProcessingConfiguration.exposure = lerp(DAY.exposure, NIGHT.exposure)
+    for (const [id, signal] of this.lastSignals) this.applySignal(id, signal.color, signal.intensity)
+    this.appliedNight = n
+  }
+
+  private applySignal(id: string, color: number, intensity: number) {
+    const visual = this.meshes.get(id)
+    if (!visual) return
+    // Window and signal accents glow brighter after dark.
+    setSignalColor(visual.accents, color, intensity * (1 + this.night * 2.6))
+    if (visual.windows) {
+      const lit = intensity > 0.1 ? this.night : 0
+      visual.windows.emissiveColor = WINDOW_GLOW
+      visual.windows.emissiveIntensity = lit * 1.15
+    }
+  }
+
+  private worldOf(assetId: string | null): Vector3 {
+    const visual = assetId ? this.meshes.get(assetId) : undefined
+    const base = visual ? visual.root.position.clone() : Vector3.Zero()
+    return base.add(new Vector3(0, visual ? 16 * Math.max(0.4, visual.root.scaling.y) : 22, 0))
+  }
+
+  /** Rising combat-text style label above an asset (or the city centre). */
+  floatText(assetId: string | null, text: string, tone: 'good' | 'bad' | 'gold' | 'info' = 'gold') {
+    if (this.floaters.length > 24) this.floaters.shift()?.el.remove()
+    const el = document.createElement('div')
+    el.className = `floater ${tone}`
+    el.textContent = text
+    this.floaterLayer.appendChild(el)
+    const jitter = new Vector3((Math.random() - 0.5) * 4, 0, (Math.random() - 0.5) * 4)
+    this.floaters.push({ el, pos: this.worldOf(assetId).add(jitter), born: performance.now(), life: 1700 })
+  }
+
+  /** Expanding signal ring: construction complete, raid impact, tactic. */
+  burst(assetId: string | null, value: number, scale = 1) {
+    if (this.reducedMotion) return
+    const material = new PBRMaterial('burst', this.scene)
+    material.albedoColor = color(value)
+    material.emissiveColor = color(value)
+    material.emissiveIntensity = 2.2
+    material.disableLighting = true
+    material.alpha = 1
+    material.transparencyMode = PBRMaterial.PBRMATERIAL_ALPHABLEND
+    const mesh = createSignalLoop('burst-ring', this.scene, 4.4, material)
+    const visual = assetId ? this.meshes.get(assetId) : undefined
+    mesh.position = visual ? visual.root.position.clone() : Vector3.Zero()
+    mesh.position.y = 0.4
+    mesh.isPickable = false
+    this.bursts.push({ mesh, material, born: performance.now(), life: 900, scale })
+  }
+
+  shake(strength = 1) {
+    if (this.reducedMotion) return
+    this.shakeStrength = strength
+    this.shakeUntil = performance.now() + 650
+  }
+
+  private animateOverlays(now: number) {
+    if (this.floaters.length) {
+      const width = this.engine.getRenderWidth()
+      const height = this.engine.getRenderHeight()
+      const scaleX = this.canvas.clientWidth / width
+      const scaleY = this.canvas.clientHeight / height
+      const viewport = this.camera.viewport.toGlobal(width, height)
+      const transform = this.scene.getTransformMatrix()
+      this.floaters = this.floaters.filter((f) => {
+        const age = (now - f.born) / f.life
+        if (age >= 1) { f.el.remove(); return false }
+        const world = f.pos.add(new Vector3(0, age * 9, 0))
+        const p = Vector3.Project(world, Matrix.Identity(), transform, viewport)
+        f.el.style.transform = `translate(${p.x * scaleX}px, ${p.y * scaleY}px) translate(-50%, -50%) scale(${0.9 + Math.min(age * 4, 1) * 0.15})`
+        f.el.style.opacity = String(p.z > 1 ? 0 : age < 0.15 ? age / 0.15 : 1 - Math.max(0, (age - 0.6) / 0.4))
+        return true
+      })
+    }
+    this.bursts = this.bursts.filter((b) => {
+      const age = (now - b.born) / b.life
+      if (age >= 1) { b.mesh.dispose(false, true); return false }
+      const s = (1 + age * 3.2) * b.scale
+      b.mesh.scaling.set(s, 1, s)
+      b.material.alpha = 1 - age
+      return true
+    })
+    if (now < this.shakeUntil) {
+      const k = ((this.shakeUntil - now) / 650) * this.shakeStrength
+      this.camera.alpha += (Math.random() - 0.5) * 0.006 * k
+      this.camera.beta += (Math.random() - 0.5) * 0.004 * k
+    }
+    if (this.sabotaged.size) {
+      const flash = 0.6 + Math.sin(now * 0.012) * 0.6
+      for (const id of this.sabotaged) {
+        const visual = this.meshes.get(id)
+        if (visual) setSignalColor(visual.accents, 0xf05252, 0.4 + flash * 1.4)
+      }
+    }
+    const frameMs = Math.min(250, now - this.lastFrame)
+    this.lastFrame = now
+    if (Math.abs(this.night - this.nightTarget) > 0.001) {
+      // Frame-rate independent easing (~1.5 s time constant).
+      this.night += (this.nightTarget - this.night) * Math.min(1, frameMs / 1500)
+      if (Math.abs(this.night - this.appliedNight) > 0.01) this.applyNight()
+    }
   }
 
   private eventCoordinates(event: PointerEvent) {
@@ -502,11 +654,14 @@ export class CityScene {
         }
         this.heightTargets.set(asset.id, targetHeight)
       }
-      setSignalColor(
-        visual.accents,
-        visual.signalColor,
-        asset.operational ? (asset.brownout ? 0.04 : 0.45) : 0.02,
-      )
+      const sabotaged = Boolean(state.sabotaged?.[asset.id])
+      if (sabotaged) this.sabotaged.add(asset.id)
+      else {
+        this.sabotaged.delete(asset.id)
+        const intensity = asset.operational ? (asset.brownout ? 0.04 : 0.45) : 0.02
+        this.lastSignals.set(asset.id, { color: visual.signalColor, intensity })
+        this.applySignal(asset.id, visual.signalColor, intensity)
+      }
     }
 
     for (const [id, visual] of this.meshes) {
@@ -516,6 +671,8 @@ export class CityScene {
       this.heightTargets.delete(id)
       visual.root.dispose(false, true)
       this.meshes.delete(id)
+      this.sabotaged.delete(id)
+      this.lastSignals.delete(id)
     }
 
     const selected = state.selectedAssetId
@@ -628,6 +785,7 @@ export class CityScene {
         const pulse = this.reducedMotion ? 1 : 1 + Math.sin(performance.now() * 0.0022) * 0.04
         this.selectionSignal.scaling.y = pulse
         if (!this.reducedMotion) this.traffic.update(performance.now() / 1000)
+        this.animateOverlays(performance.now())
         this.scene.render()
       }
     })
@@ -635,6 +793,7 @@ export class CityScene {
 
   dispose() {
     this.disposed = true
+    this.floaterLayer.remove()
     this.constructionMotion.forEach((animation) => animation.cancel())
     this.constructionMotion.clear()
     this.canvas.removeEventListener('pointerdown', this.onPointerDown)

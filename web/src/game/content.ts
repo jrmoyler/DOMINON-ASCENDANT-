@@ -41,7 +41,7 @@ const TYPE_PROFILES: Record<CardType, TypeProfile> = {
   Residential: {
     deploymentCapital: 8, constructionCycles: 2, maintenance: 0.04,
     capital: 0.35, insight: 0, influence: 0,
-    housing: 8, jobs: 0, power: 1.6, water: 1.6, data: 1,
+    housing: 14, jobs: 0, power: 1.6, water: 1.6, data: 1,
     powerProduced: 0, waterProduced: 0, dataProduced: 0, happiness: 1,
     description: 'Housing. Raises the population ceiling and draws migrants when utilities and jobs hold.',
   },

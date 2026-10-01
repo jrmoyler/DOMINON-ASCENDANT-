@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc -b --force",
-    "sim": "vite-node sim.ts"
+    "sim": "vite-node sim.ts",
+    "build:single": "vite build --mode single --outDir dist-single-tmp && node scripts/build-single.mjs",
+    "package": "npm run build && npm run build:single"
   },
   "dependencies": {
     "@babylonjs/core": "^9.22.2",

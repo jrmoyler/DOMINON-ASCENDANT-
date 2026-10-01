@@ -1,6 +1,6 @@
 import questManifest from '@content/DA/Manifests/FirstHourQuests.json'
 import { definition } from './content'
-import type { GameState, QuestState } from './types'
+import type { ConquestPath, GameState, QuestState } from './types'
 
 /**
  * First-hour quest chain.
@@ -13,6 +13,8 @@ import type { GameState, QuestState } from './types'
 
 interface QuestSpec {
   id: string
+  title?: string
+  act: 1 | 2 | 3
   objectives: {
     id: string
     label: string
@@ -27,9 +29,44 @@ const operationalOf = (state: GameState, predicate: (typeId: string) => boolean)
 
 const byType = (type: string) => (id: string) => definition(id).cardType === type
 
+const utilityPlants = (s: GameState) => operationalOf(s, (id) => {
+  const d = definition(id)
+  return id !== 'special.founder_hall' && (d.powerProduced > 0 || d.waterProduced > 0 || d.dataProduced > 0)
+})
+
+const PATH_OBJECTIVES: Record<ConquestPath, QuestSpec['objectives']> = {
+  force: [
+    { id: 'path_a', label: 'Operate 4 Defense assets', target: 4, measure: (s) => operationalOf(s, byType('Defense')) },
+    { id: 'path_b', label: 'Repel 4 Ironheart raids', target: 4, measure: (s) => s.stats.raidsRepelled },
+  ],
+  economic: [
+    { id: 'path_a', label: 'Operate 5 industrial assets', target: 5, measure: (s) => operationalOf(s, byType('Industrial')) },
+    { id: 'path_b', label: 'Hold a 450 Capital reserve', target: 450, measure: (s) => Math.floor(s.resources.capital) },
+  ],
+  influence: [
+    { id: 'path_a', label: 'Accumulate 100 Influence', target: 100, measure: (s) => Math.floor(s.resources.influence) },
+    { id: 'path_b', label: 'Hold citizen approval at 75', target: 75, measure: (s) => s.totals.happiness },
+  ],
+  alliance: [
+    { id: 'path_a', label: 'Complete a Wonder', target: 1, measure: (s) => operationalOf(s, byType('Wonder')) },
+    { id: 'path_b', label: 'Accumulate 180 Insight', target: 180, measure: (s) => Math.floor(s.resources.insight) },
+  ],
+}
+
+const PATH_PENDING: QuestSpec['objectives'] = [
+  { id: 'path_a', label: 'Answer the Forge Lord', target: 1, measure: () => 0 },
+  { id: 'path_b', label: 'Your chosen path decides the terms', target: 1, measure: () => 0 },
+]
+
+export const BROKER_QUEST_ID = 'quest.broker_of_ironheart'
+export const OVERDRIVE_QUEST_ID = 'quest.act3.overdrive'
+export const ACT1_FINAL_QUEST_ID = 'quest.basin_speaks'
+export const ACT2_FINAL_QUEST_ID = 'quest.act2.foundry_shortage'
+
 const QUEST_SPECS: QuestSpec[] = [
   {
     id: 'quest.wake_the_hall',
+    act: 1,
     objectives: [
       {
         id: 'power_hall',
@@ -41,6 +78,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.a_place_to_stay',
+    act: 1,
     objectives: [
       {
         id: 'housing',
@@ -58,6 +96,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.power_water_people',
+    act: 1,
     objectives: [
       {
         id: 'no_deficit',
@@ -79,6 +118,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.nia_needs_a_job',
+    act: 1,
     objectives: [
       {
         id: 'jobs',
@@ -96,6 +136,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.replacement_model',
+    act: 1,
     objectives: [
       {
         id: 'industry',
@@ -113,6 +154,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.agency_has_a_price',
+    act: 1,
     objectives: [
       {
         id: 'happiness',
@@ -130,6 +172,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.signal_in_foundation',
+    act: 1,
     objectives: [
       {
         id: 'insight',
@@ -148,6 +191,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.iron_at_border',
+    act: 1,
     objectives: [
       {
         id: 'influence',
@@ -165,6 +209,7 @@ const QUEST_SPECS: QuestSpec[] = [
   },
   {
     id: 'quest.basin_speaks',
+    act: 1,
     objectives: [
       {
         id: 'population_final',
@@ -180,6 +225,57 @@ const QUEST_SPECS: QuestSpec[] = [
       },
     ],
   },
+  {
+    id: 'quest.act2.grid_strain',
+    title: 'Grid Strain',
+    act: 2,
+    objectives: [
+      { id: 'plants', label: 'Operate 4 utility plants (power, water or data)', target: 4, measure: utilityPlants },
+      { id: 'population', label: 'Grow the population to 100', target: 100, measure: (s) => s.population },
+    ],
+  },
+  {
+    id: 'quest.act2.housing_surge',
+    title: 'Housing Surge',
+    act: 2,
+    objectives: [
+      { id: 'housing', label: 'Raise housing capacity to 150', target: 150, measure: (s) => s.totals.housingCapacity },
+      { id: 'employed', label: 'Employ 100 citizens', target: 100, measure: (s) => s.totals.employed },
+    ],
+  },
+  {
+    id: 'quest.act2.green_line',
+    title: 'The Green Line',
+    act: 2,
+    objectives: [
+      { id: 'approval', label: 'Hold citizen approval at 70', target: 70, measure: (s) => s.totals.happiness },
+      { id: 'civic', label: 'Operate 5 civic assets', target: 5, measure: (s) => operationalOf(s, byType('Civic')) },
+    ],
+  },
+  {
+    id: ACT2_FINAL_QUEST_ID,
+    title: 'Foundry Shortage',
+    act: 2,
+    objectives: [
+      { id: 'capital', label: 'Hold a 250 Capital reserve', target: 250, measure: (s) => Math.floor(s.resources.capital) },
+      { id: 'insight', label: 'Accumulate 90 Insight', target: 90, measure: (s) => Math.floor(s.resources.insight) },
+    ],
+  },
+  {
+    id: BROKER_QUEST_ID,
+    title: 'Broker of Ironheart',
+    act: 3,
+    objectives: PATH_PENDING,
+  },
+  {
+    id: OVERDRIVE_QUEST_ID,
+    title: 'Overdrive',
+    act: 3,
+    objectives: [
+      { id: 'endure', label: 'Endure 15 cycles of Ironheart Overdrive', target: 15, measure: (s) => s.overdriveCycles },
+      { id: 'population', label: 'Keep the city growing to 150 citizens', target: 150, measure: (s) => s.population },
+    ],
+  },
 ]
 
 const TITLES: Record<string, string> = Object.fromEntries(
@@ -187,13 +283,23 @@ const TITLES: Record<string, string> = Object.fromEntries(
 )
 
 export const QUEST_COUNT = QUEST_SPECS.length
+export const ACT1_QUEST_COUNT = QUEST_SPECS.filter((q) => q.act === 1).length
 
-export function initialQuests(): QuestState[] {
+function objectivesFor(spec: QuestSpec, state?: Pick<GameState, 'path'>): QuestSpec['objectives'] {
+  if (spec.id !== BROKER_QUEST_ID) return spec.objectives
+  return state?.path ? PATH_OBJECTIVES[state.path] : PATH_PENDING
+}
+
+export function questAct(id: string): 1 | 2 | 3 {
+  return QUEST_SPECS.find((q) => q.id === id)?.act ?? 1
+}
+
+export function initialQuests(state?: Pick<GameState, 'path'>): QuestState[] {
   return QUEST_SPECS.map((spec, index) => ({
     id: spec.id,
-    title: TITLES[spec.id] ?? spec.id,
+    title: spec.title ?? TITLES[spec.id] ?? spec.id,
     status: index === 0 ? 'active' : 'locked',
-    objectives: spec.objectives.map((o) => ({
+    objectives: objectivesFor(spec, state).map((o) => ({
       id: o.id,
       label: o.label,
       done: false,
@@ -201,6 +307,20 @@ export function initialQuests(): QuestState[] {
       target: o.target,
     })),
   }))
+}
+
+/** Rewrite path-dependent objective wording after the player answers the Forge Lord. */
+export function relabelQuests(state: GameState) {
+  const canonical = initialQuests(state)
+  state.quests.forEach((quest, index) => {
+    quest.title = canonical[index].title
+    quest.objectives.forEach((objective, j) => {
+      objective.label = canonical[index].objectives[j].label
+      objective.target = canonical[index].objectives[j].target
+      objective.progress = Math.min(objective.progress, objective.target)
+      objective.done = objective.progress >= objective.target
+    })
+  })
 }
 
 /**
@@ -216,14 +336,14 @@ export function evaluateQuests(state: GameState): string[] {
 
   for (let i = 0; i < state.quests.length; i++) {
     const quest = state.quests[i]
-    if (quest.status === 'locked') continue
-    if (quest.status === 'complete') continue
+    if (quest.status !== 'active') continue
+    if (quest.id === BROKER_QUEST_ID && !state.path) continue
 
-    const spec = QUEST_SPECS[i]
+    const objectives = objectivesFor(QUEST_SPECS[i], state)
     let allDone = true
     for (let j = 0; j < quest.objectives.length; j++) {
       const objective = quest.objectives[j]
-      const value = spec.objectives[j].measure(state)
+      const value = objectives[j].measure(state)
       objective.progress = Math.max(objective.progress, Math.min(value, objective.target))
       if (objective.progress >= objective.target) objective.done = true
       if (!objective.done) allDone = false
@@ -242,6 +362,11 @@ export function evaluateQuests(state: GameState): string[] {
 
 /** Ascension progress: the share of the first-hour chain the player has closed. */
 export function ascensionProgress(state: GameState): number {
-  const done = state.quests.filter((q) => q.status === 'complete').length
-  return done / QUEST_SPECS.length
+  const done = state.quests.filter((q, i) => q.status === 'complete' && QUEST_SPECS[i].act === 1).length
+  return done / ACT1_QUEST_COUNT
+}
+
+/** Whole-campaign progress, 0..1. */
+export function campaignProgress(state: GameState): number {
+  return state.quests.filter((q) => q.status === 'complete').length / QUEST_COUNT
 }

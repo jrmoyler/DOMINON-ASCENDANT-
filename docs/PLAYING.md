@@ -13,9 +13,18 @@ requirements.
 
 ---
 
-## 1. Browser slice — playable now
+## 1. Browser game — playable now
 
 Deployed automatically by Vercel from the repository root (see `vercel.json`).
+
+### Getting it to players
+
+| Option | How |
+|---|---|
+| Share a link | Send the Vercel URL. The page carries a share card image. |
+| Install it | Open the link in Chrome, Edge or Android, then choose **Install game** on the title screen (or the browser's install icon). On iPhone use Share → *Add to Home Screen*. The installed game runs full-screen and works offline. |
+| One-file download | `cd web && npm run build:single` writes `web/dist-single/DominionAscendant.html` (~3 MB). Anyone can double-click it to play in a browser, offline, with no install or server. |
+| Release | Push a tag like `v1.0.0`. `.github/workflows/release.yml` builds and tests the game, then attaches the one-file HTML and a zipped web build to a GitHub Release. |
 
 To run it locally:
 
@@ -29,8 +38,9 @@ Other commands:
 
 ```bash
 npm run build        # typecheck + production bundle into web/dist
-npm run preview      # serve the production bundle
-npx tsx --tsconfig tsconfig.app.json sim.ts   # headless balance harness
+npm run package      # web build plus the single-file offline build
+npm test             # unit tests, including campaign rules and save integrity
+npm run sim -- governor 0 5   # headless balance bot: difficulty, path (0-3), runs
 ```
 
 ### Controls
@@ -38,40 +48,43 @@ npx tsx --tsconfig tsconfig.app.json sim.ts   # headless balance harness
 | Input | Action |
 |---|---|
 | Click a card, then click a cell | Place a building |
+| Click a tactic card, then **Play** (or `T`) | Play a unit or leader tactic |
 | Click a building | Inspect it |
 | Drag | Orbit the camera |
 | Right-drag | Pan |
-| Scroll | Zoom |
+| Scroll / pinch | Zoom |
 | `R` | Rotate the footprint |
 | `1`–`6` | Select a card from hand |
+| `1`–`4` | Answer an open decision or draft |
 | `Space` | Pause / resume |
 | `Esc` | Cancel selection |
 | `Home` / Recenter | Restore the city camera |
-| Field guide | Read controls and strategy; pauses the simulation while open |
 
-### How it plays
+### The campaign
 
-You start with the frozen campaign opening from the production spec: the
-Founder Hall, the exact 60-card Synara starter deck, 40 Capital, 12 Insight,
-8 Influence and 24 citizens on a 32×32 grid.
+A full campaign takes roughly 30–60 minutes. It has three acts, 15 objectives and five endings.
 
-The loop is: **utilities reach six cells.** Anything outside a supplier's range
-gets no Power or Water, produces nothing, and drags approval down. Housing
-raises the population ceiling, jobs employ the citizens who arrive, and retail
-and industry pay for all of it. Approval falls when any of the three is
-missing, and a large city costs goodwill just for being large.
+- **Act I: The First Hour.** These are the nine authored first-hour quests. You raise Ashcroft from the Founder Hall using the exact 60-card Synara starter deck. Completing the act earns Convergence Authority and a permanent **doctrine**: Replication, Concord or Verdance.
+- **Act II: Regional Crisis.** Four regional objectives (Grid Strain, Housing Surge, the Green Line and the Foundry Shortage) test the city at scale.
+- **Act III: Iron at the Border.** Forge Lord Daxton Rhe demands Ashcroft kneel. You choose a path (Force, Economy, Influence or Alliance), and that path rewrites your win condition. Ironheart **Dominance** rises every cycle and **raids** sabotage buildings when your Defense is lower than the raid's strength. Survive the Overdrive, then make the final choice.
 
-The opening hand guarantees one Infrastructure, Residential, and Retail card from the
-unchanged canonical 60-card deck. Remaining cards are shuffled. Placement feedback checks
-Capital, Insight, Influence, occupancy, and local utility reach. Utility warnings are advice;
-you can still commission an expansion before its services are ready.
+Systems:
 
-The campaign autosaves after each Development Cycle and keeps the previous valid checkpoint
-as a recovery copy. Manual saves are available in Menu. Loading starts paused. Restarting
-or restoring a save requires confirmation; background tabs and the field guide stop the clock.
+- **Deck building.** Every objective offers a three-card draft. Drafts draw on Forgeweave, Eden Circuit, Universal and Fusion cards, plus Wonders from Act II. The Basin Market sells extra drafts for Capital.
+- **Tactics.** Units and leaders are not buildings. You play them from hand for an effect, such as Defense, approval, income, finishing construction or reducing Dominance, and they then return to your deck.
+- **Regional crises.** Every few cycles a member of the cast brings a decision with real trade-offs. The cast is Tal Arden, Mara Kest, Ori Sen, Amara Venn and Daxton Rhe. Choices apply timed or permanent effects, shown in the Command panel.
+- **Defeat.** A campaign is lost if any of these happens:
+  - Dominance reaches 100%.
+  - The treasury stays empty for too long (insolvency).
+  - Approval stays collapsed for too long (unrest).
+- **Difficulty.** Settler, Governor or Ascendant. Difficulty scales starting Capital, income, crisis frequency, Ironheart aggression and how long insolvency or unrest is tolerated before defeat.
+- **Scoring and honours.** The end screen grades the campaign (S–D) and offers a shareable result. Fourteen honours, the endings you have seen, and your best score per difficulty are kept in the browser.
+- **Presentation.**
+  - A procedural score and sound effects, all synthesised with WebAudio and adjustable in Settings. The music changes with the act and the threat.
+  - A day/night cycle with lit windows.
+  - Floating income numbers, construction bursts, and camera shake on raids.
 
-Nine first-hour quests gate the run. Closing all nine reaches
-`CONVERGENCE AUTHORITY: 1/20`.
+The campaign autosaves after every Development Cycle and keeps the previous valid checkpoint as a recovery copy. Loading starts paused.
 
 ### Where the numbers come from
 
@@ -86,15 +99,18 @@ fills those gaps with a derivation table in `web/src/game/content.ts`. Those
 numbers are **web-slice tuning, not balance canon**. Their provenance stays in the
 content module and developer documentation; the inspector presents player-facing costs and effects.
 
-Two deliberate deviations from Vertical Slice Production Spec v1.1:
+Pacing multipliers (`CAPITAL_PACE`, `INSIGHT_PACE`, `INFLUENCE_PACE` in `economy.ts`), denser housing, and a 90-asset build limit are also web-game tuning. The campaign layer in `web/src/game/campaign.ts` is web-game design built on the cast and event names authored in the Regional Crisis, Forgeweave Conquest, Daxton Encounter and First Ascension manifests.
+
+Deliberate deviations from Vertical Slice Production Spec v1.1:
 
 - **Cycle length.** The spec fixes a Development Cycle at 30 s. That assumes the
   PC slice, where the player acts in real time between cycles. The browser slice
   is pure city management, so it runs a 10 s cycle. Every other ratio, including
   5 cycles per World Tick, is unchanged.
-- **Scope.** The browser slice implements Zone A (the Synara frontier capital)
-  and the first-hour quest spine. Ironheart, Eden Basin, the Daxton encounter,
-  combat and the World Map are not implemented here.
+- **Scope.** The browser game implements Zone A (the Synara frontier capital)
+  and plays Ironheart and the Daxton encounter as campaign systems (Dominance,
+  raids and story decisions) rather than as separate zones. Eden Basin and the
+  World Map are not implemented here.
 
 ---
 
