@@ -1,3 +1,5 @@
 node_modules/
 dist/
 *.tsbuildinfo
+dist-single/
+dist-single-tmp/

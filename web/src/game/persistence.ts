@@ -1,5 +1,6 @@
 import { DEFINITIONS, FOUNDER_HALL_ID, STARTER_DECK } from './content'
-import { CYCLES_PER_WORLD_TICK, computeTotals } from './economy'
+import { CYCLES_PER_WORLD_TICK, DIFFICULTY, cityTotals } from './economy'
+import { EVENT_BY_ID } from './campaign'
 import { BUILD_LIMIT, cellsOf, inBounds, rotatedFootprint } from './grid'
 import { ascensionProgress, initialQuests } from './quests'
 import type { GameState, WorldAsset } from './types'
@@ -56,7 +57,8 @@ export function restoreCampaign(value: unknown, version: number): GameState | nu
   const ownership = new Set<string>()
   const deployed = new Set<string>()
   for (const [id, instance] of Object.entries(state.instances)) {
-    if (!record(instance) || instance.id !== id || !expected.has(instance.definitionId)) return null
+    if (!record(instance) || instance.id !== id || !DEFINITIONS[instance.definitionId] ||
+      instance.definitionId === FOUNDER_HALL_ID) return null
     counts.set(instance.definitionId, (counts.get(instance.definitionId) ?? 0) + 1)
     if (instance.worldAssetId !== null) {
       if (typeof instance.worldAssetId !== 'string') return null
@@ -66,7 +68,9 @@ export function restoreCampaign(value: unknown, version: number): GameState | nu
       ownership.add(id)
     }
   }
-  if ([...expected].some(([id, quantity]) => counts.get(id) !== quantity)) return null
+  // Drafts only ever add cards: the starter deck must still be intact.
+  if ([...expected].some(([id, quantity]) => (counts.get(id) ?? 0) < quantity)) return null
+  if (Object.keys(state.instances).length > 400) return null
   if (state.assets.some((asset) => asset.definitionId !== FOUNDER_HALL_ID && !deployed.has(asset.id))) return null
   for (const zone of [state.hand, state.draw, state.discard]) {
     if (!Array.isArray(zone)) return null
@@ -77,7 +81,29 @@ export function restoreCampaign(value: unknown, version: number): GameState | nu
   }
   if (state.hand.length > 6 || ownership.size !== Object.keys(state.instances).length) return null
 
-  const canonicalQuests = initialQuests()
+  if (!(state.difficulty in DIFFICULTY) || ![1, 2, 3].includes(state.act)) return null
+  if (state.doctrine !== null && !['replication', 'concord', 'verdance'].includes(state.doctrine)) return null
+  if (state.path !== null && !['force', 'economic', 'influence', 'alliance'].includes(state.path)) return null
+  if (!nonnegative(state.threat) || state.threat > 100 || !whole(state.raidTimer) || !whole(state.raidCount) ||
+    !whole(state.overdriveCycles) || !Number.isInteger(state.eventCooldown)) return null
+  if (!Array.isArray(state.modifiers) || state.modifiers.length > 64) return null
+  for (const m of state.modifiers) {
+    if (!record(m) || typeof m.id !== 'string' || typeof m.label !== 'string' || !Number.isInteger(m.cyclesLeft)) return null
+    for (const key of ['capital', 'insight', 'influence', 'approval', 'upkeep', 'power', 'water', 'defense', 'threat'] as const) {
+      if (m[key] !== undefined && !(typeof m[key] === 'number' && Number.isFinite(m[key]))) return null
+    }
+  }
+  if (!record(state.sabotaged)) return null
+  for (const [id, cycles] of Object.entries(state.sabotaged)) if (!assets.has(id) || !whole(cycles)) return null
+  if (state.pendingEvent !== null && !EVENT_BY_ID[state.pendingEvent]) return null
+  if (!Array.isArray(state.recentEvents) || !Array.isArray(state.flags)) return null
+  if (state.draft !== null && (!record(state.draft) || !Array.isArray(state.draft.options) ||
+    state.draft.options.some((id) => !DEFINITIONS[id]))) return null
+  if (!record(state.strikes) || !whole(state.strikes.insolvency) || !whole(state.strikes.unrest)) return null
+  if (!record(state.stats) || !Object.values(state.stats).every(nonnegative)) return null
+  if (state.outcome !== null && (!record(state.outcome) || !['victory', 'defeat'].includes(state.outcome.kind))) return null
+
+  const canonicalQuests = initialQuests(state)
   if (!Array.isArray(state.quests) || state.quests.length !== canonicalQuests.length) return null
   let incomplete = false
   for (let index = 0; index < canonicalQuests.length; index++) {
@@ -106,7 +132,7 @@ export function restoreCampaign(value: unknown, version: number): GameState | nu
   }
 
   state.quests = canonicalQuests
-  state.totals = computeTotals(state.assets, state.population)
+  state.totals = cityTotals(state)
   state.worldTick = Math.floor(state.cycle / CYCLES_PER_WORLD_TICK)
   state.ascensionProgress = ascensionProgress(state)
   state.ascended = state.ascensionProgress >= 1

@@ -1,7 +1,10 @@
-# DOMINION // ASCENDANT — browser slice
+# DOMINION // ASCENDANT — browser game
 
-A browser-playable vertical slice of DOMINION // ASCENDANT, built on the same
-content manifests as the Unreal Engine project in the repository root.
+The full browser campaign of DOMINION // ASCENDANT: three acts, 15 objectives,
+five endings, deck drafting, tactics, regional crises and the Ironheart rival.
+It is built on the same content manifests as the Unreal Engine project in the
+repository root. It installs as an offline app, and it also ships as a single
+HTML file you can share.
 
 ```bash
 npm install
@@ -14,7 +17,9 @@ npm run dev      # http://localhost:5173
 | `npm run build` | Typecheck, then bundle to `dist/` |
 | `npm run preview` | Serve the production bundle |
 | `npm run typecheck` | Types only |
-| `npm run sim` | Headless balance harness |
+| `npm run sim -- <difficulty> <path 0-3> <runs>` | Headless balance bot that plays whole campaigns |
+| `npm run build:single` | One self-contained offline HTML in `dist-single/` |
+| `npm run package` | `build` plus `build:single` |
 
 ## Layout
 
@@ -25,14 +30,19 @@ src/
     types.ts       Core types
     grid.ts        32x32 logical grid, footprints, placement rules
     economy.ts     Development Cycle resolution, utilities, migration
-    quests.ts      First-hour quest chain evaluated against live state
-    state.ts       Campaign state, deck, placement, save/load
+    quests.ts      Three-act objective chain evaluated against live state
+    campaign.ts    Crises, story beats, drafts, tactics, Ironheart, endings, score
+    advisor.ts     Contextual advice from Tal Arden
+    meta.ts        Honours, endings seen, best scores (browser-local profile)
+    state.ts       Campaign state, deck, placement, cycle, save/load
   render/        Babylon.js runtime — no React, no game rules
     Scene.ts       Cinematic world, camera, picking, overlays, reconciliation
     architecture.ts Deterministic authored silhouette plans
     buildings.ts   Custom lofted structures, facade bands and spires
     strategicAtmosphere.ts Three.js curve-authoring boundary
     palette.ts     Faction and material direction
+  audio/         Procedural WebAudio score and sound effects (no asset files)
+  pwa/           Install prompt + service-worker registration
   ui/            React HUD layered over the canvas
     motion.ts      anime.js interface and cinematic reveal choreography
 ```

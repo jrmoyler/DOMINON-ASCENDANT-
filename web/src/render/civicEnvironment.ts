@@ -8,7 +8,7 @@ import { CELL_METRES, GRID_SIZE } from '@/game/grid'
 
 /** Authored city context is outside the playable district; it never claims a cell. */
 const HALF = GRID_SIZE * CELL_METRES / 2
-const COLORS = { paving: '#827d6c', asphalt: '#343e40', marking: '#c7bea3', stone: '#b4ac92', roof: '#4c5856', glazing: '#486b70', foliage: '#52634b', bark: '#645344', water: '#527a80', light: '#efc984' }
+const COLORS = { paving: '#575a50', asphalt: '#343e40', marking: '#c7bea3', stone: '#b4ac92', roof: '#4c5856', glazing: '#486b70', foliage: '#52634b', bark: '#645344', water: '#527a80', light: '#efc984' }
 type Surface = keyof typeof COLORS
 interface Batch { positions: number[]; normals: number[]; indices: number[] }
 

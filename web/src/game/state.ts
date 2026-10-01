@@ -1,44 +1,54 @@
 import { FOUNDER_HALL_ID, STARTER_DECK, definition } from './content'
 import {
   CYCLES_PER_WORLD_TICK,
+  DIFFICULTY,
   STARTING_POPULATION,
   STARTING_RESOURCES,
-  computeTotals,
+  aggregateModifiers,
+  cityTotals,
   computeServices,
   resolveCycle,
 } from './economy'
-import type { AssetServices } from './economy'
+import type { AssetServices, CycleResult } from './economy'
 import { GRID_SIZE, canPlace } from './grid'
-import { ascensionProgress, evaluateQuests, initialQuests } from './quests'
+import {
+  ACT1_FINAL_QUEST_ID,
+  ACT2_FINAL_QUEST_ID,
+  BROKER_QUEST_ID,
+  OVERDRIVE_QUEST_ID,
+  ascensionProgress,
+  evaluateQuests,
+  initialQuests,
+} from './quests'
+import {
+  advanceIronheart,
+  applyPressure,
+  buyDraft,
+  fundGarrison,
+  checkDefeat,
+  playTactic,
+  resolveDraft,
+  resolveEvent,
+  isTactic,
+  maybeTriggerEvent,
+  offerDraft,
+  queueStory,
+  tickModifiers,
+  type RaidReport,
+} from './campaign'
 import { restoreCampaign } from './persistence'
-import type { CardInstance, GameState, LogEntry, OverlayId, WorldAsset } from './types'
+import type { CardInstance, Difficulty, GameState, OverlayId, WorldAsset } from './types'
+import { HAND_SIZE, log, nextId, refillHand, shuffle } from './util'
 
-export const SAVE_VERSION = 1
-export const HAND_SIZE = 6
-
-let idCounter = 0
-const nextId = (prefix: string) => `${prefix}_${(idCounter++).toString(36)}_${Math.random().toString(36).slice(2, 7)}`
-
-/** Deterministic-enough shuffle for a single-player slice. */
-function shuffle<T>(items: T[]): T[] {
-  const out = [...items]
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[out[i], out[j]] = [out[j], out[i]]
-  }
-  return out
-}
-
-function log(state: GameState, text: string, kind: LogEntry['kind'] = 'info') {
-  state.log.unshift({ cycle: state.cycle, text, kind })
-  if (state.log.length > 120) state.log.length = 120
-}
+export { HAND_SIZE, refillHand }
+export const SAVE_VERSION = 2
 
 /**
  * Build the frozen campaign start: the exact 60-card Synara starter deck
  * (Spec v1.1 §22) plus a Founder Hall placed at the centre of the grid.
  */
-export function createInitialState(): GameState {
+export function createInitialState(difficulty: Difficulty = 'governor'): GameState {
+  const startingCapital = DIFFICULTY[difficulty].capital
   const instances: Record<string, CardInstance> = {}
   const deck: string[] = []
 
@@ -78,13 +88,17 @@ export function createInitialState(): GameState {
     let pick = -1
     for (let i = 0; i < draw.length; i++) {
       const card = definition(instances[draw[i]].definitionId)
-      if (!card.placeable || card.cardType !== type || card.deploymentInsight > STARTING_RESOURCES.insight ||
+      if (!card.placeable || card.cardType !== type || card.deploymentCapital > startingCapital / 2 ||
+        card.deploymentInsight > STARTING_RESOURCES.insight ||
         card.deploymentInfluence > STARTING_RESOURCES.influence) continue
       if (pick < 0 || card.deploymentCapital < definition(instances[draw[pick]].definitionId).deploymentCapital) pick = i
     }
     if (pick >= 0) hand.push(...draw.splice(pick, 1))
   }
-  hand.push(...draw.splice(0, HAND_SIZE - hand.length))
+  // Wonders are a late-campaign goal: keep them out of the opening hand.
+  const opening = draw.filter((id) => definition(instances[id].definitionId).cardType !== 'Wonder').slice(0, HAND_SIZE - hand.length)
+  for (const id of opening) draw.splice(draw.indexOf(id), 1)
+  hand.push(...opening)
 
   const state: GameState = {
     version: SAVE_VERSION,
@@ -92,7 +106,7 @@ export function createInitialState(): GameState {
     worldTick: 0,
     cycleProgress: 0,
     speed: 1,
-    resources: { ...STARTING_RESOURCES },
+    resources: { ...STARTING_RESOURCES, capital: startingCapital },
     population: STARTING_POPULATION,
     assets: [hall],
     instances,
@@ -101,13 +115,34 @@ export function createInitialState(): GameState {
     discard: [],
     quests: initialQuests(),
     log: [],
-    totals: computeTotals([hall], STARTING_POPULATION),
+    totals: cityTotals({ assets: [hall], population: STARTING_POPULATION, modifiers: [], sabotaged: {} }),
     selectedInstanceId: null,
     selectedAssetId: null,
     overlay: 'none',
     ascensionProgress: 0,
     ascended: false,
     placedCount: 0,
+    difficulty,
+    act: 1,
+    doctrine: null,
+    path: null,
+    modifiers: [],
+    sabotaged: {},
+    pendingEvent: null,
+    eventCooldown: 14,
+    recentEvents: [],
+    draft: null,
+    threat: 0,
+    raidTimer: 8,
+    raidCount: 0,
+    overdriveCycles: 0,
+    strikes: { insolvency: 0, unrest: 0 },
+    outcome: null,
+    stats: {
+      peakPopulation: STARTING_POPULATION, built: 0, eventsResolved: 0, raidsRepelled: 0,
+      raidsSuffered: 0, cardsDrafted: 0, tacticsPlayed: 0, capitalEarned: 0, marketBuys: 0,
+    },
+    flags: [],
   }
 
   log(state, 'The Founder Hall wakes. Ashcroft Basin is yours to build.', 'quest')
@@ -116,32 +151,72 @@ export function createInitialState(): GameState {
 }
 
 export function refreshTotals(state: GameState) {
-  state.totals = computeTotals(state.assets, state.population)
+  state.totals = cityTotals(state)
   const completed = evaluateQuests(state)
   for (const id of completed) {
     const quest = state.quests.find((q) => q.id === id)
-    if (quest) log(state, `Quest complete — ${quest.title}`, 'good')
+    if (!quest) continue
+    log(state, `Objective complete — ${quest.title}`, 'good')
+    onQuestComplete(state, id, quest.title)
   }
   state.ascensionProgress = ascensionProgress(state)
   if (state.ascensionProgress >= 1 && !state.ascended) {
     state.ascended = true
     log(state, 'FORGEWEAVE ASCENSION — CONVERGENCE AUTHORITY: 1/20', 'good')
   }
+  if (completed.length) state.totals = cityTotals(state)
 }
 
-/** Draw back up to the hand limit from the draw pile, reshuffling discards. */
-export function refillHand(state: GameState) {
-  while (state.hand.length < HAND_SIZE) {
-    if (state.draw.length === 0) {
-      if (state.discard.length === 0) break
-      state.draw = shuffle(state.discard)
-      state.discard = []
-      log(state, 'Deck reshuffled.')
-    }
-    const next = state.draw.shift()
-    if (!next) break
-    state.hand.push(next)
+/** Story beats and rewards keyed to the campaign spine. */
+function onQuestComplete(state: GameState, id: string, title: string) {
+  if (id === ACT1_FINAL_QUEST_ID) queueStory(state, 'story.ascension')
+  else if (id === ACT2_FINAL_QUEST_ID) queueStory(state, 'story.forge_lord')
+  else if (id === BROKER_QUEST_ID) {
+    queueStory(state, 'story.overdrive')
+    if (!state.flags.includes('overdrive')) state.flags.push('overdrive')
+    state.raidTimer = Math.min(state.raidTimer, 3)
+  } else if (id === OVERDRIVE_QUEST_ID) {
+    state.flags = state.flags.filter((f) => f !== 'overdrive')
+    queueStory(state, 'story.the_choice')
+    return
   }
+  offerDraft(state, title)
+}
+
+/** Player-facing campaign actions: apply, then re-derive totals and quests. */
+export function decideEvent(state: GameState, choiceIndex: number) {
+  const result = resolveEvent(state, choiceIndex)
+  if (result.ok) refreshTotals(state)
+  return result
+}
+
+export function chooseDraft(state: GameState, definitionId: string | null) {
+  resolveDraft(state, definitionId)
+  refreshTotals(state)
+}
+
+export function playTacticCard(state: GameState, instanceId: string) {
+  const result = playTactic(state, instanceId)
+  if (result.ok) refreshTotals(state)
+  return result
+}
+
+export function marketDraft(state: GameState) {
+  const result = buyDraft(state)
+  if (result.ok) refreshTotals(state)
+  return result
+}
+
+export function garrison(state: GameState) {
+  const result = fundGarrison(state)
+  if (result.ok) refreshTotals(state)
+  return result
+}
+
+export function influencePressure(state: GameState) {
+  const result = applyPressure(state)
+  if (result.ok) refreshTotals(state)
+  return result
 }
 
 export interface PlaceResult {
@@ -161,6 +236,7 @@ function validatePlacement(
   if (!state.hand.includes(instanceId)) return { ok: false, reason: 'Card is not in hand' }
 
   const def = definition(instance.definitionId)
+  if (isTactic(def.id)) return { ok: false, reason: `${def.displayName} is a tactic — play it from the card panel` }
   if (!def.placeable) return { ok: false, reason: `${def.displayName} cannot be placed` }
 
   const check = canPlace(state.assets, x, y, def.footprint, rotation)
@@ -200,14 +276,14 @@ export function previewPlacement(
     footprint: def.footprint, cyclesRemaining: 0, operational: true, brownout: false, staffed: 0,
   }
   const assets = [...state.assets, candidate]
-  const services = computeServices(assets).get(candidate.id)!
+  const services = computeServices(assets, state.sabotaged).get(candidate.id)!
   const warnings: string[] = []
   if (!services.power) warnings.push('Outside power coverage — build within 6 cells of a power source.')
   if (!services.water) warnings.push('Outside water coverage — build within 6 cells of a water source.')
   if (!services.data && (def.utilityData > 0 || def.baseInsightPerCycle > 0)) {
     warnings.push('Outside data coverage — research output will be reduced.')
   }
-  const totals = computeTotals(assets, state.population)
+  const totals = cityTotals(state, assets)
   if (totals.powerDemand > totals.powerSupply) warnings.push('City power demand will exceed supply.')
   if (totals.waterDemand > totals.waterSupply) warnings.push('City water demand will exceed supply.')
   if (totals.dataDemand > totals.dataSupply) warnings.push('City data demand will exceed supply.')
@@ -249,6 +325,7 @@ export function placeCard(
   state.hand = state.hand.filter((id) => id !== instanceId)
   state.selectedInstanceId = null
   state.placedCount += 1
+  state.stats.built += 1
 
   log(
     state,
@@ -272,6 +349,7 @@ export function demolish(state: GameState, assetId: string): PlaceResult {
   const def = definition(asset.definitionId)
 
   state.assets = state.assets.filter((a) => a.id !== assetId)
+  delete state.sabotaged[assetId]
   state.resources.capital += Math.floor(def.deploymentCapital / 2)
 
   // Return the card instance to the discard pile.
@@ -296,9 +374,20 @@ export function cycleCard(state: GameState, instanceId: string) {
   refillHand(state)
 }
 
+export interface CycleReport {
+  result: CycleResult
+  completedAssets: string[]
+  raid: RaidReport | null
+}
+
 /** Advance one full Development Cycle. */
-export function advanceCycle(state: GameState) {
+export function advanceCycle(state: GameState): CycleReport {
+  if (state.outcome) {
+    return { result: { capitalDelta: 0, grossCapital: 0, insightDelta: 0, influenceDelta: 0, populationDelta: 0, events: [] }, completedAssets: [], raid: null }
+  }
+  const building = new Set(state.assets.filter((a) => !a.operational).map((a) => a.id))
   const result = resolveCycle(state)
+  const completedAssets = state.assets.filter((a) => a.operational && building.has(a.id)).map((a) => a.id)
 
   state.cycle += 1
   if (state.cycle % CYCLES_PER_WORLD_TICK === 0) state.worldTick += 1
@@ -307,6 +396,8 @@ export function advanceCycle(state: GameState) {
   state.resources.insight = Math.max(0, state.resources.insight + result.insightDelta)
   state.resources.influence = Math.max(0, state.resources.influence + result.influenceDelta)
   state.population = Math.max(0, state.population + result.populationDelta)
+  state.stats.capitalEarned += Math.max(0, result.grossCapital)
+  state.stats.peakPopulation = Math.max(state.stats.peakPopulation, state.population)
 
   for (const event of result.events) log(state, event, 'info')
 
@@ -314,7 +405,13 @@ export function advanceCycle(state: GameState) {
     log(state, 'Treasury empty — maintenance is outrunning income.', 'warn')
   }
 
+  const threatFx = aggregateModifiers(state.modifiers).threat
+  const raid = advanceIronheart(state, cityTotals(state), threatFx)
+  tickModifiers(state)
   refreshTotals(state)
+  checkDefeat(state, result.capitalDelta)
+  maybeTriggerEvent(state)
+  return { result, completedAssets, raid }
 }
 
 export function setOverlay(state: GameState, overlay: OverlayId) {

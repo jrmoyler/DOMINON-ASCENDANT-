@@ -1,6 +1,6 @@
 import { definition } from './content'
 import { assetDistance } from './grid'
-import type { CityTotals, GameState, WorldAsset } from './types'
+import type { CityTotals, Difficulty, GameState, Modifier, WorldAsset } from './types'
 
 /**
  * Spec §14 fixes 1 Development Cycle at 30 s of active simulation. That pacing
@@ -19,6 +19,73 @@ export const UTILITY_RADIUS = 6
 export const STARTING_RESOURCES = { capital: 40, insight: 12, influence: 8 }
 export const STARTING_POPULATION = 24
 
+export interface DifficultyProfile {
+  label: string
+  blurb: string
+  capital: number
+  income: number
+  threat: number
+  raid: number
+  strikes: number
+  eventGap: [number, number]
+}
+
+export const DIFFICULTY: Record<Difficulty, DifficultyProfile> = {
+  settler: { label: 'Settler', blurb: 'A generous treasury and a patient rival. For learning the basin.', capital: 70, income: 1.2, threat: 0.65, raid: 0.75, strikes: 12, eventGap: [12, 16] },
+  governor: { label: 'Governor', blurb: 'The intended campaign. Every shortfall has a cost.', capital: 45, income: 1, threat: 1, raid: 1, strikes: 8, eventGap: [9, 13] },
+  ascendant: { label: 'Ascendant', blurb: 'Lean books, frequent crises, and a Forge Lord who does not wait.', capital: 32, income: 0.88, threat: 1.35, raid: 1.4, strikes: 6, eventGap: [7, 10] },
+}
+
+/**
+ * Web-slice pacing multiplier on Capital yield. The derivation table was tuned
+ * for a 30 s cycle; at 10 s the opening needs a faster treasury to feel alive.
+ */
+export const CAPITAL_PACE = 1.5
+/** Insight and Influence derive from tiny authored-adjacent yields; scale them to campaign targets. */
+export const INSIGHT_PACE = 1.7
+export const INFLUENCE_PACE = 2.6
+
+/** Summed campaign modifiers. Multiplier fields are additive offsets (0 = none). */
+export interface CityEffects {
+  capital: number
+  insight: number
+  influence: number
+  approval: number
+  upkeep: number
+  power: number
+  water: number
+  defense: number
+  threat: number
+}
+
+export const NO_EFFECTS: CityEffects = {
+  capital: 0, insight: 0, influence: 0, approval: 0, upkeep: 0, power: 0, water: 0, defense: 0, threat: 0,
+}
+
+export function aggregateModifiers(modifiers: Modifier[] = []): CityEffects {
+  const fx = { ...NO_EFFECTS }
+  for (const m of modifiers) {
+    for (const key of Object.keys(fx) as (keyof CityEffects)[]) fx[key] += m[key] ?? 0
+  }
+  return fx
+}
+
+/** Defensive rating each operational asset contributes against Ironheart raids. */
+export function defenseValue(definitionId: string): number {
+  if (definitionId === 'universal.barrier_hub') return 16
+  if (definitionId === 'universal.watch_post') return 10
+  if (definitionId === 'special.founder_hall') return 6
+  const def = definition(definitionId)
+  if (def.cardType === 'Defense') return 12
+  if (def.cardType === 'Wonder') return 8
+  return 0
+}
+
+/** Totals for a live campaign, including modifiers and sabotage. */
+export function cityTotals(state: Pick<GameState, 'assets' | 'population' | 'modifiers' | 'sabotaged'>, assets = state.assets): CityTotals {
+  return computeTotals(assets, state.population, aggregateModifiers(state.modifiers), state.sabotaged)
+}
+
 export interface AssetServices {
   power: boolean
   water: boolean
@@ -31,8 +98,8 @@ export interface AssetServices {
  * Supply is local: an Infrastructure asset feeds consumers within
  * UTILITY_RADIUS cells. This is what makes layout matter.
  */
-export function computeServices(assets: WorldAsset[]): Map<string, AssetServices> {
-  const operational = assets.filter((a) => a.operational)
+export function computeServices(assets: WorldAsset[], sabotaged: Record<string, number> = {}): Map<string, AssetServices> {
+  const operational = assets.filter((a) => a.operational && !sabotaged[a.id])
   const powerSources = operational.filter((a) => definition(a.definitionId).powerProduced > 0)
   const waterSources = operational.filter((a) => definition(a.definitionId).waterProduced > 0)
   const dataSources = operational.filter((a) => definition(a.definitionId).dataProduced > 0)
@@ -51,8 +118,13 @@ export function computeServices(assets: WorldAsset[]): Map<string, AssetServices
 }
 
 /** Aggregate city state derived from the current assets and population. */
-export function computeTotals(assets: WorldAsset[], population: number): CityTotals {
-  const services = computeServices(assets)
+export function computeTotals(
+  assets: WorldAsset[],
+  population: number,
+  fx: CityEffects = NO_EFFECTS,
+  sabotaged: Record<string, number> = {},
+): CityTotals {
+  const services = computeServices(assets, sabotaged)
 
   let housingCapacity = 0
   let jobCapacity = 0
@@ -65,15 +137,21 @@ export function computeTotals(assets: WorldAsset[], population: number): CityTot
   let happiness = 50
   let dependency = 0
   let resourceHunger = 0
+  let defense = fx.defense
 
   for (const asset of assets) {
     if (!asset.operational) continue
     const def = definition(asset.definitionId)
+    if (sabotaged[asset.id]) {
+      // Sabotaged sites draw nothing and give nothing until crews restore them.
+      happiness -= 1
+      continue
+    }
     const svc = services.get(asset.id)!
     const served = svc.power && svc.water
 
-    powerSupply += def.powerProduced
-    waterSupply += def.waterProduced
+    powerSupply += def.powerProduced * (1 + fx.power)
+    waterSupply += def.waterProduced * (1 + fx.water)
     dataSupply += def.dataProduced
     powerDemand += def.utilityPower
     waterDemand += def.utilityWater
@@ -85,6 +163,7 @@ export function computeTotals(assets: WorldAsset[], population: number): CityTot
       happiness += def.happiness
       dependency += def.synaraDependencyPerCycle
       resourceHunger += def.forgeweaveResourceHungerPerCycle
+      defense += defenseValue(asset.definitionId)
     } else {
       // An unserved building is a blight rather than an asset.
       happiness -= 2
@@ -104,6 +183,7 @@ export function computeTotals(assets: WorldAsset[], population: number): CityTot
   if (powerDemand > powerSupply) happiness -= 12
   if (waterDemand > waterSupply) happiness -= 12
   if (dataDemand > dataSupply) happiness -= 4
+  happiness += fx.approval
 
   return {
     population,
@@ -119,11 +199,13 @@ export function computeTotals(assets: WorldAsset[], population: number): CityTot
     happiness: Math.max(0, Math.min(100, happiness)),
     dependency,
     resourceHunger,
+    defense: Math.max(0, Math.round(defense)),
   }
 }
 
 export interface CycleResult {
   capitalDelta: number
+  grossCapital: number
   insightDelta: number
   influenceDelta: number
   populationDelta: number
@@ -141,6 +223,9 @@ export function projectNextCycle(state: GameState): CycleResult {
  */
 export function resolveCycle(state: GameState): CycleResult {
   const events: string[] = []
+  const fx = aggregateModifiers(state.modifiers)
+  const sabotaged = state.sabotaged ?? {}
+  const difficulty = DIFFICULTY[state.difficulty ?? 'governor']
 
   // 1. Construction advances first; a completed site produces in this cycle.
   for (const asset of state.assets) {
@@ -153,8 +238,8 @@ export function resolveCycle(state: GameState): CycleResult {
     }
   }
 
-  const totals = computeTotals(state.assets, state.population)
-  const services = computeServices(state.assets)
+  const totals = computeTotals(state.assets, state.population, fx, sabotaged)
+  const services = computeServices(state.assets, sabotaged)
 
   // 2. Production. Output scales with staffing and requires utilities.
   const staffRatio = totals.jobCapacity > 0 ? Math.min(1, totals.employed / totals.jobCapacity) : 0
@@ -177,6 +262,11 @@ export function resolveCycle(state: GameState): CycleResult {
     }
     const svc = services.get(asset.id)!
     maintenance += def.maintenanceCapitalPerCycle
+    if (sabotaged[asset.id]) {
+      asset.brownout = true
+      asset.staffed = 0
+      continue
+    }
 
     const served = svc.power && svc.water
     asset.brownout = !served || gridFactor < 0.999
@@ -199,11 +289,13 @@ export function resolveCycle(state: GameState): CycleResult {
 
   // 3. Population upkeep, administrative overhead, and happiness scaling.
   // Both sinks scale superlinearly so a large city has to keep earning.
-  const upkeep = state.population * 0.035 * (1 + state.population / 120)
+  const upkeep = state.population * 0.035 * (1 + state.population / 160) * (1 + fx.upkeep)
   const assetCount = state.assets.length
-  const overhead = assetCount * 0.05 * (1 + assetCount / 40)
+  const overhead = assetCount * 0.05 * (1 + assetCount / 50)
   const happinessFactor = 0.6 + (totals.happiness / 100) * 0.8
-  capital *= happinessFactor
+  capital *= happinessFactor * CAPITAL_PACE * difficulty.income * Math.max(0, 1 + fx.capital)
+  insight *= INSIGHT_PACE * Math.max(0, 1 + fx.insight)
+  influence *= INFLUENCE_PACE * Math.max(0, 1 + fx.influence)
   const capitalDelta = capital - maintenance - upkeep - overhead
 
   // 4. Migration. People arrive when there is room, work and goodwill.
@@ -231,6 +323,7 @@ export function resolveCycle(state: GameState): CycleResult {
 
   return {
     capitalDelta,
+    grossCapital: capital,
     insightDelta: insight,
     influenceDelta: influence,
     populationDelta,
